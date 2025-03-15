@@ -1,0 +1,5 @@
+.bg-shadow-new{
+    border-radius: 50%;
+    background: linear-gradient(225deg, #ced8f8, #9daada6f);
+    box-shadow:  -28px 28px 56px #94a1ce,
+                 28px -28px 56px #c8d9ff;}
