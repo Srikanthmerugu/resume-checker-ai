@@ -1,56 +1,37 @@
 import React from "react";
 import { FaUpload, FaChartLine, FaClipboardCheck } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const ResumeUpload = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center p-6 mb-20">
+    <div className="min-h-screen flex flex-col items-center p-4 md:p-6 mb-20">
       {/* Header Section */}
-      <h1 className="text-center text-4xl md:text-5xl font-bold text-gray-800">
-      GET RESUME RELEVANT SCORE
-                  
-          
-          </h1>
-          <p className="text-gray-700 text-2xl mt-5">          Boost your job search with our AI-powered resume scoring tool.
-          </p> 
-
-     
-
-
-
-
-
-
+      <h1 className="text-center text-3xl md:text-5xl font-bold text-gray-800">
+        GET RESUME RELEVANT SCORE
+      </h1>
+      <p className="text-gray-700 text-lg md:text-2xl mt-4 text-center">
+        Boost your job search with our AI-powered resume scoring tool.
+      </p>
 
       {/* Steps Section */}
-      <div className="w-full max-w-4xl mt-20 p-6">
-      <ol class="flex items-center w-full text-sm font-medium text-center text-gray-500 dark:text-gray-400 sm:text-base">
-    <li class="flex md:w-full items-center text-blue-600 dark:text-blue-500 sm:after:content-[''] after:border-dashed after:w-full after:h-1 after:border-b after:border-gray-200  after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 dark:after:border-gray-700">
-        <div class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
-        <div className="flex w-[200px] flex-col items-center text-center">
-            <FaUpload className="text-blue-600 text-3xl" />
+      <div className="w-full max-w-4xl mt-12 p-4">
+        <ol className="flex flex-col md:flex-row items-center w-full text-sm md:text-base font-medium text-gray-500">
+          <li className="flex flex-col items-center text-center w-full md:w-1/3 mb-6 md:mb-0">
+            <FaUpload className="text-blue-600 text-4xl md:text-3xl" />
             <h3 className="font-semibold mt-2">Submit your CV</h3>
             <p className="text-sm text-gray-500">Upload your resume easily.</p>
-          </div>
-        </div>
-    </li>
-    <li class="flex md:w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-dashed after:border-gray-200  after:hidden sm:after:inline-block after:mx-6 xl:after:mx-10 dark:after:border-gray-700">
-        <span class="flex items-center after:content-['/'] sm:after:hidden after:mx-2 after:text-gray-200 dark:after:text-gray-500">
-        <div className="flex w-[200px] flex-col items-center text-center">
-            <FaChartLine className="text-yellow-500 text-3xl" />
+          </li>
+          <li className="flex flex-col items-center text-center w-full md:w-1/3 mb-6 md:mb-0">
+            <FaChartLine className="text-yellow-500 text-4xl md:text-3xl" />
             <h3 className="font-semibold text-yellow-500 mt-2">ANALYZER</h3>
             <p className="text-sm text-gray-500">AI-powered analysis.</p>
-          </div>
-        </span>
-    </li>
-    <li class="flex items-center">
-    <div className="flex w-[200px] flex-col items-center text-center">
-            <FaClipboardCheck className="text-green-600 text-3xl" />
+          </li>
+          <li className="flex flex-col items-center text-center w-full md:w-1/3">
+            <FaClipboardCheck className="text-green-600 text-4xl md:text-3xl" />
             <h3 className="font-semibold text-green-600 mt-2">DETAIL REPORT</h3>
             <p className="text-sm text-gray-500">Get detailed insights.</p>
-          </div>
-    </li>
-</ol>
-
+          </li>
+        </ol>
       </div>
 
 
@@ -59,16 +40,30 @@ const ResumeUpload = () => {
 
       {/* Upload Section */}
 
-      <h1 className="text-center  text-4xl md:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mt-20 mb-10">
+      <h1 className="text-center text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-20 mb-0">
         CHECK YOUR RESUME
         </h1>
-      <div className="  w-[1000px]  py-3 rounded-lg shadow-2xl">
+
+        
+        <div class="inline-flex items-center justify-center w-full">
+    <hr class="w-64 h-1 my-8 bg-gray-200 border-0 rounded-sm dark:bg-sky-900"/>
+    <div class="absolute px-4 -translate-x-1/2 bg-white left-1/2 ">
+        <svg class="w-4 h-4 text-white-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 14">
+    <path d="M6 0H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3H2a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Zm10 0h-4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h4v1a3 3 0 0 1-3 3h-1a1 1 0 0 0 0 2h1a5.006 5.006 0 0 0 5-5V2a2 2 0 0 0-2-2Z"/>
+  </svg>
+    </div>
+</div>
+
+
+
+
+      <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 sm:p-0 md:p-0 md:p-10">
         {/* <h3 className="text-xl font-semibold text-center text-gray-900">
           CHECK YOUR RESUME
         </h3> */}
         
 
-        <div className="flex pl-8 flex-col md:flex-row items-center gap-10 mt-6">
+        <div className="flex flex-col sm:flex-col md:flex-row items-center gap-10 mt-6">
           {/* Steps */}
           <ol className="relative text-gray-500 border-s border-gray-200 w-full md:w-1/2">
             <li className="mb-15 ms-6">
@@ -110,7 +105,7 @@ const ResumeUpload = () => {
           </ol>
 
           {/* Upload Box */}
-          <div className="flex flex-col items-center  p-6 rounded-lg w-full md:w-1/1">
+          <div className="flex flex-col items-center w-full md:w-1/2 text-center">
             <div className="flex items-center justify-center w-full">
               <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-100">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -124,19 +119,19 @@ const ResumeUpload = () => {
               </label>
             </div>
 
-            <button className="mt-4 w-[100%] cursor-pointer bg-pink-500 text-white px-6 py-2 rounded-lg shadow-md">
+            <Link to="/result-of-resume"><button className="mt-4 w-[100%] cursor-pointer bg-pink-500 text-white px-6 py-2 rounded-lg shadow-md">
               Proceed to Check
-            </button>
+            </button></Link>
           </div>
         </div>
       </div>
 
 
-
-{/* <div className="w-[600px]">
+{/* text area input  */}
+<div className="flex flex-col items-center w-full md:w-1/2 text-center">
 <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your message</label>
 <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
-</div> */}
+</div>
     </div>
   );
 };

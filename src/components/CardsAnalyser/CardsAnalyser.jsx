@@ -1,14 +1,16 @@
 import React from 'react';
 import { analyse, personalization, relevant, resumeScore, SmartSkils } from '../../assets/Assets';
+import WidgeLine from '../WidgeLine/WidgeLine';
 
 const CardsAnalyser = () => {
   return (
     <>
-      <h1 className="text-center  text-4xl md:text-3xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mt-30 mb-10">
+      <h1 className="text-center text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-20 ">
         RESUME ANALYSIS & OPTIMIZATION
       </h1>
+       <WidgeLine  className="mb-8"/>
       
-      <div className="container cursor-pointer mx-auto flex flex-wrap justify-center gap-10 my-10">
+      <div className="container  cursor-text mx-auto flex flex-wrap justify-center gap-10 my-10">
         {/** First Row */}
         <div className="w-80 shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center rounded-2xl flex-col p-5 h-[350px] gap-5 bg-white hover:bg-gray-50">
           <img src={analyse} alt="Candidate-CV" width="150px" className="transition-transform duration-300 hover:scale-110" />
