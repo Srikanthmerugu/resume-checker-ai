@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <nav className="p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <a href="#" ><img src={logo} alt="Menu-Logo"/></a>
+        <a href="/" ><img src={logo} alt="Menu-Logo"/></a>
         
         {/* Mobile Menu Button */}
         <button className="md:hidden" onClick={() => setIsOpen(!isOpen)}>
