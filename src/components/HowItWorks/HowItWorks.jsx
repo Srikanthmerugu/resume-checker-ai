@@ -1,5 +1,5 @@
 import React from "react";
-import { imageCV } from "../../assets/Assets";
+import { analyse, imageCV } from "../../assets/Assets";
 import WidgeLine from "../WidgeLine/WidgeLine";
 
 const HowItWorks = () => {
@@ -15,7 +15,7 @@ const HowItWorks = () => {
       <div className="flex cursor-text mt-8 flex-col md:flex-row items-center justify-center md:gap-16">
         {/* Step 1 */}
         <div className="w-full md:w-1/2 lg:w-1/3 shadow-lg flex items-center rounded-xl p-5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-          <img src={imageCV} alt="Upload Resume" className="w-20 h-20" />
+          <img src={analyse} alt="Upload Resume" className="w-20 h-20" />
           <div className="ml-4">
             <h1 className="text-xl md:text-2xl font-bold text-slate-800">
               Upload Resume

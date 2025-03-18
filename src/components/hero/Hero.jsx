@@ -8,7 +8,7 @@ const Hero = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex flex-col items-center gap-10 justify-center md:mt-40 mt-10 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center gap-10 justify-center md:mt-40 mt-20 px-4 sm:px-6 lg:px-8">
       <div className="relative flex flex-col items-center justify-center text-center">
         {/* Outer Glow */}
         <div className="absolute bg-shadow-new w-80 sm:w-[400px] md:w-[500px] h-80 sm:h-[400px] md:h-[500px] rounded-full animate-pulse"></div>

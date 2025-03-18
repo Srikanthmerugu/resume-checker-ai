@@ -1,5 +1,5 @@
 import React from 'react';
-import { analyse, personalization, relevant, resumeScore, SmartSkils } from '../../assets/Assets';
+import { analyse, Benchmarking, imporment, personalization, relevant, resumeScore, SmartSkils } from '../../assets/Assets';
 import WidgeLine from '../WidgeLine/WidgeLine';
 
 const CardsAnalyser = () => {
@@ -62,7 +62,7 @@ const CardsAnalyser = () => {
         </div>
 
         <div className="w-80 shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center rounded-2xl flex-col p-5 h-[350px] gap-5 bg-white hover:bg-gray-50">
-          <img src={analyse} alt="AI Analysis" width="150px" className="transition-transform duration-300 hover:scale-110" />
+          <img src={imporment} alt="AI Analysis" width="150px" className="transition-transform duration-300 hover:scale-110" />
           <h1 className="text-2xl font-bold text-slate-800">Improvement Tips</h1>
           <p className="text-center text-gray-600">
             Receive step-by-step recommendations on structure, wording, your resume’s effectiveness.
@@ -70,7 +70,7 @@ const CardsAnalyser = () => {
         </div>
 
         <div className="w-80 shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center rounded-2xl flex-col p-5 h-[350px] gap-5 bg-white hover:bg-gray-50">
-          <img src={analyse} alt="AI Analysis" width="150px" className="transition-transform duration-300 hover:scale-110" />
+          <img src={Benchmarking} alt="AI Analysis" width="150px" className="transition-transform duration-300 hover:scale-110" />
           <h1 className="text-2xl font-bold text-slate-800">Benchmarking</h1>
           <p className="text-center text-gray-600">
             Our AI evaluates your resume against top industry standards, helping you compete with the best candidates.
