@@ -1,15 +1,20 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { LoginAnimy } from "../../assets/Assets";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const navigate = useNavigate();
   const { setToken } = useAuth();
   const [formData, setFormData] = useState({
     name: "",
+    lname: "",
     email: "",
     password: "",
+    company_name: "",
+    location: "",
+    mobile: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -28,7 +33,7 @@ const Register = () => {
 
     try {
       const response = await fetch(
-        "https://b2techsoft.com/need-recruiter/public/api/register",
+        "https://demo.needrecruiter.com/need-recruiter/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -40,32 +45,49 @@ const Register = () => {
 
       if (response.ok && data.token) {
         setToken(data.token);
-        navigate("/upload-resume");
+        toast.success("Register Successful!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          navigate("/need-recruiter-f1/upload-resume");
+        }, 3000);
       } else {
-        setError(data.message || "Registration failed!");
+        toast.error(data.message || "Registration Failed!", {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setTimeout(() => {
+          setLoading(false);
+        }, 3000);
       }
     } catch (err) {
-      setError("Something went wrong! Please try again.");
-    } finally {
-      setLoading(false);
+      toast.error("Something went wrong! Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   };
 
   return (
-    <div className="w-[90vw]  mx-auto md:px-30  py-20 md:h-screen flex justify-between items-center">
-      <div className=" w-[50%] hidden md:block w-1/2 bg-cover bg-center">
-        <img src={LoginAnimy} />
+    <div className="w-[90vw]  sm:px-10   mx-auto md:px-10  pb-30 py-20 md:h-[100%] flex justify-between items-center">
+      <div className="w-[50%] hidden md:block bg-cover bg-center">
+        <img src={LoginAnimy} alt="Login Animation" />
       </div>
-      <div className="w-[100%]  md:w-[40%] md:p-10  p-10 bg-white shadow-md rounded-lg">
+      <div className="w-[100%] lg:w-[50%] xl:w-[40%] xl:p-10    md:w-[40%] md:p-3  p-10 bg-white shadow-md rounded-lg">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
           Register
         </h2>
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div class="relative mt-5">
+          {/* First Name */}
+          <div className="relative mt-5">
             <input
-              id="default_outlined"
-              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none  dark:border-blue-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              id="name"
+              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               type="text"
               name="name"
               placeholder=""
@@ -74,17 +96,38 @@ const Register = () => {
               required
             />
             <label
-              for="default_outlined"
-              class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+              htmlFor="name"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
             >
-              User Name
+              First Name
             </label>
           </div>
 
-          <div class="relative mt-5">
+          {/* Last Name */}
+          <div className="relative mt-5">
             <input
-              id="default_outlined"
-              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none  dark:border-blue-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              id="lname"
+              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              type="text"
+              name="lname"
+              placeholder=""
+              value={formData.lname}
+              onChange={handleChange}
+              required
+            />
+            <label
+              htmlFor="lname"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
+            >
+              Last Name
+            </label>
+          </div>
+
+          {/* Email */}
+          <div className="relative mt-5">
+            <input
+              id="email"
+              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               type="email"
               name="email"
               placeholder=""
@@ -93,17 +136,83 @@ const Register = () => {
               required
             />
             <label
-              for="default_outlined"
-              class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+              htmlFor="email"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
             >
               Email
             </label>
           </div>
 
-          <div class="relative mt-5">
+          
+
+          {/* Company Name */}
+          <div className="relative mt-5">
             <input
-              id="default_outlined"
-              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none  dark:border-blue-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              id="company_name"
+              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              type="text"
+              name="company_name"
+              placeholder=""
+              value={formData.company_name}
+              onChange={handleChange}
+              required
+            />
+            <label
+              htmlFor="company_name"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
+            >
+              Company Name
+            </label>
+          </div>
+
+          {/* Location */}
+          <div className="relative mt-5">
+            <input
+              id="location"
+              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              type="text"
+              name="location"
+              placeholder=""
+              value={formData.location}
+              onChange={handleChange}
+              required
+            />
+            <label
+              htmlFor="location"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
+            >
+              Location
+            </label>
+          </div>
+
+          {/* Mobile */}
+          <div className="relative mt-5">
+            <input
+              id="mobile"
+              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              type="tel"
+              name="mobile"
+              placeholder=""
+              value={formData.mobile}
+              onChange={handleChange}
+              required
+              pattern="[0-9]{10}"
+            />
+            <label
+              htmlFor="mobile"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
+            >
+              Mobile Number
+            </label>
+
+          </div>
+
+
+          {/* Password */}
+          <div className="relative mt-5">
+            <input
+              id="password"
+              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               type="password"
               name="password"
               placeholder=""
@@ -113,29 +222,56 @@ const Register = () => {
               minLength="6"
             />
             <label
-              for="default_outlined"
-              class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white  px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto"
+              htmlFor="password"
+              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
             >
               Password
             </label>
           </div>
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full p-3 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:bg-blue-300"
+            className="w-full p-3 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 disabled:bg-blue-300 flex items-center justify-center"
             disabled={loading}
           >
-            {loading ? "Registering..." : "Register"}
+            {loading ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                Registering...
+              </>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
         <p className="mt-4 text-center text-gray-600">
           Already have an account?{" "}
-          <a
-            href="/login"
+          <Link
+            to="/need-recruiter-f1/login"
             className="text-blue-600 hover:text-blue-700 underline"
           >
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>

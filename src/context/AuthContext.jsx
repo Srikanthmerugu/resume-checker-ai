@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback(async (email, password) => {
     try {
-      const response = await fetch("https://b2techsoft.com/need-recruiter/public/api/login", {
+      const response = await fetch("https://demo.needrecruiter.com/need-recruiter/api/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

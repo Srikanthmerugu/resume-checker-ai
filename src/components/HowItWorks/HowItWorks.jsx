@@ -1,5 +1,5 @@
 import React from "react";
-import { analyse, imageCV } from "../../assets/Assets";
+import { AiAnalasys, analyse, imageCV, ScoreCalculator } from "../../assets/Assets";
 import WidgeLine from "../WidgeLine/WidgeLine";
 
 const HowItWorks = () => {
@@ -28,7 +28,7 @@ const HowItWorks = () => {
 
         {/* Step 2 */}
         <div className="w-full md:w-1/2 lg:w-1/3 shadow-lg flex items-center rounded-xl p-5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-          <img src={imageCV} alt="AI Analysis" className="w-20 h-20" />
+          <img src={AiAnalasys} alt="AI Analysis" className="w-20 h-20" />
           <div className="ml-4">
             <h1 className="text-xl md:text-2xl font-bold text-slate-800">
               AI Analysis
@@ -43,7 +43,7 @@ const HowItWorks = () => {
       <div className="flex flex-col md:flex-row items-center justify-center md:gap-16 md:mt-6">
         {/* Step 3 */}
         <div className="w-full md:w-1/2 lg:w-1/3 shadow-lg flex items-center rounded-xl p-5 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
-          <img src={imageCV} alt="Score Calculation" className="w-20 h-20" />
+          <img src={ScoreCalculator} alt="Score Calculation" className="w-20 h-20" />
           <div className="ml-4">
             <h1 className="text-xl md:text-2xl font-bold text-slate-800">
               Score Calculation

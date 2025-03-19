@@ -11,7 +11,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout(); // This should clear the token
-    navigate("/"); // Navigate to home immediately
+    navigate("/need-recruiter-f1"); // Navigate to home immediately
   };
 
   return (
@@ -31,14 +31,71 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <ul className="hidden md:flex space-x-6 items-center">
-          <li>
+          {/* <li>
             <Link
-              to="/need-recruiter-f1/login"
+              to="/need-recruiter-f1/result-of-resume"
               className="hover:text-blue-600 border p-2 rounded-full transition-colors duration-200"
             >
               AI Resume Checker
             </Link>
-          </li>
+          </li> */}
+
+
+{token ? (
+             <li>
+             <Link to="/need-recruiter-f1/findCandidate">
+               <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+              Find a Candiate
+
+               </button>
+             </Link>
+           </li>
+          ) : (
+            <li>
+              <Link to="/need-recruiter-f1/login">
+                <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+                Find a Candiate
+                </button>
+              </Link>
+            </li>
+          )}
+
+
+
+
+          {token ? (
+             <li>
+             <Link to="/need-recruiter-f1/upload-resume">
+               <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+               AI Resume Checker
+
+               </button>
+             </Link>
+           </li>
+          ) : (
+            <li>
+              <Link to="/need-recruiter-f1/login">
+                <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+                AI Resume Checker
+                </button>
+              </Link>
+            </li>
+          )}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
           {/* {!token && (
             <li>
               <Link to="/register">
@@ -71,31 +128,60 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden mt-4">
-          <ul className="space-y-2 text-center bg-white shadow-lg p-4 rounded-lg">
-            <li>
-              <Link
-                to="/upload-resume"
-                className="block py-2 hover:text-blue-600"
-                onClick={() => setIsOpen(false)}
-              >
-                AI Resume Checker
+        <div className="md:hidden  h-[100%] mt-4">
+          <ul className="space-y-2 text-center h-screen bg-white shadow-lg p-4 rounded-lg">
+
+          {token ? (
+             <li className="w-full bg-gray-600 rounded-2xl text-white">
+             <Link to="/need-recruiter-f1/findCandidate">
+               <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
+              Find a Candiate
+
+               </button>
+             </Link>
+           </li>
+          ) : (
+            <li className="w-full bg-gray-600 rounded-2xl text-white">
+              <Link to="/need-recruiter-f1/login">
+                <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
+                Find a Candiate
+                </button>
               </Link>
             </li>
+          )}
+
+
+
+
+          {token ? (
+             <li className="w-full bg-gray-600 rounded-2xl text-white">
+             <Link to="/need-recruiter-f1/upload-resume">
+               <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
+               AI Resume Checker
+
+               </button>
+             </Link>
+           </li>
+          ) : (
+            <li className="w-full bg-gray-600 rounded-2xl text-white">
+              <Link to="/need-recruiter-f1/login">
+                <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
+                AI Resume Checker
+                </button>
+              </Link>
+            </li>
+          )}
+
+
+
+
+
+
             {!token && (
               <>
-                {/* <li>
+                <li className="w-full bg-gray-600 rounded-2xl text-white">
                   <Link
-                    to="/register"
-                    className="block py-2 hover:text-blue-600"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    Register
-                  </Link>
-                </li> */}
-                <li>
-                  <Link
-                    to="/login"
+                    to="/need-recruiter-f1/login"
                     className="block py-2  cursor-pointer hover:text-blue-600"
                     onClick={() => setIsOpen(false)}
                   >
@@ -106,7 +192,7 @@ const Navbar = () => {
               </>
             )}
             {token && (
-              <li>
+              <li className="w-full bg-gray-600 rounded-2xl text-white">
                 <button
                   onClick={handleLogout}
                   className="block py-2 w-full cursor-pointer hover:text-blue-600"

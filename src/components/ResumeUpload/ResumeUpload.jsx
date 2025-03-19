@@ -2,21 +2,24 @@ import React, { useState } from "react";
 import { FaUpload, FaChartLine, FaClipboardCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { toast } from "react-toastify";
 
 const ResumeUpload = () => {
-  const { token, logout } = useAuth();
+  const { token } = useAuth();
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-
-  console.log(token , "File upload token")
-
-
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    const selectedFile = e.target.files[0];
+    if (selectedFile?.size > 5 * 1024 * 1024) {
+      setError("File size must be less than 5MB");
+      return;
+    }
+    setFile(selectedFile);
+    setError("");
   };
 
   const handleSubmit = async (e) => {
@@ -25,52 +28,47 @@ const ResumeUpload = () => {
     setError("");
 
     if (!file || !description) {
-      setError("Please upload a resume and enter a description");
-      alert("Add Resume || Description")
-
+      toast.error("Please Upload a Resume and Enter a Description", {
+        position: "top-right",
+        autoClose: 3000,
+        style: { marginTop: "20px" }
+      });
       setLoading(false);
       return;
     }
 
     const formData = new FormData();
     formData.append("resume", file);
-    formData.append("description", description);
+    formData.append("job_description", description);
 
     try {
       const response = await fetch(
-        "https://b2techsoft.com/need-recruiter/public/api/job-match",
+        "https://demo.needrecruiter.com/need-recruiter/api/job-match",
         {
           method: "POST",
           body: formData,
-          ContentType: "multipart/form-data",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
-
       );
 
       if (!response.ok) throw new Error("Analysis failed");
-
+      
       const data = await response.json();
-      const jsonString = data.data.choices[0].message.content;
-      const jsonMatch = jsonString.match(/```json\n([\s\S]*?)\n```/);
+      const content = data.data.choices[0].message.content;
       
+      // Improved JSON extraction
+      const jsonMatch = content.match(/{[\s\S]*}/);
       if (!jsonMatch) throw new Error("Invalid response format");
-      const resultData = JSON.parse(jsonMatch[1]);
       
-      navigate("/result-of-resume", { state: { result: resultData } });
-      console.log( "resume 63" , resultData)
+      const resultData = JSON.parse(jsonMatch[0]);
+      navigate("/need-recruiter-f1/result-of-resume", { state: { result: resultData } });
+      
     } catch (err) {
       setError(err.message || "Failed to analyze resume");
+      console.error("API Error:", err);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
   };
 
   return (
@@ -118,14 +116,14 @@ const ResumeUpload = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6 md:p-10">
+      <div className="w-full max-w-4xl bg-blue-50 shadow-lg rounded-lg p-6 md:p-10">
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col md:flex-row items-center gap-10 mt-6">
             {/* Timeline Steps */}
             <ol className="relative text-gray-500 border-s border-gray-200 w-full md:w-1/2">
             <li className="mb-15 ms-6">
-              <span className="absolute flex items-center justify-center w-8 h-8 bg-green-200 rounded-full -start-4 ring-4 ring-white">
-                <svg className="w-3.5 h-3.5 text-green-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
+              <span className="absolute flex items-center justify-center w-8 h-8 bg-green-300 rounded-full -start-4 ring-4 ring-white">
+                <svg className="w-3.5 h-3.5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 16 12">
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5.917 5.724 10.5 15 1.5"/>
                 </svg>
               </span>
@@ -133,16 +131,17 @@ const ResumeUpload = () => {
               {/* <p className="text-sm">Step details here</p> */}
             </li>
             <li className="mb-15 ms-6">
-              <span className="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white">
+              <span className="absolute flex items-center justify-center w-8 h-8 bg-green-300 rounded-full -start-4 ring-4 ring-white">
                 <svg className="w-3.5 h-3.5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
                   <path d="M18 0H2a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2ZM6.5 3a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3.014 13.021l.157-.625A3.427 3.427 0 0 1 6.5 9.571a3.426 3.426 0 0 1 3.322 2.805l.159.622-6.967.023ZM16 12h-3a1 1 0 0 1 0-2h3a1 1 0 0 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Zm0-3h-3a1 1 0 1 1 0-2h3a1 1 0 1 1 0 2Z"/>
                 </svg>
               </span>
-              <h3 className="font-medium leading-tight">AI Analyzes It</h3>
+              <h3 className="font-medium leading-tight">Job Description
+              </h3>
               {/* <p className="text-sm">Step details here</p> */}
             </li>
             <li className="mb-15 ms-6">
-              <span className="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white">
+              <span className="absolute flex items-center justify-center w-8 h-8 bg-green-300 rounded-full -start-4 ring-4 ring-white">
                 <svg className="w-3.5 h-3.5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
                   <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2ZM7 2h4v3H7V2Zm5.7 8.289-3.975 3.857a1 1 0 0 1-1.393 0L5.3 12.182a1.002 1.002 0 1 1 1.4-1.436l1.328 1.289 3.28-3.181a1 1 0 1 1 1.392 1.435Z"/>
                 </svg>
@@ -151,7 +150,7 @@ const ResumeUpload = () => {
               {/* <p className="text-sm">Step details here</p> */}
             </li>
             <li className="ms-6">
-              <span className="absolute flex items-center justify-center w-8 h-8 bg-gray-100 rounded-full -start-4 ring-4 ring-white">
+              <span className="absolute flex items-center justify-center w-8 h-8 bg-green-300 rounded-full -start-4 ring-4 ring-white">
                 <svg className="w-3.5 h-3.5 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 20">
                   <path d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2ZM7 2h4v3H7V2Zm5.7 8.289-3.975 3.857a1 1 0 0 1-1.393 0L5.3 12.182a1.002 1.002 0 1 1 1.4-1.436l1.328 1.289 3.28-3.181a1 1 0 1 1 1.392 1.435Z"/>
                 </svg>
@@ -162,7 +161,7 @@ const ResumeUpload = () => {
           </ol>
 
             {/* Upload Section */}
-            <div className="flex flex-col items-center w-full md:w-1/2 text-center">
+            <div className="flex flex-col items-center  w-full md:w-1/2 text-center">
               <div className="flex items-center justify-center w-full">
                 <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-white hover:bg-gray-100">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -181,6 +180,7 @@ const ResumeUpload = () => {
                     className="hidden"
                     onChange={handleFileChange}
                     accept=".pdf,.doc,.docx,.jpg,.jpeg"
+                    
                   />
                 </label>
               </div>
@@ -193,6 +193,7 @@ const ResumeUpload = () => {
                 <textarea
                   id="description"
                   rows="4"
+                  
                   className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Paste job description here..."
                   value={description}
@@ -207,7 +208,7 @@ const ResumeUpload = () => {
                 disabled={loading}
                 className="mt-6 w-full cursor-pointer bg-pink-500 text-white px-6 py-2 rounded-lg shadow-md hover:bg-pink-600 disabled:bg-gray-400 transition-colors"
               >
-                {loading ? "Analyzing..." : "Proceed to Check"}
+                {loading ? "Analyzing... (15-20secs)" : "Proceed to Check"}
               </button>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { FaArrowRightToBracket } from "react-icons/fa6";
 import { PiVideoBold } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import "./Hero.css";
+import { demoVideo } from "../../assets/Assets";
 
 const Hero = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,7 @@ const Hero = () => {
             Get Resume Relevant Score For Free.
           </p>
           <div className="flex flex-wrap justify-center gap-4 md:mt-8 mt-3">
-            <Link to="/upload-resume">
+            <Link to="/need-recruiter-f1/upload-resume">
               <button className="rounded-full cursor-pointer border-2 p-3 px-6 bg-black text-white font-semibold flex items-center hover:bg-white hover:text-black transition">
                 Start For Free
                 <span className="pl-2">
@@ -50,7 +51,7 @@ const Hero = () => {
       <div className="text-center relative px-4 md:mt-25 text-center">
         <p className="text-lg sm:text-2xl md:text-2xl  max-w-3xl">
           Upload your resume and receive an instant
-          <span className="text-sky-900 font-semibold"> AI-powered</span> relevance
+          <span className="text-sky-900 font-semibold"> AI-Powered</span> relevance
           score with expert feedback.
         </p>
       </div>
@@ -66,7 +67,7 @@ const Hero = () => {
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-gray-400 hover:bg-gray-200 rounded-lg p-2"
+                className="text-gray-400 cursor-pointer hover:bg-gray-200 rounded-lg p-2"
               >
                 ✖
               </button>
@@ -76,7 +77,7 @@ const Hero = () => {
             <div className="p-4">
               <video controls className="w-full rounded-lg">
                 <source
-                  src="https://www.w3schools.com/html/mov_bbb.mp4"
+                  src={demoVideo}
                   type="video/mp4"
                 />
                 Your browser does not support the video tag.
@@ -87,7 +88,7 @@ const Hero = () => {
             <div className="flex items-center p-4 border-t">
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
+                className="w-full text-white cursor-pointer bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm px-5 py-2.5"
               >
                 Close Video
               </button>
