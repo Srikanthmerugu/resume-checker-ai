@@ -10,14 +10,19 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout(); // This should clear the token
-    navigate("/need-recruiter-f1"); // Navigate to home immediately
+    logout(); 
+    navigate("/");  
+    setIsOpen(false); 
+  };
+
+  const handleNavClick = () => {
+    setIsOpen(false);
   };
 
   return (
 <nav className="p-4 bg-white   shadow-md sm:shadow-none sticky top-0 z-50">
 <div className="container mx-auto flex justify-between sticky items-center">
-        <a href="/need-recruiter-f1">
+        <a href="/">
           <img className="w-[100px] md:w-[170px]" src={logo} alt="Menu-Logo" />
         </a>
 
@@ -33,7 +38,7 @@ const Navbar = () => {
         <ul className="hidden md:flex space-x-6 items-center">
           {/* <li>
             <Link
-              to="/need-recruiter-f1/result-of-resume"
+              to=" /result-of-resume"
               className="hover:text-blue-600 border p-2 rounded-full transition-colors duration-200"
             >
               AI Resume Checker
@@ -43,8 +48,8 @@ const Navbar = () => {
 
 {token ? (
              <li>
-             <Link to="/need-recruiter-f1/findCandidate">
-               <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+             <Link to="/findCandidate">
+               <button className="hover:text-blue-600 px-10 cursor-pointer border-sky-900 border-2 p-2 rounded-full transition-colors duration-200">
               Find a Candiate
 
                </button>
@@ -52,8 +57,8 @@ const Navbar = () => {
            </li>
           ) : (
             <li>
-              <Link to="/need-recruiter-f1/login">
-                <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+              <Link to="/login">
+                <button className="hover:text-blue-600 px-10 cursor-pointer border-sky-900 border-2 p-2 rounded-full transition-colors duration-200">
                 Find a Candiate
                 </button>
               </Link>
@@ -65,8 +70,8 @@ const Navbar = () => {
 
           {token ? (
              <li>
-             <Link to="/need-recruiter-f1/upload-resume">
-               <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+             <Link to="/upload-resume">
+               <button className="hover:text-blue-600 px-10 cursor-pointer border-sky-900 border-2 p-2 rounded-full transition-colors duration-200">
                AI Resume Checker
 
                </button>
@@ -74,8 +79,8 @@ const Navbar = () => {
            </li>
           ) : (
             <li>
-              <Link to="/need-recruiter-f1/login">
-                <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+              <Link to="/login">
+                <button className="hover:text-blue-600 px-10 cursor-pointer border-sky-900 border-2 p-2 rounded-full transition-colors duration-200">
                 AI Resume Checker
                 </button>
               </Link>
@@ -109,15 +114,15 @@ const Navbar = () => {
             <li>
               <button
                 onClick={handleLogout}
-                className="hover:text-blue-600 cursor-pointer border p-2 rounded-full transition-colors duration-200"
+                className="hover:text-blue-600 cursor-pointer border-sky-900 border-2 p-2 rounded-full transition-colors duration-200"
               >
                 Logout
               </button>
             </li>
           ) : (
             <li>
-              <Link to="/need-recruiter-f1/login">
-                <button className="hover:text-blue-600 px-10 cursor-pointer border p-2 rounded-full transition-colors duration-200">
+              <Link to="/login">
+                <button className="hover:text-blue-600 px-10 cursor-pointer border-sky-900 border-2 p-2 rounded-full transition-colors duration-200">
                   Login
                 </button>
               </Link>
@@ -128,69 +133,56 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden  h-[100%] mt-4">
+        <div className="md:hidden h-[100%] mt-4">
           <ul className="space-y-2 text-center h-screen bg-white shadow-lg p-4 rounded-lg">
+            {token ? (
+              <li className="w-full bg-gray-600 rounded-2xl text-white">
+                <Link to="/findCandidate" onClick={handleNavClick}>
+                  <button className="hover:text-blue-600 px-10 cursor-pointer p-2 transition-colors duration-200">
+                    Find a Candidate
+                  </button>
+                </Link>
+              </li>
+            ) : (
+              <li className="w-full bg-gray-600 rounded-2xl text-white">
+                <Link to="/login" onClick={handleNavClick}>
+                  <button className="hover:text-blue-600 px-10 cursor-pointer p-2 transition-colors duration-200">
+                    Find a Candidate
+                  </button>
+                </Link>
+              </li>
+            )}
 
-          {token ? (
-             <li className="w-full bg-gray-600 rounded-2xl text-white">
-             <Link to="/need-recruiter-f1/findCandidate">
-               <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
-              Find a Candiate
-
-               </button>
-             </Link>
-           </li>
-          ) : (
-            <li className="w-full bg-gray-600 rounded-2xl text-white">
-              <Link to="/need-recruiter-f1/login">
-                <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
-                Find a Candiate
-                </button>
-              </Link>
-            </li>
-          )}
-
-
-
-
-          {token ? (
-             <li className="w-full bg-gray-600 rounded-2xl text-white">
-             <Link to="/need-recruiter-f1/upload-resume">
-               <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
-               AI Resume Checker
-
-               </button>
-             </Link>
-           </li>
-          ) : (
-            <li className="w-full bg-gray-600 rounded-2xl text-white">
-              <Link to="/need-recruiter-f1/login">
-                <button className="hover:text-blue-600 px-10 cursor-pointer  p-2  transition-colors duration-200">
-                AI Resume Checker
-                </button>
-              </Link>
-            </li>
-          )}
-
-
-
-
-
+            {token ? (
+              <li className="w-full bg-gray-600 rounded-2xl text-white">
+                <Link to="/upload-resume" onClick={handleNavClick}>
+                  <button className="hover:text-blue-600 px-10 cursor-pointer p-2 transition-colors duration-200">
+                    AI Resume Checker
+                  </button>
+                </Link>
+              </li>
+            ) : (
+              <li className="w-full bg-gray-600 rounded-2xl text-white">
+                <Link to="/login" onClick={handleNavClick}>
+                  <button className="hover:text-blue-600 px-10 cursor-pointer p-2 transition-colors duration-200">
+                    AI Resume Checker
+                  </button>
+                </Link>
+              </li>
+            )}
 
             {!token && (
-              <>
-                <li className="w-full bg-gray-600 rounded-2xl text-white">
-                  <Link
-                    to="/need-recruiter-f1/login"
-                    className="block py-2  cursor-pointer hover:text-blue-600"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    
-                    Login
-                  </Link>
-                </li>
-              </>
+              <li className="w-full bg-gray-600 rounded-2xl text-white">
+                <Link
+                  to="/login"
+                  className="block py-2 cursor-pointer hover:text-blue-600"
+                  onClick={handleNavClick}
+                >
+                  Login
+                </Link>
+              </li>
             )}
+
             {token && (
               <li className="w-full bg-gray-600 rounded-2xl text-white">
                 <button

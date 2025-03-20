@@ -23,8 +23,8 @@ const Login = () => {
 
     const result = await login(email, password);
     if (result.success) {
-      toast.success("Login Successful!", { position: "top-right", autoClose: 3000 });
-      navigate("/need-recruiter-f1");
+      // toast.success("Login Successful!", { position: "top-right", autoClose: 3000 });
+      navigate("/");
     } 
     else{
     toast.error(result.message || "Login Failed!", { position: "top-right", autoClose: 3000 });
@@ -124,7 +124,7 @@ const Login = () => {
         </form>
         <p className="mt-3 text-center">
           Don't have an account?{" "}
-          <Link to="/need-recruiter-f1/register" className="text-blue-600 underline">
+          <Link to="/register" className="text-blue-600 underline">
             Register
           </Link>
         </p>

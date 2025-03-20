@@ -10,11 +10,12 @@ export default defineConfig({
       fontFamily: {
         sans: ['Poppins', 'sans-serif'], // Set Poppins globally
       },
+      
     },
   },
   plugins: [react(),
     tailwindcss(),
   ],
-  base: '/need-recruiter-f1/',
+  base: ' /',
 
 })

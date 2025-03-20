@@ -1,0 +1,150 @@
+.Select-Platforms{
+    border-radius: 16px;
+    color: rgb(63, 63, 63);
+background: rgb(126, 179, 252);
+box-shadow:  7px -7px 14px #c1c1c1,
+             -7px 7px 14px #ffffff;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 5px;
+  }
+  
+  /* Track */
+ 
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #fff; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+    cursor: pointer;
+  }
+
+
+
+  /* Hero page Animation */
+
+  /* Keyframes for h1 (coming from the right) */
+@keyframes slideInFromRight {
+    0% {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  /* Keyframes for oscillating left to right */
+  @keyframes slideOutLeftRight {
+    0% {
+      transform: translateX(0);
+    }
+    50% {
+      transform: translateX(20px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+  
+  /* Apply animations to h1 and p */
+  .animated-h1 {
+    animation: slideInFromRight 1s ease-out forwards;
+  }
+  
+  /* After reaching center, start left-right oscillation */
+  .custom-slide-right {
+    animation: slideOutLeftRight 2s infinite ease-in-out;
+  }
+  
+  /* Keyframes for p (coming from the left) */
+  @keyframes slideInFromLeft {
+    0% {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    100% {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .animated-p {
+    animation: slideInFromLeft 1s ease-out forwards;
+  }
+  
+  /* Center the content */
+  .center-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh; /* Full viewport height */
+    text-align: center;
+  }
+  
+
+
+
+
+
+
+  @keyframes glow {
+    0%, 100% {
+      filter: brightness(1) opacity(0.8);
+      transform: scale(1);
+    }
+    50% {
+      filter: brightness(1.2) opacity(1);
+      transform: scale(1.02);
+    }
+  }
+  
+  .animate-glow-slow {
+    animation: glow 4s ease-in-out infinite;
+  }
+  .animate-glow-medium {
+    animation: glow 3s ease-in-out infinite;
+  }
+  .animate-glow-fast {
+    animation: glow 2s ease-in-out infinite;
+  }
+
+
+
+
+
+
+  /* resume Upload CSS start */
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+  @keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes rise {
+    0% { transform: translateY(100vh); opacity: 0.7; }
+    100% { transform: translateY(-20vh); opacity: 0; }
+  }

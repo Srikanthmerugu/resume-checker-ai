@@ -1,16 +1,16 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-  // Save token in local storage
   useEffect(() => {
     token ? localStorage.setItem("token", token) : localStorage.removeItem("token");
   }, [token]);
 
-  // Sync token across tabs
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === "token") setToken(e.newValue || null);
@@ -26,27 +26,38 @@ export const AuthProvider = ({ children }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      
+
       const text = await response.text();
       let data;
-      try { data = JSON.parse(text); } 
-      catch { data = { message: text }; }
+      try {
+        data = JSON.parse(text);
+      } catch {
+        data = { message: text };
+      }
 
       if (!response.ok) {
-        return { success: false, message: data.message || "Login failed" };
+        // toast.error(data.error || "Login failed. Please try again.");
+        return { success: false, message: data.error };
       }
 
       if (data.token) {
         setToken(data.token);
+        toast.success("Login successful!");
         return { success: true };
       }
-      return { success: false, message: data.message || "Login failed" };
+
+      toast.error(data.error || "Invalid credentials.");
+      return { success: false, message: data.error };
     } catch (error) {
+      toast.error("Network error. Please try again.");
       return { success: false, message: error.message || "Network error" };
     }
   }, []);
 
-  const logout = useCallback(() => setToken(null), []);
+  const logout = useCallback(() => {
+    setToken(null);
+    toast.info("You have been logged out.");
+  }, []);
 
   return (
     <AuthContext.Provider value={{ token, login, logout, setToken }}>

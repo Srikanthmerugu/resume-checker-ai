@@ -1,6 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
+import { Bar } from "react-chartjs-2";
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import WidgeLine from "../../components/WidgeLine/WidgeLine";
+
+// Register ChartJS components
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ResultOfResume = () => {
   const location = useLocation();
@@ -12,29 +17,11 @@ const ResultOfResume = () => {
 
     const textToCopy = [];
 
-    // Must-Have Skills
     if (result["must-have-skills"]) {
       textToCopy.push("🔹 Must-Have Skills:");
       result["must-have-skills"].forEach((skill, index) => {
         textToCopy.push(
-          `${index + 1}. ${skill.skill_name} - ${skill.match_percentage}%\n${skill.explanation}`
-        );
-        if (skill.suggestions) {
-          textToCopy.push("   Suggestions:");
-          skill.suggestions.forEach((suggestion) => {
-            textToCopy.push(`   - ${suggestion}`);
-          });
-        }
-        textToCopy.push(""); // Add a new line for spacing
-      });
-    }
-
-    // Good-to-Have Skills
-    if (result["good-to-have-skills"]) {
-      textToCopy.push("🔹 Good-to-Have Skills:");
-      result["good-to-have-skills"].forEach((skill, index) => {
-        textToCopy.push(
-          `${index + 1}. ${skill.skill_name} - ${skill.match_percentage}%\n${skill.explanation}`
+          `${index + 1}. ${skill.skill_name} - ${skill.match_percentage}\n${skill.explanation}`
         );
         if (skill.suggestions) {
           textToCopy.push("   Suggestions:");
@@ -46,14 +33,36 @@ const ResultOfResume = () => {
       });
     }
 
-    // Desired Profile
+    if (result["good-to-have-skills"]) {
+      textToCopy.push("🔹 Good-to-Have Skills:");
+      result["good-to-have-skills"].forEach((skill, index) => {
+        textToCopy.push(
+          `${index + 1}. ${skill.skill_name} - ${skill.match_percentage}\n${skill.explanation}`
+        );
+        if (skill.suggestions) {
+          textToCopy.push("   Suggestions:");
+          skill.suggestions.forEach((suggestion) => {
+            textToCopy.push(`   - ${suggestion}`);
+          });
+        }
+        textToCopy.push("");
+      });
+    }
+
     if (result["desired-profile"]) {
       textToCopy.push("🔹 Desired Profile:");
-      textToCopy.push(result["desired-profile"].join("\n"));
+      result["desired-profile"].forEach((item) => {
+        if (item.profile) {
+          const percentageText = item.match_percentage ? ` - ${item.match_percentage}` : "";
+          textToCopy.push(`- ${item.profile}${percentageText}`);
+        }
+        if (item.explanation) {
+          textToCopy.push(`  ${item.explanation}`);
+        }
+      });
       textToCopy.push("");
     }
 
-    // Overall Match Score
     if (result["overall-match-score"]) {
       textToCopy.push("🔹 Overall Match Score:");
       Object.entries(result["overall-match-score"]).forEach(([key, value]) => {
@@ -61,10 +70,8 @@ const ResultOfResume = () => {
       });
     }
 
-    // Join all parts into a single text string
     const formattedText = textToCopy.join("\n");
 
-    // Copy to Clipboard
     navigator.clipboard
       .writeText(formattedText)
       .then(() => {
@@ -75,111 +82,222 @@ const ResultOfResume = () => {
   };
 
   if (!result) {
-    return React.createElement(
-      "div",
-      { className: "flex items-center justify-center h-screen bg-gray-50" },
-      React.createElement("h1", { className: "text-2xl text-red-500" }, "No data found. Please upload your resume again.")
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-100">
+        <h1 className="text-2xl text-red-600 font-semibold">No data found. Please upload your resume again.</h1>
+      </div>
     );
   }
 
-  const getBorderColor = (percentage) => {
+  const getColor = (percentage) => {
     const value = parseInt(percentage);
-    if (value >= 80) return "border-l-green-500";
-    if (value >= 50) return "border-l-yellow-500";
-    return "border-l-red-500";
+    if (value >= 80) return "bg-green-500";
+    if (value >= 50) return "bg-yellow-500";
+    return "bg-red-500";
   };
 
-  const renderSection = (title, items) =>
-    React.createElement(
-      "div",
-      { className: "space-y-4 mb-10" },
-      React.createElement("h2", { className: "text-2xl font-bold mb-4 text-gray-800 capitalize" }, title.replace(/-/g, " ")),
-      items?.map((item, index) =>
-        React.createElement(
-          "div",
-          { key: index, className: `bg-white p-6 rounded-lg shadow-md border-l-4 ${getBorderColor(item.match_percentage)}` },
-          React.createElement(
-            "div",
-            { className: "flex justify-between items-start" },
-            React.createElement("h3", { className: "text-lg font-semibold text-gray-700" }, item.skill_name),
-            React.createElement("span", { className: "bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm" }, item.match_percentage)
-          ),
-          React.createElement("p", { className: "mt-2 text-gray-600" }, item.explanation),
-          item.suggestions &&
-            React.createElement(
-              "div",
-              { className: "mt-4 bg-gray-50 p-4 rounded-lg" },
-              React.createElement("h4", { className: "font-medium text-gray-700 mb-2" }, "Suggestions:"),
-              React.createElement(
-                "ul",
-                { className: "list-disc list-inside space-y-1" },
-                item.suggestions.map((suggestion, i) =>
-                  React.createElement("li", { key: i, className: "text-gray-600" }, suggestion)
-                )
-              )
-            )
-        )
-      )
-    );
+  // Chart Data for Skills
+  const skillChartData = {
+    labels: [
+      ...(result["must-have-skills"] || []).map((s) => s.skill_name),
+      ...(result["good-to-have-skills"] || []).map((s) => s.skill_name),
+    ],
+    datasets: [
+      {
+        label: "Match Percentage",
+        data: [
+          ...(result["must-have-skills"] || []).map((s) => parseInt(s.match_percentage)),
+          ...(result["good-to-have-skills"] || []).map((s) => parseInt(s.match_percentage)),
+        ],
+        backgroundColor: [
+          ...(result["must-have-skills"] || []).map((s) => getColor(s.match_percentage)),
+          ...(result["good-to-have-skills"] || []).map((s) => getColor(s.match_percentage)),
+        ],
+        borderColor: [
+          ...(result["must-have-skills"] || []).map((s) => getColor(s.match_percentage)),
+          ...(result["good-to-have-skills"] || []).map((s) => getColor(s.match_percentage)),
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
 
-  return React.createElement(
-    "div",
-    { className: "min-h-screen  p-6 md:p-10 bg-gray-50" },
-    React.createElement(
-      "div",
-      { className: "max-w-4xl mx-auto" },
-      React.createElement("h1", { className: "text-center text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-0 mb-20" }, "Resume Analysis Results"),
-      renderSection("Must-Have Skills", result["must-have-skills"]),
-      renderSection("Good-to-Have Skills", result["good-to-have-skills"]),
-      renderSection("Desired Profile", result["desired-profile"]),
-      
-
-      
-      
-      
-      
-      
-      
-      
-      
-      React.createElement(
-        "div",
-        { className: "bg-white p-6 rounded-lg shadow-md border-l-4 border-l-blue-500" },
-        React.createElement("h2", { className: "text-2xl font-bold mb-4 text-gray-800" }, "Overall Match Score"),
-        React.createElement(
-          "div",
-          { className: "grid grid-cols-1 md:grid-cols-3 gap-4" },
-          Object.entries(result["overall-match-score"]).map(([key, value]) =>
-            React.createElement(
-              "div",
-              { key: key, className: "bg-gray-50 p-4 rounded-lg" },
-              React.createElement("h3", { className: "font-semibold text-gray-700 capitalize" }, key.replace(/-/g, " ")),
-              React.createElement("p", { className: "text-2xl font-bold text-blue-600 mt-2" }, value)
-            )
-          )
-        )
-      ),
-      React.createElement(
-        "button",
-        {
-          onClick: copyToClipboard,
-          className:
-            "fixed end-4 top-100 text-gray-900 cursor-pointer hover:bg-gray-100 rounded-lg py-2 px-2.5 inline-flex items-center justify-center bg-white border border-gray-200 h-8 shadow-md",
+  const skillChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" },
+      title: { display: true, text: "Skills Match Overview" },
+      tooltip: {
+        callbacks: {
+          label: (context) => `${context.dataset.label}: ${context.raw}%`,
         },
-        React.createElement("svg", {
-          className: "w-4 h-4 me-2",
-          "aria-hidden": "true",
-          xmlns: "http://www.w3.org/2000/svg",
-          fill: "currentColor",
-          viewBox: "0 0 18 19",
-          dangerouslySetInnerHTML: {
-            __html:
-              '<path fill-rule="evenodd" d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" clip-rule="evenodd"/>',
-          },
-        }),
-        isCopied ? "Copied!" : "Copy Results"
-      )
-    )
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 100,
+        title: { display: true, text: "Percentage (%)" },
+        ticks: {
+          callback: (value) => `${value}%`,
+        },
+      },
+    },
+  };
+
+  return (
+    <div className="min-h-screen p-6 md:p-10">
+      <div className="max-w-5xl mx-auto space-y-12">
+        {/* Header */}
+        <h1 className="text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text mb-0 text-transparent mt-20">
+          Resume Analysis Results
+        </h1>
+        <WidgeLine />
+
+        {/* Must-Have Skills */}
+        {result["must-have-skills"] && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-indigo-500 pb-2">Must-Have Skills</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {result["must-have-skills"].map((skill, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-l-indigo-600"
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900">{skill.skill_name}</h3>
+                    <span className={`${getColor(skill.match_percentage)} text-white px-3 py-1 rounded-full text-sm`}>
+                      {skill.match_percentage}
+                    </span>
+                  </div>
+                  <p className="text-gray-700">{skill.explanation}</p>
+                  {skill.suggestions && (
+                    <div className="mt-4 bg-gray-50 p-4 rounded-md">
+                      <h4 className="font-medium text-gray-800 mb-2">Suggestions:</h4>
+                      <ul className="list-disc list-inside space-y-1 text-gray-600">
+                        {skill.suggestions.map((suggestion, i) => (
+                          <li key={i}>{suggestion}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Good-to-Have Skills */}
+        {result["good-to-have-skills"] && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-blue-500 pb-2">Good-to-Have Skills</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {result["good-to-have-skills"].map((skill, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-l-blue-600"
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900">{skill.skill_name}</h3>
+                    <span className={`${getColor(skill.match_percentage)} text-white px-3 py-1 rounded-full text-sm`}>
+                      {skill.match_percentage}
+                    </span>
+                  </div>
+                  <p className="text-gray-700">{skill.explanation}</p>
+                  {skill.suggestions && (
+                    <div className="mt-4 bg-gray-50 p-4 rounded-md">
+                      <h4 className="font-medium text-gray-800 mb-2">Suggestions:</h4>
+                      <ul className="list-disc list-inside space-y-1 text-gray-600">
+                        {skill.suggestions.map((suggestion, i) => (
+                          <li key={i}>{suggestion}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Desired Profile */}
+        {result["desired-profile"] && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-teal-500 pb-2">Desired Profile</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {result["desired-profile"].map((item, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-l-teal-600"
+                >
+                  <div className="flex justify-between items-center mb-3">
+                    <h3 className="text-lg font-semibold text-gray-900">{item.profile}</h3>
+                    {item.match_percentage && (
+                      <span className={`${getColor(item.match_percentage)} text-white px-3 py-1 rounded-full text-sm`}>
+                        {item.match_percentage}
+                      </span>
+                    )}
+                  </div>
+                  {item.explanation && <p className="text-gray-700">{item.explanation}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Overall Match Score with Charts */}
+        {result["overall-match-score"] && (
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-indigo-600 pb-2 mb-6">Overall Match Score</h2>
+            <div className="space-y-8">
+              {/* Score Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                {Object.entries(result["overall-match-score"]).map(([key, value]) => (
+                  <div
+                    key={key}
+                    className="bg-gradient-to-br from-indigo-50 to-blue-50 p-5 rounded-lg shadow-md text-center"
+                  >
+                    <h3 className="font-semibold text-gray-700 capitalize text-sm md:text-base">{key.replace(/-/g, " ")}</h3>
+                    <p className="text-3xl font-extrabold text-indigo-600 mt-2">{value}</p>
+                    <div className="mt-3 h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-indigo-500 transition-all duration-500"
+                        style={{ width: `${parseInt(value)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {/* Charts */}
+              <div className="grid grid-cols-1 md:grid-cols-1 md:h-[500px] gap-8">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <Bar data={skillChartData} options={skillChartOptions} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Copy Button */}
+        <button
+          onClick={copyToClipboard}
+          className="fixed bottom-6 right-6 bg-white text-gray-900 hover:bg-gray-100 rounded-lg py-2 px-4 flex items-center border border-gray-200 shadow-md transition-colors duration-300"
+        >
+          <svg
+            className="w-4 h-4 mr-2"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 18 19"
+            dangerouslySetInnerHTML={{
+              __html:
+                '<path fill-rule="evenodd" d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" clip-rule="evenodd"/>',
+            }}
+          />
+          {isCopied ? "Copied!" : "Copy Results"}
+        </button>
+      </div>
+    </div>
   );
 };
 

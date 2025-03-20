@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
   const { token } = useAuth();
-  return token ? children : <Navigate to="/need-recruiter-f1/login" replace />;
+  return token ? children : <Navigate to="/login" replace />;
 };
 
 export default ProtectedRoute;

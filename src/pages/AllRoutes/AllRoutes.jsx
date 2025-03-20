@@ -16,17 +16,17 @@ export const AllRoutes = () => {
     <>
       <Navbar />
       <Routes>
-        <Route path="/need-recruiter-f1" element={<Home />} />
-        <Route path="/need-recruiter-f1/videoModal" element={<VideoModal />} />
-        {/* <Route path="/need-recruiter-f1/result-of-resume" element={<ResultOfRsume />} /> */}
-        <Route path="/need-recruiter-f1/login" element={<Login />} />
-        <Route path="/need-recruiter-f1/register" element={<Register />} /> 
-        {/* <Route path="/need-recruiter-f1/findCandidate" element={<FindCandidate />} />  */}
+        <Route path="/" element={<Home />} />
+        <Route path="/videoModal" element={<VideoModal />} />
+        {/* <Route path=" /result-of-resume" element={<ResultOfRsume />} /> */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} /> 
+        {/* <Route path=" /findCandidate" element={<FindCandidate />} />  */}
 
 
-        <Route path="/need-recruiter-f1/upload-resume" element={<ProtectedRoute><ResumeUpload /></ProtectedRoute>} />
-        <Route path="/need-recruiter-f1/result-of-resume" element={<ProtectedRoute><ResultOfRsume /></ProtectedRoute>} />
-        <Route path="/need-recruiter-f1/findCandidate" element={<ProtectedRoute><FindCandidate /></ProtectedRoute>} />
+        <Route path="/upload-resume" element={<ProtectedRoute><ResumeUpload /></ProtectedRoute>} />
+        <Route path="/result-of-resume" element={<ProtectedRoute><ResultOfRsume /></ProtectedRoute>} />
+        <Route path="/findCandidate" element={<ProtectedRoute><FindCandidate /></ProtectedRoute>} />
       </Routes>
 
        

@@ -30,7 +30,7 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
+  
     try {
       const response = await fetch(
         "https://demo.needrecruiter.com/need-recruiter/api/register",
@@ -40,9 +40,9 @@ const Register = () => {
           body: JSON.stringify(formData),
         }
       );
-
+  
       const data = await response.json();
-
+  
       if (response.ok && data.token) {
         setToken(data.token);
         toast.success("Register Successful!", {
@@ -50,27 +50,37 @@ const Register = () => {
           autoClose: 3000,
         });
         setTimeout(() => {
-          navigate("/need-recruiter-f1/upload-resume");
+          navigate("/");
         }, 3000);
+      } else if (data.error?.email) {
+        toast.error(data.error.email[0], {
+          position: "top-right",
+          autoClose: 3000,
+        });
+
+        if (error?.mobile?.includes("The mobile has already been taken.")) {
+          toast.error("This mobile number is already registered!", {
+              position: "top-right",
+              autoClose: 3000,
+          });
+      }
       } else {
         toast.error(data.message || "Registration Failed!", {
           position: "top-right",
           autoClose: 3000,
         });
-        setTimeout(() => {
-          setLoading(false);
-        }, 3000);
       }
     } catch (err) {
       toast.error("Something went wrong! Please try again.", {
         position: "top-right",
         autoClose: 3000,
       });
-      setTimeout(() => {
-        setLoading(false);
-      }, 3000);
+    } finally {
+      setLoading(false);
     }
   };
+  
+
 
   return (
     <div className="w-[90vw]  sm:px-10   mx-auto md:px-10  pb-30 py-20 md:h-[100%] flex justify-between items-center">
@@ -187,29 +197,37 @@ const Register = () => {
 
           {/* Mobile */}
           <div className="relative mt-5">
-            <input
-              id="mobile"
-              className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              type="tel"
-              name="mobile"
-              placeholder=""
-              value={formData.mobile}
-              onChange={handleChange}
-              required
-              pattern="[0-9]{10}"
-            />
-            <label
-              htmlFor="mobile"
-              className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
-            >
-              Mobile Number
-            </label>
+  {/* +91 Country Code */}
+  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700 bg-white-900 px-2 py-1 rounded-md text-sm">
+    +91
+  </span>
 
-          </div>
+  {/* Input Field */}
+  <input
+    id="mobile"
+    className="block text-black pl-14 pr-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+    type="tel"
+    name="mobile"
+    placeholder=""
+    value={formData.mobile}
+    onChange={handleChange}
+    required
+    pattern="[0-9]{10}"
+  />
+
+  {/* Floating Label */}
+  <label
+    htmlFor="mobile"
+    className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2  peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
+  >
+    Mobile Number
+  </label>
+</div>
+
 
 
           {/* Password */}
-          <div className="relative mt-5">
+          <div className="relative mt-5 mb-30 md:mb-30">
             <input
               id="password"
               className="block text-black px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
@@ -220,14 +238,24 @@ const Register = () => {
               onChange={handleChange}
               required
               minLength="6"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$"
+              title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
+
+
             />
             <label
               htmlFor="password"
               className="absolute text-sm text-gray-500 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 start-1"
             >
-              Password
+              Password  
             </label>
+            <span className="border rounded-2xl bg-gray-200 text-black   p-2 absolute text-center  text-gray-500 text-sm text top-15">
+  Note:               Password must be
+  1 uppercase, 1 number, 1 special character (@$!%*?&), at least 6 characters.
+</span>
+
           </div>
+         
 
           {/* Submit Button */}
           <button
@@ -267,7 +295,7 @@ const Register = () => {
         <p className="mt-4 text-center text-gray-600">
           Already have an account?{" "}
           <Link
-            to="/need-recruiter-f1/login"
+            to="/login"
             className="text-blue-600 hover:text-blue-700 underline"
           >
             Login

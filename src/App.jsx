@@ -24,6 +24,10 @@ function App() {
   pauseOnHover
   newestOnTop
 />
+
+
+
+
          <AuthProvider>  <AllRoutes /></AuthProvider>
 
   

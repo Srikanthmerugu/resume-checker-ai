@@ -16,8 +16,8 @@ const VideoModal = () => {
 
       {/* Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="relative w-full max-w-lg bg-white rounded-lg shadow-lg dark:bg-gray-700">
+        <div className="fixed inset-0 z-50  flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="relative w-[100%] max-w-lg bg-white rounded-lg shadow-lg dark:bg-gray-700">
             {/* Modal header */}
             <div className="flex items-center justify-between p-4 border-b dark:border-gray-600 border-gray-200">
               <h3 className="text-xl font-medium text-gray-900 dark:text-white">

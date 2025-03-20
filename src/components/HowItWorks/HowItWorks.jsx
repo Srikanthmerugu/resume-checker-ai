@@ -9,7 +9,7 @@ const HowItWorks = () => {
         HOW IT WORKS
       </h1>
 
-      <WidgeLine  className=""/>
+      <WidgeLine  />
 
 
       <div className="flex cursor-text mt-8 flex-col md:flex-row items-center justify-center md:gap-16">

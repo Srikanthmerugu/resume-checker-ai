@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowRightToBracket } from "react-icons/fa6";
 import { PiVideoBold } from "react-icons/pi";
 import { Link } from "react-router-dom";
@@ -7,37 +7,75 @@ import { demoVideo } from "../../assets/Assets";
 
 const Hero = () => {
   const [isOpen, setIsOpen] = useState(false);
+    const [isCentered, setIsCentered] = useState(false);
+  
+    useEffect(() => {
+      setTimeout(() => {
+        setIsCentered(true);
+      }, 1000);
+    }, []);
 
   return (
-    <div className="flex flex-col items-center gap-10 justify-center md:mt-40 mt-20 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center gap-10 justify-center md:mt-30 mt-20 px-4 sm:px-6 lg:px-8">
       <div className="relative flex flex-col items-center justify-center text-center">
         {/* Outer Glow */}
-        <div className="absolute bg-shadow-new w-80 sm:w-[400px] md:w-[500px] h-80 sm:h-[400px] md:h-[500px] rounded-full animate-pulse"></div>
-        <div className="absolute bg-shadow-new-2 w-64 sm:w-[320px] md:w-[400px] h-64 sm:h-[320px] md:h-[400px] bg-violet-200 opacity-40 rounded-full animate-pulse"></div>
-        <div className="absolute bg-shadow-new-3 w-48 sm:w-[250px] md:w-[300px] h-48 sm:h-[250px] md:h-[300px] bg-purple-200 opacity-30 rounded-full animate-pulse"></div>
-        <div className="absolute w-48 sm:w-[250px] md:w-[300px] h-48 sm:h-[250px] md:h-[300px] bg-white opacity-60 rounded-full animate-pulse"></div>
+        <div className="absolute w-[80vw] h-[80vw] max-w-[500px] max-h-[500px] rounded-full 
+                      shadow-[0_0_80px_60px_hsla(210,100%,50%,0.1)] 
+                      animate-glow-slow" />
+                      
+      <div className="absolute w-[70vw] h-[70vw] max-w-[400px] max-h-[400px] rounded-full 
+                      shadow-[0_0_60px_40px_hsla(210,100%,50%,0.15)] 
+                      animate-glow-medium delay-100" />
+                      
+      <div className="absolute w-[60vw] h-[60vw] max-w-[300px] max-h-[300px] rounded-full 
+                      shadow-[0_0_40px_30px_hsla(210,100%,60%,0.2)] 
+                      animate-glow-fast delay-200" />
 
+      {/* Futuristic Robot Image */}
+      {/* <img
+        src="https://img.freepik.com/free-psd/futuristic-robot-illustration_23-2150978988.jpg"
+        alt="Futuristic Robot"
+        className="absolute  w-[60%] max-w-[00px] h-auto rounded-lg shadow-2xl"
+      /> */}
         {/* Inner Content */}
         <div className="relative flex flex-col items-center justify-center">
-          <h1 className="text-3xl md:text-5xl sm:text-5xl  lg:text-8xl font-bold text-gray-800">  
-            <span className="text-transparent bg-clip-text bg-gradient-to-r to-sky-400 from-sky-600">AI RES</span>
-           <span className="text-transparent bg-clip-text bg-gradient-to-r to-sky-600 from-sky-400">UME {" "} SCORER</span>
-          </h1>
-          <p className="text-gray-700 text-1xl  font-semibold sm:text-1xl md:text-3xl md:mt-6">
-            Get Resume Relevant Score For Free.
-          </p>
+        <h1
+        className={`animated-h1 text-3xl md:text-5xl sm:text-5xl lg:text-8xl font-bold text-gray-800 ${
+          isCentered ? "custom-slide-right" : ""
+        }`}
+      >
+        <span className="text-transparent bg-clip-text bg-gradient-to-r to-sky-900 from-sky-900">
+          AI RES
+        </span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-800 text- to-sky-800">
+          UME{" "} SC
+        </span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r to-sky-900 from-sky-900">
+          ORER
+        </span>
+      </h1>
+
+      {/* Animated h1 for "Advanced Candidate Search" */}
+      <h1 className="animated-h1 text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-950 text- to-sky-950 bg-clip-text text-transparent md:mb-10 md:mt-10">
+        Advanced Candidate Search
+      </h1>
+
+      {/* Animated p (comes from the left) */}
+      <p className="animated-p text-gray-700 text-1xl font-semibold sm:text-1xl md:text-3xl">
+        Get Resume Relevant Score For Free.
+      </p>
           <div className="flex flex-wrap justify-center gap-4 md:mt-8 mt-3">
-            <Link to="/need-recruiter-f1/upload-resume">
-              <button className="rounded-full cursor-pointer border-2 p-3 px-6 bg-black text-white font-semibold flex items-center hover:bg-white hover:text-black transition">
+            <Link to="/upload-resume">
+              <button className="rounded-full cursor-pointer border-sky-900 p-3 px-6 bg-sky-900 text-white font-semibold flex items-center hover:bg-white hover:text-sky-900 hover:border-sky-900 border-2 transition">
                 Start For Free
-                <span className="pl-2">
+                <span className="pl-2"> 
                   <FaArrowRightToBracket size={20} />
                 </span>
               </button>
             </Link>
             <button
               onClick={() => setIsOpen(true)}
-              className="rounded-full border-2 cursor-pointer p-3 px-6 flex items-center hover:bg-black hover:text-white font-semibold transition"
+              className="rounded-full border-2 cursor-pointer p-2 px-6 flex items-center hover:bg-sky-900 text-sky-900  border-sky-900 hover:text-white font-semibold transition"
             >
               Play Demo Video
               <span className="pl-2">
@@ -58,7 +96,7 @@ const Hero = () => {
 
       {/* Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 p-4">
           <div className="relative w-full max-w-lg bg-white rounded-lg shadow-lg">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-4 border-b">
