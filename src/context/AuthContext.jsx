@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (!response.ok) {
-        // toast.error(data.error || "Login failed. Please try again.");
         return { success: false, message: data.error };
       }
 
@@ -54,13 +53,41 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  const guestLogin = useCallback(async () => {
+    try {
+      const response = await fetch("https://demo.needrecruiter.com/need-recruiter/api/guest-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        toast.error(data.error || "Guest login failed. Please try again.");
+        return { success: false, message: data.error };
+      }
+
+      if (data.token) {
+        setToken(data.token);
+        toast.success("Guest login successful!");
+        return { success: true };
+      }
+
+      toast.error(data.error || "Guest login failed.");
+      return { success: false, message: data.error };
+    } catch (error) {
+      toast.error("Network error. Please try again.");
+      return { success: false, message: error.message || "Network error" };
+    }
+  }, []);
+
   const logout = useCallback(() => {
     setToken(null);
     toast.info("You have been logged out.");
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, setToken }}>
+    <AuthContext.Provider value={{ token, login, logout, guestLogin, setToken }}>
       {children}
     </AuthContext.Provider>
   );

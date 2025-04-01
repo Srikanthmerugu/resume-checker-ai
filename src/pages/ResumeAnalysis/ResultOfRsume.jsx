@@ -3,14 +3,28 @@ import { useLocation } from "react-router-dom";
 import { Bar } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import WidgeLine from "../../components/WidgeLine/WidgeLine";
+import InterviewPrepAccordion from "./InterviewPrepAccordion";
 
-// Register ChartJS components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const ResultOfResume = () => {
   const location = useLocation();
-  const { result } = location.state || {};
+  const { result: rawResult } = location.state || {};
   const [isCopied, setIsCopied] = useState(false);
+
+  // Normalize the response data structure to handle both formats
+  const result = rawResult ? {
+    // Handle both direct skills and nested job_description formats
+    "must-have-skills": rawResult["must-have-skills"] || rawResult.job_description?.must_have_skills,
+    "good-to-have-skills": rawResult["good-to-have-skills"] || rawResult.job_description?.good_to_have_skills,
+    "desired-profile": rawResult["desired-profile"] || rawResult.job_description?.desired_profile,
+    "interviewqna": rawResult.interviewqna || rawResult.interview_questions,
+    "overall-match-score": {
+      "must-have-skills": rawResult["overall-match-score"]?.["must-have-skills"] || rawResult.overall_match_score?.must_have_skills,
+      "good-to-have-skills": rawResult["overall-match-score"]?.["good-to-have-skills"] || rawResult.overall_match_score?.good_to_have_skills,
+      "desired-profile": rawResult["overall-match-score"]?.["desired-profile"] || rawResult.overall_match_score?.desired_profile
+    }
+  } : null;
 
   const copyToClipboard = () => {
     if (!result) return;
@@ -51,14 +65,10 @@ const ResultOfResume = () => {
 
     if (result["desired-profile"]) {
       textToCopy.push("🔹 Desired Profile:");
-      result["desired-profile"].forEach((item) => {
-        if (item.profile) {
-          const percentageText = item.match_percentage ? ` - ${item.match_percentage}` : "";
-          textToCopy.push(`- ${item.profile}${percentageText}`);
-        }
-        if (item.explanation) {
-          textToCopy.push(`  ${item.explanation}`);
-        }
+      result["desired-profile"].forEach((item, index) => {
+        textToCopy.push(
+          `${index + 1}. ${item.skill_name} - ${item.match_percentage}\n${item.explanation}`
+        );
       });
       textToCopy.push("");
     }
@@ -66,7 +76,9 @@ const ResultOfResume = () => {
     if (result["overall-match-score"]) {
       textToCopy.push("🔹 Overall Match Score:");
       Object.entries(result["overall-match-score"]).forEach(([key, value]) => {
-        textToCopy.push(`${key.replace(/-/g, " ")}: ${value}`);
+        if (value) { // Only add if value exists
+          textToCopy.push(`${key.replace(/-/g, " ")}: ${value}`);
+        }
       });
     }
 
@@ -83,8 +95,11 @@ const ResultOfResume = () => {
 
   if (!result) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-100">
-        <h1 className="text-2xl text-red-600 font-semibold">No data found. Please upload your resume again.</h1>
+      <div className="flex p-5 gap-4 flex-col items-center justify-center h-screen bg-white-900">
+        <div><span className="loader"></span></div>
+        <h1 className="text-xl text-center md:text-2xl font-bold mt-5 text-slate-800">
+          No data found. Please upload your resume again.
+        </h1>
       </div>
     );
   }
@@ -96,11 +111,12 @@ const ResultOfResume = () => {
     return "bg-red-500";
   };
 
-  // Chart Data for Skills
+  // Chart Data for Skills (Including all categories)
   const skillChartData = {
     labels: [
       ...(result["must-have-skills"] || []).map((s) => s.skill_name),
       ...(result["good-to-have-skills"] || []).map((s) => s.skill_name),
+      ...(result["desired-profile"] || []).map((s) => s.skill_name),
     ],
     datasets: [
       {
@@ -108,14 +124,17 @@ const ResultOfResume = () => {
         data: [
           ...(result["must-have-skills"] || []).map((s) => parseInt(s.match_percentage)),
           ...(result["good-to-have-skills"] || []).map((s) => parseInt(s.match_percentage)),
+          ...(result["desired-profile"] || []).map((s) => parseInt(s.match_percentage)),
         ],
         backgroundColor: [
           ...(result["must-have-skills"] || []).map((s) => getColor(s.match_percentage)),
           ...(result["good-to-have-skills"] || []).map((s) => getColor(s.match_percentage)),
+          ...(result["desired-profile"] || []).map((s) => getColor(s.match_percentage)),
         ],
         borderColor: [
           ...(result["must-have-skills"] || []).map((s) => getColor(s.match_percentage)),
           ...(result["good-to-have-skills"] || []).map((s) => getColor(s.match_percentage)),
+          ...(result["desired-profile"] || []).map((s) => getColor(s.match_percentage)),
         ],
         borderWidth: 1,
       },
@@ -142,14 +161,21 @@ const ResultOfResume = () => {
           callback: (value) => `${value}%`,
         },
       },
+      x: {
+        ticks: {
+          autoSkip: false,
+          maxRotation: 45,
+          minRotation: 45,
+        },
+      },
     },
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-10">
+    <div className="min-h-screen px-6 md:p-10">
       <div className="max-w-5xl mx-auto space-y-12">
         {/* Header */}
-        <h1 className="text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text mb-0 text-transparent mt-20">
+        <h1 className="text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text mb-0 text-transparent md:mt-10">
           Resume Analysis Results
         </h1>
         <WidgeLine />
@@ -231,14 +257,12 @@ const ResultOfResume = () => {
                   className="bg-white p-5 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 border-l-4 border-l-teal-600"
                 >
                   <div className="flex justify-between items-center mb-3">
-                    <h3 className="text-lg font-semibold text-gray-900">{item.profile}</h3>
-                    {item.match_percentage && (
-                      <span className={`${getColor(item.match_percentage)} text-white px-3 py-1 rounded-full text-sm`}>
-                        {item.match_percentage}
-                      </span>
-                    )}
+                    <h3 className="text-lg font-semibold text-gray-900">{item.skill_name}</h3>
+                    <span className={`${getColor(item.match_percentage)} text-white px-3 py-1 rounded-full text-sm`}>
+                      {item.match_percentage}
+                    </span>
                   </div>
-                  {item.explanation && <p className="text-gray-700">{item.explanation}</p>}
+                  <p className="text-gray-700">{item.explanation}</p>
                 </div>
               ))}
             </div>
@@ -253,19 +277,21 @@ const ResultOfResume = () => {
               {/* Score Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                 {Object.entries(result["overall-match-score"]).map(([key, value]) => (
-                  <div
-                    key={key}
-                    className="bg-gradient-to-br from-indigo-50 to-blue-50 p-5 rounded-lg shadow-md text-center"
-                  >
-                    <h3 className="font-semibold text-gray-700 capitalize text-sm md:text-base">{key.replace(/-/g, " ")}</h3>
-                    <p className="text-3xl font-extrabold text-indigo-600 mt-2">{value}</p>
-                    <div className="mt-3 h-2 w-full bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-indigo-500 transition-all duration-500"
-                        style={{ width: `${parseInt(value)}%` }}
-                      />
+                  value && (
+                    <div
+                      key={key}
+                      className="bg-gradient-to-br from-indigo-50 to-blue-50 p-5 rounded-lg shadow-md text-center"
+                    >
+                      <h3 className="font-semibold text-gray-700 capitalize text-sm md:text-base">{key.replace(/-/g, " ")}</h3>
+                      <p className="text-3xl font-extrabold text-indigo-600 mt-2">{value}</p>
+                      <div className="mt-3 h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-indigo-500 transition-all duration-500"
+                          style={{ width: `${parseInt(value)}%` }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  )
                 ))}
               </div>
               {/* Charts */}
@@ -278,6 +304,16 @@ const ResultOfResume = () => {
           </div>
         )}
 
+        {/* Prepare for Interview Section */}
+        {result.interviewqna && (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-gray-800 border-b-2 border-purple-500 pb-2">
+              Interview Questions and Answers
+            </h2>
+            <InterviewPrepAccordion qnaData={result.interviewqna} />
+          </div>
+        )}  
+
         {/* Copy Button */}
         <button
           onClick={copyToClipboard}
@@ -289,11 +325,9 @@ const ResultOfResume = () => {
             xmlns="http://www.w3.org/2000/svg"
             fill="currentColor"
             viewBox="0 0 18 19"
-            dangerouslySetInnerHTML={{
-              __html:
-                '<path fill-rule="evenodd" d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" clip-rule="evenodd"/>',
-            }}
-          />
+          >
+            <path fillRule="evenodd" d="M16 1h-3.278A1.992 1.992 0 0 0 11 0H7a1.993 1.993 0 0 0-1.722 1H2a2 2 0 0 0-2 2v15a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2Zm-3 14H5a1 1 0 0 1 0-2h8a1 1 0 0 1 0 2Zm0-4H5a1 1 0 0 1 0-2h8a1 1 0 1 1 0 2Zm0-5H5a1 1 0 0 1 0-2h2V2h4v2h2a1 1 0 1 1 0 2Z" clipRule="evenodd"/>
+          </svg>
           {isCopied ? "Copied!" : "Copy Results"}
         </button>
       </div>

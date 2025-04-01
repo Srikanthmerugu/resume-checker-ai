@@ -14,6 +14,7 @@ export {default as Benchmarking} from './Benchmarking.jpg'
 export {default as AiAnalasys} from './AI Analasis.jpg'
 export {default as ScoreCalculator } from './9846834.jpg'
 export {default as demoVideo }from  './demoVideo.mp4'
+export {default as FileUploadImage }from  './FileUploadImage.gif'
 
 
  

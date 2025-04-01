@@ -8,7 +8,7 @@ export default defineConfig({
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'], // Set Poppins globally
+        sans: ['Poppins', 'sans-serif'],
       },
       
     },

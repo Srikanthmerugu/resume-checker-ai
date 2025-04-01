@@ -3,6 +3,7 @@ import { FaUpload, FaChartLine, FaClipboardCheck } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
+import { FileUploadImage } from "../../assets/Assets";
 
 const ResumeUpload = () => {
   const { token } = useAuth();
@@ -14,12 +15,46 @@ const ResumeUpload = () => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile?.size > 5 * 1024 * 1024) {
+    setError(""); // Clear any previous errors
+
+    if (!selectedFile) return;
+
+    // Check file size (5MB limit)
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB", {
+        position: "top-right",
+        autoClose: 3000,
+        style: { marginTop: "20px" },
+      });
       setError("File size must be less than 5MB");
+      setFile(null);
       return;
     }
+
+    // Check file type (only PDF, DOC, DOCX allowed)
+    const validTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+    if (!validTypes.includes(selectedFile.type)) {
+      toast.error("Please upload a PDF or DOC/DOCX file only", {
+        position: "top-right",
+        autoClose: 3000,
+        style: { marginTop: "20px" },
+      });
+      setError("Please upload a PDF or DOC/DOCX file only");
+      setFile(null);
+      return;
+    }
+
+    // If file passes all checks, set it and show success toast
     setFile(selectedFile);
-    setError("");
+    toast.success("File uploaded successfully", {
+      position: "top-right",
+      autoClose: 2000,
+      style: { marginTop: "20px" },
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -69,7 +104,7 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center p-4 md:p-8 relative overflow-hidden">
+    <div className="min-h-screen bg-white flex flex-col items-center p-4 md:p-8">
       <style>
         {`
           @keyframes fadeIn {
@@ -87,10 +122,6 @@ const ResumeUpload = () => {
           @keyframes spin {
             to { transform: rotate(360deg); }
           }
-          @keyframes rise {
-            0% { transform: translateY(100vh); opacity: 0.7; }
-            100% { transform: translateY(-20vh); opacity: 0; }
-          }
           .animate-fade-in {
             animation: fadeIn 0.6s ease-out forwards;
           }
@@ -103,37 +134,12 @@ const ResumeUpload = () => {
           .animate-spin {
             animation: spin 1s linear infinite;
           }
-          .animate-rise {
-            position: absolute;
-            animation: rise 6s linear infinite;
-          }
-          .dot {
-            width: 12px;
-            height: 12px;
-            background-color: rgba(79, 70, 229, 0.3); /* Indigo-600 with opacity */
-            border-radius: 50%;
-            pointer-events: none;
-          }
         `}
       </style>
 
-      {/* Background Animation Dots */}
-      {[...Array(10)].map((_, i) => (
-        <div
-          key={i}
-          className="dot animate-rise"
-          style={{
-            left: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${4 + Math.random() * 4}s`,
-            transform: `scale(${0.5 + Math.random() * 1})`,
-          }}
-        />
-      ))}
-
       {/* Header Section */}
-      <div className="text-center mb-12 relative z-10">
-        <h1 className="text-center text-2xl md:text-5xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text text-transparent mt-20 animate-fade-in">
+      <div className="text-center mb-12">
+        <h1 className="text-center text-2xl md:text-5xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-20 ">
           AI Resume Analyzer
         </h1>
         <p className="text-gray-600 text-lg md:text-xl mt-4 animate-fade-in [animation-delay:0.2s]">
@@ -142,30 +148,52 @@ const ResumeUpload = () => {
       </div>
 
       {/* Steps Section */}
-      <div className="w-full max-w-5xl flex flex-col md:flex-row justify-between gap-6 mb-16 relative z-10">
+      <div className="w-full  max-w-5xl flex flex-col md:flex-row justify-between gap-6 mb-16">
         {[
-          { icon: <FaUpload className="text-indigo-600 text-3xl" />, title: "Upload Resume", desc: "Quick and easy upload" },
-          { icon: <FaChartLine className="text-orange-500 text-3xl" />, title: "AI Scoring", desc: "Smart analysis" },
-          { icon: <FaClipboardCheck className="text-teal-600 text-3xl" />, title: "Detailed Report", desc: "Actionable feedback" },
+          {
+            icon: <FaUpload className="text-indigo-600 text-3xl" />,
+            title: "Upload Resume",
+            desc: "Quick and easy upload",
+          },
+          {
+            icon: <FaChartLine className="text-orange-500 text-3xl" />,
+            title: "AI Scoring",
+            desc: "Smart analysis",
+          },
+          {
+            icon: <FaClipboardCheck className="text-teal-600 text-3xl" />,
+            title: "Detailed Report",
+            desc: "Actionable feedback",
+          },
         ].map((step, index) => (
-          <div
-            key={index}
-            className="flex flex-col w-[300px] items-center text-center p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 animate-slide-up"
-            style={{ animationDelay: `${0.3 + index * 0.2}s` }}
-          >
-            <div className="p-3 bg-white rounded-full shadow-sm">{step.icon}</div>
-            <h3 className="font-semibold text-lg mt-4 text-gray-800">{step.title}</h3>
-            <p className="text-sm text-gray-500 mt-2">{step.desc}</p>
+          <div className="flex flex-wrap justify-center gap-6 mx-auto w-[90%] md:w-full">
+            <div
+              key={index}
+              className="w-[90%] md:w-[90%] lg:w-[90%] flex flex-col items-center text-center p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 animate-slide-up"
+              style={{ animationDelay: `${0.3 + index * 0.2}s` }}
+            >
+              <div className="p-3 bg-white rounded-full shadow-sm">
+                {step.icon}
+              </div>
+              <h3 className="font-semibold text-lg mt-4 text-gray-800">
+                {step.title}
+              </h3>
+              <p className="text-sm text-gray-500 mt-2">{step.desc}</p>
+            </div>
           </div>
         ))}
       </div>
 
       {/* Upload Section */}
-      <div className="w-full max-w-4xl bg-gray-50 rounded-xl shadow-lg p-8 animate-slide-up [animation-delay:0.9s] relative z-10">
+      <div className="w-full max-w-4xl bg-gray-50 rounded-xl shadow-lg p-8 animate-slide-up [animation-delay:0.9s]">
         <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
           Check Your Resume Fit
         </h2>
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+        >
           {/* Timeline Steps */}
           <div className="flex flex-col justify-center">
             <ol className="space-y-6">
@@ -187,6 +215,10 @@ const ResumeUpload = () => {
                 </li>
               ))}
             </ol>
+
+            {/* <div className="flex justify-center items-center">
+              <img src={FileUploadImage} alt="File Upload" className="max-w-full h-auto" />
+            </div> */}
           </div>
 
           {/* Upload Inputs */}
@@ -211,11 +243,16 @@ const ResumeUpload = () => {
                     />
                   </svg>
                   <p className="mb-2 text-sm text-gray-600">
-                    <span className="font-semibold">Click to upload</span> or drag and drop
+                    <span className="font-semibold">Click to upload</span> or
+                    drag and drop
                   </p>
-                  <p className="text-xs text-gray-500">PDF, JPG, DOCX (Max 5MB)</p>
+                  <p className="text-xs text-gray-500">
+                    PDF, JPG, DOCX (Max 5MB)
+                  </p>
                   {file && (
-                    <p className="mt-2 text-sm text-teal-600 animate-fade-in">{file.name}</p>
+                    <p className="mt-2 text-sm text-teal-600 animate-fade-in">
+                      {file.name}
+                    </p>
                   )}
                 </div>
                 <input
@@ -229,7 +266,10 @@ const ResumeUpload = () => {
             </div>
 
             <div>
-              <label htmlFor="description" className="block mb-2 text-sm font-medium text-gray-800">
+              <label
+                htmlFor="description"
+                className="block mb-2 text-sm font-medium text-gray-800"
+              >
                 Job Description
               </label>
               <textarea
