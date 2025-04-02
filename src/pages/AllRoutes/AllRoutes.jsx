@@ -10,6 +10,8 @@ import Login from '../../components/Login/Login';
 import Register from '../../components/Register/Register';
 import ProtectedRoute from '../../components/ProtectedRoute';
 import FindCandidate from '../FindCandiate/FindCandidate';
+import JobPostComponent from '../JobPostComponent/JobPostComponent';
+import FindAJob from '../FindaJob/FindAJob';
 
 export const AllRoutes = () => {
   return (
@@ -25,8 +27,10 @@ export const AllRoutes = () => {
 
 
         <Route path="/upload-resume" element={<ProtectedRoute><ResumeUpload /></ProtectedRoute>} />
+        <Route path="/job-post" element={<ProtectedRoute><JobPostComponent /></ProtectedRoute>} />
         <Route path="/result-of-resume" element={<ProtectedRoute><ResultOfRsume /></ProtectedRoute>} />
         <Route path="/findCandidate" element={<ProtectedRoute><FindCandidate /></ProtectedRoute>} />
+        <Route path='/find-a-Jobs' element={<ProtectedRoute><FindAJob /></ProtectedRoute>}/>
       </Routes>
 
        

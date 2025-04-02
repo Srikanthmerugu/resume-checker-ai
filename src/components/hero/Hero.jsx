@@ -4,6 +4,8 @@ import { PiVideoBold } from "react-icons/pi";
 import { Link } from "react-router-dom";
 import "./Hero.css";
 import { demoVideo } from "../../assets/Assets";
+import StatsBanner from "../StatsBanner/StatsBannerFull";
+import StatsBanners from "../StatsBanner/StatsBanners";
 
 const Hero = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,6 +19,7 @@ const Hero = () => {
 
   return (
     <div className="flex flex-col items-center gap-10 justify-center md:mt-30 mt-20 px-4 sm:px-6 lg:px-8">
+      <StatsBanners />
       <div className="relative flex flex-col items-center justify-center text-center">
         {/* Outer Glow */}
         <div className="absolute w-[80vw] h-[80vw] max-w-[500px] max-h-[500px] rounded-full 

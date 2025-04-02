@@ -60,6 +60,40 @@ const Navbar = () => {
         <ul className="hidden md:flex space-x-6 items-center">
           {token ? (
             <li>
+              <Link to="/find-a-Jobs">
+                <button className="hover:text-blue-600 px-6 py-2 cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
+                  Find a Job
+                </button>
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link to="/find-a-Jobs">
+                <button className="hover:text-blue-600 px-6 py-2 cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
+                  Find a Job
+                </button>
+              </Link>
+            </li>
+          )}
+          {token ? (
+            <li>
+              <Link to="/job-post">
+                <button className="hover:text-blue-600 px-6 py-2 cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
+                  Post a Job
+                </button>
+              </Link>
+            </li>
+          ) : (
+            <li>
+              <Link to="/job-post">
+                <button className="hover:text-blue-600 px-6 py-2 cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
+                  Post a Job
+                                </button>
+              </Link>
+            </li>
+          )}
+          {token ? (
+            <li>
               <Link to="/findCandidate">
                 <button className="hover:text-blue-600 px-6 py-2 cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
                   Find a Candidate
