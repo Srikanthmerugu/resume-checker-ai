@@ -14,6 +14,7 @@ const FindCandidate = () => {
     keywordsExclude: [],
     education: "",
     currentEmployer: "",
+    company: "",
     categories: [],
   });
   const [showModal, setShowModal] = useState(false);

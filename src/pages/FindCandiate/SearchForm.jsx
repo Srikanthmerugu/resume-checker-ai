@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 
 const SearchForm = ({ formData, setFormData, setShowModal, setSearchQuery, setSearchUrl }) => {
   const [inputValue, setInputValue] = useState("");
-  const [excludeInput, setExcludeInput] = useState("");
   const countries = [
     { label: "\uD83C\uDDFA\uD83C\uDDF8 United States", value: "US", tld: ".us" },
     { label: "\uD83C\uDDEE\uD83C\uDDF3 India", value: "IN", tld: ".in" },
@@ -33,26 +32,21 @@ const SearchForm = ({ formData, setFormData, setShowModal, setSearchQuery, setSe
     { label: "Facebook", value: "facebook" },
   ];
 
-  const handleKeywordAdd = (e, type) => {
-    const value = type === "include" ? inputValue : excludeInput;
-    if (e.key === "Enter" && value.trim()) {
+  const handleKeywordAdd = (e) => {
+    if (e.key === "Enter" && inputValue.trim()) {
       setFormData({
         ...formData,
-        [`keywords${type === "include" ? "Include" : "Exclude"}`]: [
-          ...formData[`keywords${type === "include" ? "Include" : "Exclude"}`],
-          value.trim(),
-        ],
+        keywordsInclude: [...formData.keywordsInclude, inputValue.trim()],
       });
-      type === "include" ? setInputValue("") : setExcludeInput("");
+      setInputValue("");
       e.preventDefault();
     }
   };
 
-  const removeKeyword = (index, type) => {
+  const removeKeyword = (index) => {
     setFormData({
       ...formData,
-      [`keywords${type === "include" ? "Include" : "Exclude"}`]: 
-        formData[`keywords${type === "include" ? "Include" : "Exclude"}`].filter((_, i) => i !== index),
+      keywordsInclude: formData.keywordsInclude.filter((_, i) => i !== index),
     });
   };
 
@@ -74,26 +68,35 @@ const SearchForm = ({ formData, setFormData, setShowModal, setSearchQuery, setSe
       return;
     }
   
+    // Basic search terms
     const jobTitleTerms = formData.jobTitle
-      ? `+"${formData.jobTitle.split(" ").join("+")}"`
+      ? `+"${formData.jobTitle}"`
       : "";
     const includeTerms = formData.keywordsInclude
-      .map((term) => `+"${term}"`)
+      .map(term => `+"${term}"`)
       .join(" ");
-    const excludeTerms = formData.keywordsExclude
-      .map((term) => `-${term}`)
+    const excludeTerms = formData.keywordsInclude
+      .map(term => `-"${term}"`)
       .join(" ");
+    const companyTerm = formData.company
+      ? `+"${formData.company}"`
+      : "";
+    const currentEmployerTerm = formData.currentEmployer
+      ? `+"Current * ${formData.currentEmployer} *"`
+      : "";
   
-    const baseQuery = `${jobTitleTerms} ${includeTerms} ${excludeTerms} -intitle:"profiles" -inurl:"dir/+"`.trim();
+    // Base query with exclusions
+    const baseQuery = `${jobTitleTerms} ${excludeTerms} -intitle:"profiles" -inurl:"dir/+ "`.trim();
   
+    // Site-specific queries
     const selectedCountry = countries.find(
-      (country) => country.value === formData.country
+      country => country.value === formData.country
     );
     const countryTld = selectedCountry ? selectedCountry.tld : "";
   
     const sites = [];
     if (formData.categories.includes("linkedin")) {
-      sites.push(`site:${countryTld}.linkedin.com/in/`, `site:${countryTld}.linkedin.com/pub/`);
+      sites.push(`site:${countryTld.replace('.', '')}.linkedin.com/in/`, `site:${countryTld.replace('.', '')}.linkedin.com/pub/`);
     }
     if (formData.categories.includes("naukri")) {
       sites.push(`site:naukri.com`);
@@ -104,21 +107,25 @@ const SearchForm = ({ formData, setFormData, setShowModal, setSearchQuery, setSe
   
     const siteQuery = sites.join(" OR ");
     const finalQuery = `${baseQuery} ${siteQuery}`.trim();
-    const educationTerm = formData.education
-      ? `${formData.education.toLowerCase().replace(/\s+/g, "+")}+AND+licence`
-      : "";
-    const fullQuery = educationTerm ? `${finalQuery} ${educationTerm}` : finalQuery;
   
-    const generatedSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(
-      fullQuery
-    )}`;
+    // Education filter
+    const educationTerm = formData.education && formData.education !== "All Candidates"
+      ? `&as_oq=${formData.education.toLowerCase().replace(/\s+/g, "+")}+licence`
+      : "";
+  
+    // Current employer if exists
+    const employerTerm = formData.currentEmployer
+      ? `+${currentEmployerTerm.replace(/ /g, '+')}`
+      : "";
+  
+    const fullQuery = `${finalQuery}${employerTerm}`;
+    const generatedSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(fullQuery)}${educationTerm}`;
   
     setSearchQuery(fullQuery);
     setSearchUrl(generatedSearchUrl);
     setShowModal(true);
   };
 
-  // Custom component to render options with flags
   const formatOptionLabel = ({ label }) => (
     <div style={{ display: "flex", alignItems: "center" }}>
       <span style={{ marginRight: "8px" }}>{label}</span>
@@ -237,22 +244,12 @@ const SearchForm = ({ formData, setFormData, setShowModal, setSearchQuery, setSe
           keywords={formData.keywordsInclude}
           inputValue={inputValue}
           setInputValue={setInputValue}
-          handleKeyPress={(e) => handleKeywordAdd(e, "include")}
-          removeKeyword={(index) => removeKeyword(index, "include")}
+          handleKeyPress={handleKeywordAdd}
+          removeKeyword={removeKeyword}
           pillColor="bg-blue-100"
         />
 
-        <KeywordInput
-          label="Keywords to Exclude (press Enter to add as pills)"
-          keywords={formData.keywordsExclude}
-          inputValue={excludeInput}
-          setInputValue={setExcludeInput}
-          handleKeyPress={(e) => handleKeywordAdd(e, "exclude")}
-          removeKeyword={(index) => removeKeyword(index, "exclude")}
-          pillColor="bg-red-100"
-        />
-
-        <div className="col-span-2">
+        <div className="col-span-1">
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Current Employer
           </label>
@@ -264,6 +261,21 @@ const SearchForm = ({ formData, setFormData, setShowModal, setSearchQuery, setSe
             }
             className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="e.g., Tech Corp Inc"
+          />
+        </div>
+
+        <div className="col-span-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Company
+          </label>
+          <input
+            type="text"
+            value={formData.company}
+            onChange={(e) =>
+              setFormData({ ...formData, company: e.target.value })
+            }
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="e.g., Google, Microsoft"
           />
         </div>
 

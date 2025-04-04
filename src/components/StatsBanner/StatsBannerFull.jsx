@@ -2,7 +2,7 @@ import React from "react";
 import CountUp from "react-countup";
 import { FiUsers, FiSearch, FiFileText, FiSend } from "react-icons/fi";
 
-const RecruiterFull = () => {
+const RecruiterFull = () => { 
   return (
     <div className="bg-gradient-to-br from-sky-800 to-sky-900 py-12 px-6 rounded-2xl shadow-2xl border border-white/10">
       <div className="max-w-6xl mx-auto">
@@ -17,7 +17,7 @@ const RecruiterFull = () => {
             </h2>
             
             <p className="text-lg text-sky-100">
-              Access our pool of <strong>30,871+ vetted candidates</strong> actively seeking new opportunities across all industries.
+              Access our pool of <strong>30,871+ vetted Users</strong> actively seeking new opportunities across all industries.
             </p>
             
             <div className="flex flex-wrap gap-4">

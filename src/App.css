@@ -152,27 +152,20 @@ box-shadow:  7px -7px 14px #c1c1c1,
 
 
   
-/* rich-text-editor.css */
-.rte-container {
-  height: 400px;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
+  ::-webkit-scrollbar {
+    width: 15px;
+
 }
 
-.rte-container .toolbar {
-  height: 45px;
-  border-bottom: 1px solid #d1d5db;
+::-webkit-scrollbar-track {
+    background-color: rgba(100, 100, 100, .5);
+    width: 15px;
 }
 
-.rte-container .editor {
-  height: calc(400px - 45px);
-  padding: 0.75rem;
-  overflow-y: auto;
-}
-
-.rte-container .editor:empty::before {
-  content: attr(placeholder);
-  color: #9ca3af;
+::-webkit-scrollbar-thumb {
+    background-color: #818B99;
+    border-radius: 1px;
+    width: 1px;
 }
 
 

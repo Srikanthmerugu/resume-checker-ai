@@ -1,113 +1,82 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import SearchForm from "./SearchForm";
+import SavedQueries from "./SavedQueries";
+import SearchModal from "./SearchModal";
+import WidgeLine from "../../components/WidgeLine/WidgeLine";
 
 const FindCandidate = () => {
   const [formData, setFormData] = useState({
-    jobTitle: 'frontend',
-    similarJobs: false,
-    locationKeywords: '',
-    excludeKeywords: '',
-    education: 'bachelor degree licence',
-    currentEmployer: 'adp',
-    country: 'de'
+    country: "",
+    jobTitle: "",
+    keywordsInclude: [],
+    keywordsExclude: [],
+    education: "",
+    currentEmployer: "",
+    company: "",
+    categories: [],
   });
+  const [showModal, setShowModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchUrl, setSearchUrl] = useState("");
+  const [savedQueries, setSavedQueries] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
+  useEffect(() => {
+    const saved = localStorage.getItem("savedQueries");
+    if (saved) setSavedQueries(JSON.parse(saved));
+  }, []);
 
-  const generateSearchUrl = () => {
-    let queryParts = [];
-    
-    // Basic job title search
-    if (formData.jobTitle) {
-      queryParts.push(`"${formData.jobTitle}"`);
-    }
-    
-    // Site restrictions
-    queryParts.push(`site:${formData.country}.linkedin.com/in OR site:${formData.country}.linkedin.com/pub`);
-    
-    // Exclude certain patterns
-    queryParts.push('-intitle:"profiles"');
-    queryParts.push('-inurl:"dir/"');
-    
-    // Education
-    if (formData.education) {
-      queryParts.push(formData.education);
-    }
-    
-    // Current employer
-    if (formData.currentEmployer) {
-      queryParts.push(`"current * ${formData.currentEmployer} *"`);
-    }
-    
-    // Location/keywords to include
-    if (formData.locationKeywords) {
-      queryParts.push(formData.locationKeywords);
-    }
-    
-    // Keywords to exclude
-    if (formData.excludeKeywords) {
-      const excludeTerms = formData.excludeKeywords.split(/\s+/).map(term => `-${term}`).join(' ');
-      queryParts.push(excludeTerms);
-    }
-    
-    // Combine all parts
-    const query = queryParts.join(' ');
-    return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const url = generateSearchUrl();
-    window.open(url, '_blank');
+  const handleSave = () => {
+    const updatedQueries = [...savedQueries, searchQuery];
+    setSavedQueries(updatedQueries);
+    localStorage.setItem("savedQueries", JSON.stringify(updatedQueries));
+    toast.success("Query saved successfully!");
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 rounded-lg shadow-md" style={{ backgroundColor: '#eff6ff' }}>
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">Find the right people on LinkedIn</h1>
-      
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Country
-            <span className="text-xs text-gray-500 ml-1">Help</span>
-          </label>
-          <select
-            name="country"
-            value={formData.country}
-            onChange={handleChange}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-300 focus:border-blue-500"
-          >
-            <option value="de">Germany (de.linkedin.com)</option>
-            <option value="it">Italy (it.linkedin.com)</option>
-            <option value="fr">France (fr.linkedin.com)</option>
-            <option value="www">Global (linkedin.com)</option>
-            <option value="us">United States (linkedin.com)</option>
-            <option value="uk">United Kingdom (linkedin.com)</option>
-            {/* Add more countries as needed */}
-          </select>
-        </div>
+    <div className="min-h-screen p-8">
+      <ToastContainer position="top-right" autoClose={3000} />
+      <div className="md:w-[50%] w-[100%] md:mx-auto md:mb-15 mb-2">
+        <h1 className="text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text text-transparent md:mb-10 md:mt-10">
+          Advanced Candidate Search23456789
+        </h1>
+        <p className="text-center text-justify">
+          Effortlessly source the best talent using Google's precision search.
+          Choose platforms like LinkedIn, Naukri, and Facebook, set advanced
+          filters, and generate optimized search queries in seconds. Save and
+          reuse top-performing searches with ease! <WidgeLine />
+        </p>
+      </div>
 
-        
-        {/* Rest of the form remains the same as previous example */}
-        {/* ... */}
-        
-        <div className="mt-6">
-          <button
-            type="submit"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            style={{ backgroundColor: '#7eb3fc' }}
-          >
-            Search LinkedIn Profiles
-          </button>
-        </div>
-      </form>
+      <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
+        <SearchForm
+          formData={formData}
+          setFormData={setFormData}
+          setShowModal={setShowModal}
+          setSearchQuery={setSearchQuery}
+          setSearchUrl={setSearchUrl}
+        />
+
+        <SavedQueries savedQueries={savedQueries} />
+      </div>
+
+      {showModal && (
+        <SearchModal
+          searchQuery={searchQuery}
+          searchUrl={searchUrl}
+          setShowModal={setShowModal}
+          handleSave={handleSave}
+        />
+      )}
     </div>
   );
 };
 
 export default FindCandidate;
+
+
+
+// ,
+// 
+// old:  https://www.google.com/search?q=+"frontend" -"react" -intitle:"profiles" -inurl:"dir/+"+site:in.linkedin.com/in/+OR+site:in.linkedin.com/pub/&as_oq=bachelor+degree+licence+"Current+%2A+adp+%2A+"
