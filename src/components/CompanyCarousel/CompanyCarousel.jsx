@@ -56,7 +56,7 @@ const CompanyCarousel = () => {
         </h2> */}
 
         <h1 className="text-center text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-10 mb-8">
-        Companies Using Our Platform
+        Recruiters using from companies
       </h1>
 
 

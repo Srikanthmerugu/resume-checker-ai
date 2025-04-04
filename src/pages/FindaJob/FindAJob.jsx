@@ -162,7 +162,7 @@ const JobListing = () => {
         <div className="w-full max-w-[80%]">
           <div className="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden">
             {/* Left Side - Job List */}
-            <div className="w-full md:w-2/5 lg:w-1/3 bg-white border-r border-gray-200 overflow-y-auto h-[80vh]">
+            <div className="w-full sticky top-0 md:w-2/5 lg:w-1/3 bg-white border-r border-gray-200 overflow-y-auto h-[80vh]">
               <div className="p-4 border-b border-gray-200 bg-white sticky top-0 z-10">
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="text-xl font-bold text-sky-800">Job Openings</h2>

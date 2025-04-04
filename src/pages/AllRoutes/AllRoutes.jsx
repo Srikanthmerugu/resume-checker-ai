@@ -9,7 +9,7 @@ import ResultOfRsume from '../ResumeAnalysis/ResultOfRsume';
 import Login from '../../components/Login/Login';
 import Register from '../../components/Register/Register';
 import ProtectedRoute from '../../components/ProtectedRoute';
-import FindCandidate from '../FindCandiate/FindCandidate';
+import FindCandidate from '../FindCandiate/FindCandidatenew';
 import JobPostComponent from '../JobPostComponent/JobPostComponent';
 import FindAJob from '../FindaJob/FindAJob';
 

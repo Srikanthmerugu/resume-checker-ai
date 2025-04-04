@@ -7,7 +7,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-
 const JobPostComponent = () => {
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -81,9 +80,14 @@ const JobPostComponent = () => {
     setIsSubmitting(true);
 
     try {
+      // Convert comma-separated tags to array and trim each tag
+      const tagsArray = formData.tags.split(',')
+                            .map(tag => tag.trim())
+                            .filter(tag => tag !== '');
+
       const payload = {
         ...formData,
-        tags: formData.tags.split(',').map(tag => tag.trim()),
+        tags: tagsArray,
         job_description: jobDescription
       };
 
@@ -123,7 +127,7 @@ const JobPostComponent = () => {
   };
 
   if (!token) {
-    return null; // or a loading spinner while redirect happens
+    return null;
   }
 
   return (
@@ -150,17 +154,13 @@ const JobPostComponent = () => {
               </h1>
 
               <form className="space-y-4" onSubmit={handleSubmit}>
-               {/* Job Title */}
-               <div>
-                  <label
-                    htmlFor="job_title"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                {/* Job Title */}
+                <div>
+                  <label className="block text-sm font-medium text-sky-700">
                     Job Title*
                   </label>
                   <input
                     type="text"
-                    id="job_title"
                     name="job_title"
                     value={formData.job_title}
                     onChange={handleChange}
@@ -172,15 +172,11 @@ const JobPostComponent = () => {
 
                 {/* Location */}
                 <div>
-                  <label
-                    htmlFor="location"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Location*
                   </label>
                   <input
                     type="text"
-                    id="location"
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
@@ -192,15 +188,11 @@ const JobPostComponent = () => {
 
                 {/* Company Name */}
                 <div>
-                  <label
-                    htmlFor="company_name"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Company Name*
                   </label>
                   <input
                     type="text"
-                    id="company_name"
                     name="company_name"
                     value={formData.company_name}
                     onChange={handleChange}
@@ -212,15 +204,11 @@ const JobPostComponent = () => {
 
                 {/* Tags */}
                 <div>
-                  <label
-                    htmlFor="tags"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Skills/Tags (comma separated)*
                   </label>
                   <input
                     type="text"
-                    id="tags"
                     name="tags"
                     value={formData.tags}
                     onChange={handleChange}
@@ -232,15 +220,11 @@ const JobPostComponent = () => {
 
                 {/* Salary Range */}
                 <div>
-                  <label
-                    htmlFor="salary_range"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Salary Range*
                   </label>
                   <input
                     type="text"
-                    id="salary_range"
                     name="salary_range"
                     value={formData.salary_range}
                     onChange={handleChange}
@@ -267,9 +251,7 @@ const JobPostComponent = () => {
                           onChange={handleChange}
                           className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-sky-300"
                         />
-                        <span className="ml-2 text-sm text-sky-700">
-                          {type}
-                        </span>
+                        <span className="ml-2 text-sm text-sky-700">{type}</span>
                       </label>
                     ))}
                   </div>
@@ -277,14 +259,10 @@ const JobPostComponent = () => {
 
                 {/* Industry Type */}
                 <div>
-                  <label
-                    htmlFor="industry_type"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Industry Type*
                   </label>
                   <select
-                    id="industry_type"
                     name="industry_type"
                     value={formData.industry_type}
                     onChange={handleChange}
@@ -302,15 +280,11 @@ const JobPostComponent = () => {
 
                 {/* Department */}
                 <div>
-                  <label
-                    htmlFor="department"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Department*
                   </label>
                   <input
                     type="text"
-                    id="department"
                     name="department"
                     value={formData.department}
                     onChange={handleChange}
@@ -322,15 +296,11 @@ const JobPostComponent = () => {
 
                 {/* Education */}
                 <div>
-                  <label
-                    htmlFor="education"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Education*
                   </label>
                   <input
                     type="text"
-                    id="education"
                     name="education"
                     value={formData.education}
                     onChange={handleChange}
@@ -342,41 +312,17 @@ const JobPostComponent = () => {
 
                 {/* Job Description */}
                 <div>
-                  <label
-                    htmlFor="job_description mb-6"
-                    className="block text-sm font-medium text-sky-700"
-                  >
+                  <label className="block text-sm font-medium text-sky-700">
                     Job Description*
                   </label>
                   <RichTextEditor
                     className="rte-container mt-10"
                     toolbarOptions={[
-                      "word_count",
-                      "clear_format",
-                      "undo",
-                      "redo",
-                      "font",
-                      "header",
-                      "bold",
-                      "italic",
-                      "underline",
-                      "strikethrough",
-                      "text_color",
-                      "highlight_color",
-                      "numbered_list",
-                      "bulleted_list",
-                      "align",
-                      "decrease_indent",
-                      "increase_indent",
-                      "direction",
-                      "blockquote",
-                      "code_block",
-                      "link",
-                      // "image_base64",
-                      // "embed_video",
-                      // "format_media",
-                      "sub_script",
-                      "super_script",
+                      "word_count", "clear_format", "undo", "redo", "font", 
+                      "header", "bold", "italic", "underline", "strikethrough",
+                      "text_color", "highlight_color", "numbered_list", "bulleted_list",
+                      "align", "decrease_indent", "increase_indent", "direction",
+                      "blockquote", "code_block", "link", "sub_script", "super_script"
                     ]}
                     customizeUI={{
                       backgroundColor: "#fff",
@@ -390,9 +336,6 @@ const JobPostComponent = () => {
                   {errors.job_description && (
                     <p className="mt-1 text-sm text-red-600">{errors.job_description}</p>
                   )}
-                  {/* <div className="mt-4 p-3 border border-gray-300 rounded-md bg-gray-50">
-                    {jobDescription}
-                  </div> */}
                 </div>
                 
                 {/* Submit Button */}
