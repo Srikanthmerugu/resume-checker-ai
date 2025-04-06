@@ -6,7 +6,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-
+  const [userData,setUserData] = useState("")
   useEffect(() => {
     token ? localStorage.setItem("token", token) : localStorage.removeItem("token");
   }, [token]);
@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
 
       if (data.token) {
         setToken(data.token);
+        setToken(data.token);
         toast.success("Login successful!");
         return { success: true };
       }
@@ -68,6 +69,8 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (data.token) {
+        setUserData(data.user)
+        console.log(data.user)
         setToken(data.token);
         toast.success("Guest login successful!");
         return { success: true };
@@ -87,7 +90,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, guestLogin, setToken }}>
+    <AuthContext.Provider value={{ token, login, logout, guestLogin, setToken,userData }}>
       {children}
     </AuthContext.Provider>
   );

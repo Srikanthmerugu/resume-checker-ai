@@ -12,6 +12,8 @@ import ProtectedRoute from '../../components/ProtectedRoute';
 import FindCandidate from '../FindCandiate/FindCandidatenew';
 import JobPostComponent from '../JobPostComponent/JobPostComponent';
 import FindAJob from '../FindaJob/FindAJob';
+import FindAllJobs from '../FindaJob/FindAllJobs';
+import SingleJobPost from '../FindaJob/SingleJobPost/SingleJobPost';
 
 export const AllRoutes = () => {
   return (
@@ -20,6 +22,8 @@ export const AllRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/videoModal" element={<VideoModal />} />
+        <Route path="/find-all-jobs" element={<FindAllJobs />} />
+        {/* <Route path=" /result-of-resume" element={<ResultOfRsume />} /> */}
         {/* <Route path=" /result-of-resume" element={<ResultOfRsume />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} /> 
@@ -31,6 +35,8 @@ export const AllRoutes = () => {
         <Route path="/result-of-resume" element={<ProtectedRoute><ResultOfRsume /></ProtectedRoute>} />
         <Route path="/findCandidate" element={<ProtectedRoute><FindCandidate /></ProtectedRoute>} />
         <Route path='/find-a-Jobs' element={<ProtectedRoute><FindAJob /></ProtectedRoute>}/>
+        <Route path="/jobs/:id" element={<ProtectedRoute><SingleJobPost /></ProtectedRoute>} />
+
       </Routes>
 
        
