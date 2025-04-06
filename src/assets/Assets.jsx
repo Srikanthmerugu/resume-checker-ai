@@ -17,7 +17,8 @@ export {default as demoVideo }from  './demoVideo.mp4'
 export {default as userlogo1 }from  './logo-1.webp'
 export {default as userlogo2 }from  './logo-2.svg'
 export {default as FileUploadImage }from  './FileUploadImage.gif'
-export {default as  jobpost}from  './Jobpost.gif'
+export {default as  jobpost}from  './Jobpost.gif';
+export {default as NoData} from "./No-data.gif"
 
 
  

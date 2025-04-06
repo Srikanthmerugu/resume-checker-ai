@@ -1,15 +1,16 @@
 import React from "react";
 import CountUp from "react-countup";
 import { FiUsers, FiSearch, FiFileText, FiSend } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 const RecruiterFull = () => { 
   return (
-    <div className="bg-gradient-to-br from-sky-800 to-sky-900 py-12 px-6 rounded-2xl shadow-2xl border border-white/10">
+    <div className="bg-gradient-to-br from-sky-800 to-sky-900 py-12 px-6 shadow-2xl  border-white/10">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Left Content */}
           <div className="md:w-1/2 space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
+            <h2 className="text-3xl md:text-3xl font-bold text-white">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-300 to-sky-100">
                 Need Recruits?
               </span>{" "}
@@ -31,22 +32,26 @@ const RecruiterFull = () => {
               </div>
             </div>
             
-            <button className="mt-4 bg-sky-300 hover:bg-sky-200 text-sky-900 font-bold py-3 px-6 rounded-full flex items-center gap-2 transition-all hover:scale-105 shadow-lg">
+            {/* <Link to="/job-post"><button className="mt-4 bg-sky-300 hover:bg-sky-200 text-sky-900 cursor-pointer font-bold py-3 px-6 rounded-full flex items-center gap-2 transition-all hover:scale-105 shadow-lg">
               <FiSend /> Post a Job Now
-            </button>
+            </button></Link> */}
           </div>
           
           {/* Right Stats */}
           <div className="md:w-1/2 grid grid-cols-2 gap-4">
-            <div className="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
-              <CountUp
+            <div className=" p-6 rounded-xl  border-white/10 backdrop-blur-sm">
+              {/* <CountUp
                 end={30871}
                 duration={3}
                 separator=","
                 className="text-4xl font-bold bg-gradient-to-r from-sky-300 to-sky-100 bg-clip-text text-transparent"
               />
-              <p className="mt-2 text-sky-100">Active Candidates</p>
+              <p className="mt-2 text-sky-100">Active Candidates</p> */}
+                <Link to="/job-post"><button className="mt-4 bg-sky-300 hover:bg-sky-200 text-sky-900 cursor-pointer font-bold py-3 px-6 rounded-full flex items-center gap-2 transition-all hover:scale-105 shadow-lg">
+              <FiSend /> Post a Job Now
+            </button></Link>
             </div>
+          
             
             <div className="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-sm">
               <CountUp
