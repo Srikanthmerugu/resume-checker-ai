@@ -74,7 +74,7 @@ const SingleJobPost = () => {
       });
       
       const data = await response.json();
-  
+   
       if (!response.ok) {
         if (data.message === 'You have already applied to this job.') {
           setAlreadyApplied(true);
