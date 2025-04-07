@@ -159,7 +159,7 @@ const SingleJobPost = () => {
       <div className="p-2 sm:p-3 bg-sky-100 rounded-lg">
         <FiBook className="text-xl sm:text-2xl text-sky-600" />
       </div>
-      <div>
+      <div> 
         <h1 className="text-xl sm:text-xl md:text-2xl font-bold text-sky-900">{job.job_title}</h1>
         <p className="text-xs sm:text-sm text-sky-600 mt-0.5 sm:mt-1">{job.company_name}</p>
       </div>
