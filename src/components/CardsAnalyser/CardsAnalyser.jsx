@@ -12,7 +12,7 @@ const CardsAnalyser = () => {
       
       <div className="container  cursor-text mx-auto flex flex-wrap justify-center gap-10 my-10">
         {/** First Row */}
-        <div className="w-80 shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center rounded-2xl flex-col p-5 h-[350px] gap-5 bg-white hover:bg-gray-50">
+        <div className="w-70 shadow-md hover:shadow-xl transition-shadow duration-300 flex items-center rounded-2xl flex-col p-5 h-[350px] gap-5 bg-white hover:bg-gray-50">
           <img src={analyse} alt="Candidate-CV" width="150px" className="transition-transform duration-300 hover:scale-110" />
           <h1 className="text-2xl font-bold text-slate-800">Resume Analysis</h1>
           <p className="text-center text-gray-600">

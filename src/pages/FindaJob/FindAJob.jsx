@@ -1,8 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { FiMapPin, FiBriefcase, FiDollarSign, FiChevronRight, FiFilter, FiX } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import RecruiterFull from '../../components/StatsBanner/StatsBannerFull';
-import { NoData } from '../../assets/Assets';
+import React, { useState, useEffect } from "react";
+import {
+  FiMapPin,
+  FiBriefcase,
+  FiDollarSign,
+  FiChevronRight,
+  FiFilter,
+  FiX,
+} from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import RecruiterFull from "../../components/StatsBanner/StatsBannerFull";
+import { NoData } from "../../assets/Assets";
 
 const FindAllJobs = () => {
   const [jobs, setJobs] = useState([]);
@@ -13,7 +20,7 @@ const FindAllJobs = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
   const [jobsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState('relevance');
+  const [sortBy, setSortBy] = useState("relevance");
   const [showFilters, setShowFilters] = useState(false);
   const [expandedFilters, setExpandedFilters] = useState({});
   const navigate = useNavigate();
@@ -32,9 +39,10 @@ const FindAllJobs = () => {
         const response = await fetch(
           `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=${currentPage}`
         );
-        
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
+
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+
         const data = await response.json();
         setJobs(data.data);
         setFilteredJobs(data.data);
@@ -52,7 +60,7 @@ const FindAllJobs = () => {
 
   const generateFilterOptions = (key) => {
     const counts = jobs.reduce((acc, job) => {
-      const value = job[key.toLowerCase()] || 'Unknown';
+      const value = job[key.toLowerCase()] || "Unknown";
       acc[value] = (acc[value] || 0) + 1;
       return acc;
     }, {});
@@ -62,33 +70,34 @@ const FindAllJobs = () => {
       .map(([name, count]) => ({ name, count }));
   };
 
-  const departments = generateFilterOptions('department');
-  const workModes = generateFilterOptions('employment_type');
-  const locations = generateFilterOptions('location');
-  const educations = generateFilterOptions('education');
-  const industries = generateFilterOptions('industry_type');
+  const departments = generateFilterOptions("department");
+  const workModes = generateFilterOptions("employment_type");
+  const locations = generateFilterOptions("location");
+  const educations = generateFilterOptions("education");
+  const industries = generateFilterOptions("industry_type");
 
   useEffect(() => {
     let result = [...jobs];
 
     Object.entries(filters).forEach(([key, values]) => {
       if (values.size > 0) {
-        result = result.filter(job => 
-          values.has(job[key === 'workMode' ? 'employment_type' : key])
+        result = result.filter((job) =>
+          values.has(job[key === "workMode" ? "employment_type" : key])
         );
       }
     });
 
-    result.sort((a, b) => sortBy === 'date' ? 
-      new Date(b.created_at) - new Date(a.created_at) :
-      a.id - b.id
+    result.sort((a, b) =>
+      sortBy === "date"
+        ? new Date(b.created_at) - new Date(a.created_at)
+        : a.id - b.id
     );
 
     setFilteredJobs(result);
   }, [filters, sortBy, jobs]);
 
   const toggleFilter = (category, value) => {
-    setFilters(prev => {
+    setFilters((prev) => {
       const newSet = new Set(prev[category]);
       newSet.has(value) ? newSet.delete(value) : newSet.add(value);
       return { ...prev, [category]: newSet };
@@ -96,21 +105,25 @@ const FindAllJobs = () => {
   };
 
   const toggleExpand = (category) => {
-    setExpandedFilters(prev => ({ ...prev, [category]: !prev[category] }));
+    setExpandedFilters((prev) => ({ ...prev, [category]: !prev[category] }));
   };
 
   const FilterSection = ({ title, category, options }) => (
     <div className="border-b border-sky-200 pb-1 mb-0 animate-fadeIn">
       <h6 className="text-sky-800 font-semibold mt-2 mb-2 ">{title}</h6>
       {options.length === 0 ? (
-        <div>  
+        <div>
           <p className="text-sky-600 text-sm">There is no Data here</p>
         </div>
       ) : (
         <>
-          <div className={`overflow-y-hidden ${expandedFilters[category] ? 'h-auto' : 'max-h-60'}`}>
+          <div
+            className={`overflow-y-hidden ${
+              expandedFilters[category] ? "h-auto" : "max-h-60"
+            }`}
+          >
             {options.map(({ name, count }) => (
-              <label 
+              <label
                 key={name}
                 className="flex text-sm items-center space-x-2 mb-1 cursor-pointer hover:bg-sky-50 px-2 rounded"
               >
@@ -121,7 +134,7 @@ const FindAllJobs = () => {
                   className="form-checkbox text-sky-600 border-sky-300"
                 />
                 <span className="flex-1 text-sky-700">
-                  {name} <span className="text-sky-500">({count})</span>
+                  {name.substring(0, 20)} <span className="text-sky-500">({count})</span>
                 </span>
               </label>
             ))}
@@ -131,7 +144,7 @@ const FindAllJobs = () => {
               onClick={() => toggleExpand(category)}
               className="text-sky-600 border-sky-50 text-sm mt-2 hover:underline"
             >
-              {expandedFilters[category] ? 'View Less' : 'View More'}
+              {expandedFilters[category] ? "View Less" : "View More"}
             </button>
           )}
         </>
@@ -140,7 +153,7 @@ const FindAllJobs = () => {
   );
 
   const JobCard = ({ job }) => (
-    <div 
+    <div
       className="p-4 hover:bg-sky-50 shadow border border-sky-100 mb-5 rounded-xl cursor-pointer transition-all duration-300 animate-slideIn"
       onClick={() => navigate(`/jobs/${job.id}`)}
     >
@@ -154,7 +167,7 @@ const FindAllJobs = () => {
 
       <div className="mt-3 flex flex-wrap gap-2">
         {job.tags?.map((tag, i) => (
-          <span 
+          <span
             key={i}
             className="px-2 py-1 bg-sky-100 text-sky-800 text-xs rounded-full"
           >
@@ -179,37 +192,38 @@ const FindAllJobs = () => {
       </div>
 
       <div className="mt-2 ml-1 justify-between items-center">
-        <span className="text-sky-600  text-sm">
-          Post Date: 
+        <span className="text-sky-600  text-sm">Post Date:</span>
+        <span className="text-gray-500 text-sm">
+          {" "}
+          {new Date(job.created_at).toLocaleDateString()}
         </span>
-        <span className='text-gray-500 text-sm'> {" "}{new Date(job.created_at).toLocaleDateString()}</span>
       </div>
     </div>
   );
 
-  if (loading) return (
-    <div className="flex justify-center items-center h-screen text-sky-600 animate-pulse">
-      Loading...
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex justify-center items-center h-screen text-sky-600 animate-pulse">
+        Loading...
+      </div>
+    );
 
-  if (error) return (
-    <div className="text-center p-8 text-sky-600">
-      Error: {error}
-    </div>
-  );
+  if (error)
+    return <div className="text-center p-8 text-sky-600">Error: {error}</div>;
 
   return (
     <>
       <RecruiterFull />
-      <div className="max-w-[80%] mx-auto py-8">
+      <div className="max-w-[85%] mx-auto py-8">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filters Column */}
-          <div className={`md:w-1/4 ${showFilters ? 'block' : 'hidden'} md:block`}>
+          <div
+            className={`md:w-1/4 ${showFilters ? "block" : "hidden"} md:block`}
+          >
             <div className="sticky top-25 bg-white p-2 rounded-xl shadow-lg border border-sky-100">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-sky-900 text-xl font-bold">All Filters</h2>
-                <button 
+                <button
                   onClick={() => setShowFilters(false)}
                   className="md:hidden text-sky-600"
                 >
@@ -251,30 +265,44 @@ const FindAllJobs = () => {
 
           {/* Job Listings */}
           <div className="flex-1">
-            <div className="bg-white p-4 rounded-xl shadow mb-4 ">
-              <div className="flex flex-col md:flex-row justify-between items-center">
-                <div>
-                  <span className='text-xl text-sky-800 font-bold'>Explore Opportunities</span>
-                </div>
-                <div className="text-sky-700 mb-2 md:mb-0">
-                  {filteredJobs.length > 0 ? (
-                    `Showing ${(currentPage - 1) * jobsPerPage + 1}-${Math.min(currentPage * jobsPerPage, totalJobs)} of ${totalJobs} jobs`
-                  ) : (
-                    "No jobs found"
-                  )}
-                </div>
-              </div>
-            </div>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
+  <div className="w-full sm:w-auto">
+    <span className="text-lg sm:text-xl text-sky-800 font-bold">
+      Explore Opportunities
+    </span>
+  </div>
+  <div className="w-full sm:w-auto flex flex-col xs:flex-row items-start xs:items-center justify-between xs:justify-end gap-3 xs:gap-4">
+    <div className="flex items-center">
+      <span className="text-sm sm:text-base text-sky-700 mr-2">Sort by:</span>
+      <select
+        value={sortBy}
+        onChange={(e) => setSortBy(e.target.value)}
+        className="text-sm sm:text-base border border-sky-300 rounded px-2 sm:px-3 py-1 text-sky-700"
+      >
+        <option value="relevance">Relevance</option>
+        <option value="date">Newest</option>
+      </select>
+    </div>
+    <button
+      onClick={() => setShowFilters(!showFilters)}
+      className="md:hidden flex items-center text-sm sm:text-base text-sky-600 border border-sky-300 px-2 sm:px-3 py-1 rounded"
+    >
+      <FiFilter className="mr-1" /> Filters
+    </button>
+  </div>
+</div>
 
             <div className="bg-white rounded-xl  ">
               {filteredJobs.length === 0 ? (
                 <div className="text-center flex items-center flex-col p-8 text-sky-600">
                   <img src={NoData} />
-                  <h3 className='text-3xl'>No jobs found matching your criteria</h3>
+                  <h3 className="text-3xl">
+                    No jobs found matching your criteria
+                  </h3>
                 </div>
               ) : (
                 <div className="divide-y divide-sky-100">
-                  {filteredJobs.map(job => (
+                  {filteredJobs.map((job) => (
                     <JobCard key={job.id} job={job} />
                   ))}
                 </div>
@@ -285,7 +313,7 @@ const FindAllJobs = () => {
               <div className="flex justify-center mt-6">
                 <nav className="inline-flex rounded-md shadow-sm">
                   <button
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                     className="px-4 py-2 text-sky-600 bg-white border border-sky-200 rounded-l-lg hover:bg-sky-50 disabled:opacity-50"
                   >
@@ -310,11 +338,11 @@ const FindAllJobs = () => {
                         key={page}
                         onClick={() => setCurrentPage(page)}
                         className={`px-4 py-2 border-t border-b border-sky-200 ${
-                          isCurrent 
-                            ? 'bg-sky-600 text-white' 
-                            : 'bg-white text-sky-600 hover:bg-sky-50'
-                        } ${page === 1 ? 'border-l' : ''} 
-                        ${page === totalPages ? 'border-r' : ''}`}
+                          isCurrent
+                            ? "bg-sky-600 text-white"
+                            : "bg-white text-sky-600 hover:bg-sky-50"
+                        } ${page === 1 ? "border-l" : ""} 
+                        ${page === totalPages ? "border-r" : ""}`}
                       >
                         {page}
                       </button>
@@ -322,7 +350,9 @@ const FindAllJobs = () => {
                   })}
 
                   <button
-                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(totalPages, p + 1))
+                    }
                     disabled={currentPage === totalPages}
                     className="px-4 py-2 text-sky-600 bg-white border border-sky-200 rounded-r-lg hover:bg-sky-50 disabled:opacity-50"
                   >

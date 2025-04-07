@@ -8,7 +8,7 @@ box-shadow:  7px -7px 14px #c1c1c1,
 
 /* width */
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 5px; 
   }
   
   /* Track */

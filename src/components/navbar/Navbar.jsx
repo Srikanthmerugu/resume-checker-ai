@@ -191,6 +191,41 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden mt-4">
           <ul className="space-y-4 text-center bg-white shadow-lg p-4 rounded-lg">
+          {token ? (
+           
+           <li>
+             <Link to="/find-a-Jobs">
+             <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-6 py-2 cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
+             Find a Job
+               </button>
+             </Link>
+           </li>
+         ) : (
+           <li>
+             <Link to="/find-a-Jobs">
+             <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-6 py-2 cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
+             Find a Job
+               </button>
+             </Link>
+           </li>
+         )}
+         {token ? (
+           <li>
+             <Link to="/job-post">
+             <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-6 py-2 cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
+             Post a Job
+               </button>
+             </Link>
+           </li>
+         ) : (
+           <li>
+             <Link to="/job-post">
+             <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-6 py-2 cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
+             Post a Job
+                               </button>
+             </Link>
+           </li>
+         )}
             {token ? (
               <li>
                 <Link to="/findCandidate" onClick={handleNavClick}>
