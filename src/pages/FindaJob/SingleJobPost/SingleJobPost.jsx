@@ -162,7 +162,7 @@ const SingleJobPost = () => {
       <div> 
         <h1 className="text-xl sm:text-xl md:text-2xl font-bold text-sky-900">{job.job_title}</h1>
         <p className="text-xs sm:text-sm text-sky-600 mt-0.5 sm:mt-1">{job.company_name}</p>
-      </div>
+      </div> 
     </div>
 
     <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
