@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FiMapPin, FiBriefcase, FiDollarSign, FiChevronRight, FiFilter, FiX } from 'react-icons/fi';
+import { FiMapPin, FiBriefcase, FiDollarSign, FiChevronRight, FiFilter, FiX, FiSearch } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import RecruiterFull from '../../components/StatsBanner/StatsBannerFull';
 import { NoData } from '../../assets/Assets';
 
 const FindAllJobs = () => {
+  const [allJobs, setAllJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,8 @@ const FindAllJobs = () => {
   const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
   const [expandedFilters, setExpandedFilters] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [locationQuery, setLocationQuery] = useState('');
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
@@ -26,20 +29,34 @@ const FindAllJobs = () => {
     industry: new Set(),
   });
 
+  // Fetch all jobs initially
   useEffect(() => {
-    const fetchJobs = async () => {
+    const fetchAllJobs = async () => {
       try {
-        const response = await fetch(
-          `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=${currentPage}`
+        setLoading(true);
+        // First fetch to get total pages
+        const initialResponse = await fetch(
+          `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=1`
         );
         
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!initialResponse.ok) throw new Error(`HTTP error! status: ${initialResponse.status}`);
         
-        const data = await response.json();
-        setJobs(data.data);
-        setFilteredJobs(data.data);
-        setTotalPages(data.last_page);
-        setTotalJobs(data.total);
+        const initialData = await initialResponse.json();
+        setTotalPages(initialData.last_page);
+        setTotalJobs(initialData.total);
+        
+        // Fetch all pages
+        const allJobsData = [];
+        for (let page = 1; page <= initialData.last_page; page++) {
+          const response = await fetch(
+            `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=${page}`
+          );
+          const data = await response.json();
+          allJobsData.push(...data.data);
+        }
+        
+        setAllJobs(allJobsData);
+        setFilteredJobs(allJobsData);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -47,11 +64,63 @@ const FindAllJobs = () => {
       }
     };
 
-    fetchJobs();
-  }, [currentPage]);
+    fetchAllJobs();
+  }, []);
+
+  // Handle pagination with filtered jobs
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * jobsPerPage;
+    const endIndex = startIndex + jobsPerPage;
+    setJobs(filteredJobs.slice(startIndex, endIndex));
+  }, [currentPage, filteredJobs, jobsPerPage]);
+
+  const handleSearch = () => {
+    let results = [...allJobs];
+    
+    // Apply search query filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      results = results.filter(job => 
+        job.job_title.toLowerCase().includes(query) ||
+        job.company_name.toLowerCase().includes(query) ||
+        (job.tags && job.tags.some(tag => tag.toLowerCase().includes(query)))
+   ) }
+    
+    // Apply location filter
+    if (locationQuery) {
+      const location = locationQuery.toLowerCase();
+      results = results.filter(job => 
+        job.location.toLowerCase().includes(location)
+      );
+    }
+    
+    // Apply other filters
+    Object.entries(filters).forEach(([key, values]) => {
+      if (values.size > 0) {
+        results = results.filter(job => 
+          values.has(job[key === 'workMode' ? 'employment_type' : key])
+        );
+      }
+    });
+
+    // Apply sorting
+    results.sort((a, b) => sortBy === 'date' ? 
+      new Date(b.created_at) - new Date(a.created_at) :
+      a.id - b.id
+    );
+
+    setFilteredJobs(results);
+    setTotalJobs(results.length);
+    setTotalPages(Math.ceil(results.length / jobsPerPage));
+    setCurrentPage(1);
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [filters, sortBy]);
 
   const generateFilterOptions = (key) => {
-    const counts = jobs.reduce((acc, job) => {
+    const counts = allJobs.reduce((acc, job) => {
       const value = job[key.toLowerCase()] || 'Unknown';
       acc[value] = (acc[value] || 0) + 1;
       return acc;
@@ -62,30 +131,11 @@ const FindAllJobs = () => {
       .map(([name, count]) => ({ name, count }));
   };
 
-  const departments = generateFilterOptions('department');
+  // const departments = generateFilterOptions('department');
   const workModes = generateFilterOptions('employment_type');
   const locations = generateFilterOptions('location');
   const educations = generateFilterOptions('education');
   const industries = generateFilterOptions('industry_type');
-
-  useEffect(() => {
-    let result = [...jobs];
-
-    Object.entries(filters).forEach(([key, values]) => {
-      if (values.size > 0) {
-        result = result.filter(job => 
-          values.has(job[key === 'workMode' ? 'employment_type' : key])
-        );
-      }
-    });
-
-    result.sort((a, b) => sortBy === 'date' ? 
-      new Date(b.created_at) - new Date(a.created_at) :
-      a.id - b.id
-    );
-
-    setFilteredJobs(result);
-  }, [filters, sortBy, jobs]);
 
   const toggleFilter = (category, value) => {
     setFilters(prev => {
@@ -202,6 +252,30 @@ const FindAllJobs = () => {
   return (
     <>
       <RecruiterFull />
+      <div className="max-w-[85%] mx-auto py-4">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 items-center bg-white p-4 rounded-xl shadow border border-sky-100">
+          <input
+            type="text"
+            placeholder="Enter skills / designations / companies"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          />
+          <input
+            type="text"
+            placeholder="Enter location"
+            value={locationQuery}
+            onChange={(e) => setLocationQuery(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          />
+          <button
+            onClick={handleSearch}
+            className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+          >
+            <FiSearch className="mr-2" /> Search
+          </button>
+        </div>
+      </div>
       <div className="max-w-[80%] mx-auto py-8">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filters Column */}
@@ -217,11 +291,11 @@ const FindAllJobs = () => {
                 </button>
               </div>
 
-              <FilterSection
+              {/* <FilterSection
                 title="Department"
                 category="department"
                 options={departments}
-              />
+              /> */}
 
               <FilterSection
                 title="Work Mode"
@@ -269,12 +343,12 @@ const FindAllJobs = () => {
             <div className="bg-white rounded-xl  ">
               {filteredJobs.length === 0 ? (
                 <div className="text-center flex items-center flex-col p-8 text-sky-600">
-                  <img src={NoData} />
+                  <img src={NoData} alt="No data found" />
                   <h3 className='text-3xl'>No jobs found matching your criteria</h3>
                 </div>
               ) : (
                 <div className="divide-y divide-sky-100">
-                  {filteredJobs.map(job => (
+                  {jobs.map(job => (
                     <JobCard key={job.id} job={job} />
                   ))}
                 </div>

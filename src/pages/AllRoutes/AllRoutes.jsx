@@ -14,6 +14,7 @@ import JobPostComponent from '../JobPostComponent/JobPostComponent';
 import FindAJob from '../FindaJob/FindAJob';
 import FindAllJobs from '../FindaJob/FindAllJobs';
 import SingleJobPost from '../FindaJob/SingleJobPost/SingleJobPost';
+import SearchForFindJob from '../FindaJob/SearchForFindJob';
 
 export const AllRoutes = () => {
   return (
@@ -36,6 +37,7 @@ export const AllRoutes = () => {
         <Route path="/findCandidate" element={<ProtectedRoute><FindCandidate /></ProtectedRoute>} />
         <Route path='/find-a-Jobs' element={<ProtectedRoute><FindAJob /></ProtectedRoute>}/>
         <Route path="/jobs/:id" element={<ProtectedRoute><SingleJobPost /></ProtectedRoute>} />
+        <Route path="/SearchForFindJob" element={<ProtectedRoute><SearchForFindJob /></ProtectedRoute>} />
 
       </Routes>
 

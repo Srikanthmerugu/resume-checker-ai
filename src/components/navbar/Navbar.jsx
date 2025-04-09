@@ -71,7 +71,7 @@ const Navbar = () => {
             {token ? (
            
             <li>
-              <Link to="/find-a-Jobs">
+              <Link to="/SearchForFindJob">
                 <button className="hover:text-blue-600 px-6 py-2 cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
                   Find a Job
                 </button>
@@ -79,7 +79,7 @@ const Navbar = () => {
             </li>
           ) : (
             <li>
-              <Link to="/find-a-Jobs">
+              <Link to="/SearchForFindJob">
                 <button className="hover:text-blue-600 px-6 py-2 cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
                   Find a Job
                 </button>
@@ -194,7 +194,7 @@ const Navbar = () => {
           {token ? (
            
            <li>
-             <Link to="/find-a-Jobs">
+             <Link to="/SearchForFindJob">
              <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-6 py-2 cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
              Find a Job
                </button>
@@ -202,7 +202,7 @@ const Navbar = () => {
            </li>
          ) : (
            <li>
-             <Link to="/find-a-Jobs">
+             <Link to="/SearchForFindJob">
              <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-6 py-2 cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
              Find a Job
                </button>

@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from "react";
-import {
-  FiMapPin,
-  FiBriefcase,
-  FiDollarSign,
-  FiChevronRight,
-  FiFilter,
-  FiX,
-} from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
-import RecruiterFull from "../../components/StatsBanner/StatsBannerFull";
-import { NoData } from "../../assets/Assets";
+import React, { useState, useEffect } from 'react';
+import { FiMapPin, FiBriefcase, FiDollarSign, FiChevronRight, FiFilter, FiX, FiSearch } from 'react-icons/fi';
+import { useNavigate, useLocation } from 'react-router-dom';
+import RecruiterFull from '../../components/StatsBanner/StatsBannerFull';
+import { NoData } from '../../assets/Assets';
 
 const FindAllJobs = () => {
+  const [allJobs, setAllJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,10 +14,23 @@ const FindAllJobs = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
   const [jobsPerPage] = useState(10);
-  const [sortBy, setSortBy] = useState("relevance");
+  const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
   const [expandedFilters, setExpandedFilters] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [locationQuery, setLocationQuery] = useState('');
+  const [experience, setExperience] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const experienceOptions = [
+    { value: '', label: 'Select experience' },
+    { value: '0-1', label: '0-1 years' },
+    { value: '1-3', label: '1-3 years' },
+    { value: '3-5', label: '3-5 years' },
+    { value: '5-10', label: '5-10 years' },
+    { value: '10+', label: '10+ years' }
+  ];
 
   const [filters, setFilters] = useState({
     department: new Set(),
@@ -33,21 +40,43 @@ const FindAllJobs = () => {
     industry: new Set(),
   });
 
+  // Initialize search from navigation state
   useEffect(() => {
-    const fetchJobs = async () => {
+    if (location.state) {
+      setSearchQuery(location.state.searchQuery || '');
+      setLocationQuery(location.state.locationQuery || '');
+      setExperience(location.state.experience || '');
+    }
+  }, [location.state]);
+
+  // Fetch all jobs initially
+  useEffect(() => {
+    const fetchAllJobs = async () => {
       try {
-        const response = await fetch(
-          `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=${currentPage}`
+        setLoading(true);
+        // First fetch to get total pages
+        const initialResponse = await fetch(
+          `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=1`
         );
-
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-
-        const data = await response.json();
-        setJobs(data.data);
-        setFilteredJobs(data.data);
-        setTotalPages(data.last_page);
-        setTotalJobs(data.total);
+        
+        if (!initialResponse.ok) throw new Error(`HTTP error! status: ${initialResponse.status}`);
+        
+        const initialData = await initialResponse.json();
+        setTotalPages(initialData.last_page);
+        setTotalJobs(initialData.total);
+        
+        // Fetch all pages
+        const allJobsData = [];
+        for (let page = 1; page <= initialData.last_page; page++) {
+          const response = await fetch(
+            `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=${page}`
+          );
+          const data = await response.json();
+          allJobsData.push(...data.data);
+        }
+        
+        setAllJobs(allJobsData);
+        setFilteredJobs(allJobsData);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -55,12 +84,107 @@ const FindAllJobs = () => {
       }
     };
 
-    fetchJobs();
-  }, [currentPage]);
+    fetchAllJobs();
+  }, []);
+
+  // Handle pagination with filtered jobs
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * jobsPerPage;
+    const endIndex = startIndex + jobsPerPage;
+    setJobs(filteredJobs.slice(startIndex, endIndex));
+  }, [currentPage, filteredJobs, jobsPerPage]);
+
+  const handleSearch = () => {
+    let results = [...allJobs];
+    
+    // Apply search query filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      results = results.filter(job => 
+        job.job_title.toLowerCase().includes(query) ||
+        job.company_name.toLowerCase().includes(query) ||
+        (job.tags && job.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
+    }
+    
+    // Apply location filter
+    if (locationQuery) {
+      const location = locationQuery.toLowerCase();
+      results = results.filter(job => 
+        job.location.toLowerCase().includes(location)
+      );
+    }
+    
+    // Apply experience filter
+    if (experience) {
+      results = results.filter(job => {
+        if (!job.experience) return false;
+        
+        const jobExp = parseExperience(job.experience);
+        if (!jobExp.min || !jobExp.max) return false;
+        
+        if (experience === '10+') {
+          return jobExp.min >= 10;
+        }
+        
+        const [min, max] = experience.split('-').map(Number);
+        return jobExp.min >= min && jobExp.max <= max;
+      });
+    }
+    
+    // Apply other filters
+    Object.entries(filters).forEach(([key, values]) => {
+      if (values.size > 0) {
+        results = results.filter(job => 
+          values.has(job[key === 'workMode' ? 'employment_type' : key])
+        );
+      }
+    });
+
+    // Apply sorting
+    results.sort((a, b) => sortBy === 'date' ? 
+      new Date(b.created_at) - new Date(a.created_at) :
+      a.id - b.id
+    );
+
+    setFilteredJobs(results);
+    setTotalJobs(results.length);
+    setTotalPages(Math.ceil(results.length / jobsPerPage));
+    setCurrentPage(1);
+  };
+
+  // Helper function to parse experience string
+  const parseExperience = (expString) => {
+    if (!expString) return { min: 0, max: 0 };
+    
+    // Handle different formats like "1-3 years", "3-5 Years", etc.
+    const matches = expString.match(/(\d+)\s*-\s*(\d+)/);
+    if (matches && matches.length >= 3) {
+      return {
+        min: parseInt(matches[1]),
+        max: parseInt(matches[2])
+      };
+    }
+    
+    // Handle "10+" case
+    const plusMatch = expString.match(/(\d+)\+/);
+    if (plusMatch) {
+      return {
+        min: parseInt(plusMatch[1]),
+        max: Infinity
+      };
+    }
+    
+    return { min: 0, max: 0 };
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [filters, sortBy, searchQuery, locationQuery, experience]);
 
   const generateFilterOptions = (key) => {
-    const counts = jobs.reduce((acc, job) => {
-      const value = job[key.toLowerCase()] || "Unknown";
+    const counts = allJobs.reduce((acc, job) => {
+      const value = job[key === 'workMode' ? 'employment_type' : key] || 'Unknown';
       acc[value] = (acc[value] || 0) + 1;
       return acc;
     }, {});
@@ -70,34 +194,13 @@ const FindAllJobs = () => {
       .map(([name, count]) => ({ name, count }));
   };
 
-  const departments = generateFilterOptions("department");
-  const workModes = generateFilterOptions("employment_type");
-  const locations = generateFilterOptions("location");
-  const educations = generateFilterOptions("education");
-  const industries = generateFilterOptions("industry_type");
-
-  useEffect(() => {
-    let result = [...jobs];
-
-    Object.entries(filters).forEach(([key, values]) => {
-      if (values.size > 0) {
-        result = result.filter((job) =>
-          values.has(job[key === "workMode" ? "employment_type" : key])
-        );
-      }
-    });
-
-    result.sort((a, b) =>
-      sortBy === "date"
-        ? new Date(b.created_at) - new Date(a.created_at)
-        : a.id - b.id
-    );
-
-    setFilteredJobs(result);
-  }, [filters, sortBy, jobs]);
+  const workModes = generateFilterOptions('workMode');
+  const locations = generateFilterOptions('location');
+  const educations = generateFilterOptions('education');
+  const industries = generateFilterOptions('industry');
 
   const toggleFilter = (category, value) => {
-    setFilters((prev) => {
+    setFilters(prev => {
       const newSet = new Set(prev[category]);
       newSet.has(value) ? newSet.delete(value) : newSet.add(value);
       return { ...prev, [category]: newSet };
@@ -105,25 +208,21 @@ const FindAllJobs = () => {
   };
 
   const toggleExpand = (category) => {
-    setExpandedFilters((prev) => ({ ...prev, [category]: !prev[category] }));
+    setExpandedFilters(prev => ({ ...prev, [category]: !prev[category] }));
   };
 
   const FilterSection = ({ title, category, options }) => (
     <div className="border-b border-sky-200 pb-1 mb-0 animate-fadeIn">
       <h6 className="text-sky-800 font-semibold mt-2 mb-2 ">{title}</h6>
       {options.length === 0 ? (
-        <div>
+        <div>  
           <p className="text-sky-600 text-sm">There is no Data here</p>
         </div>
       ) : (
         <>
-          <div
-            className={`overflow-y-hidden ${
-              expandedFilters[category] ? "h-auto" : "max-h-60"
-            }`}
-          >
+          <div className={`overflow-y-hidden ${expandedFilters[category] ? 'h-auto' : 'max-h-60'}`}>
             {options.map(({ name, count }) => (
-              <label
+              <label 
                 key={name}
                 className="flex text-sm items-center space-x-2 mb-1 cursor-pointer hover:bg-sky-50 px-2 rounded"
               >
@@ -134,7 +233,7 @@ const FindAllJobs = () => {
                   className="form-checkbox text-sky-600 border-sky-300"
                 />
                 <span className="flex-1 text-sky-700">
-                  {name.substring(0, 20)} <span className="text-sky-500">({count})</span>
+                  {name} <span className="text-sky-500">({count})</span>
                 </span>
               </label>
             ))}
@@ -144,7 +243,7 @@ const FindAllJobs = () => {
               onClick={() => toggleExpand(category)}
               className="text-sky-600 border-sky-50 text-sm mt-2 hover:underline"
             >
-              {expandedFilters[category] ? "View Less" : "View More"}
+              {expandedFilters[category] ? 'View Less' : 'View More'}
             </button>
           )}
         </>
@@ -153,7 +252,7 @@ const FindAllJobs = () => {
   );
 
   const JobCard = ({ job }) => (
-    <div
+    <div 
       className="p-4 hover:bg-sky-50 shadow border border-sky-100 mb-5 rounded-xl cursor-pointer transition-all duration-300 animate-slideIn"
       onClick={() => navigate(`/jobs/${job.id}`)}
     >
@@ -167,7 +266,7 @@ const FindAllJobs = () => {
 
       <div className="mt-3 flex flex-wrap gap-2">
         {job.tags?.map((tag, i) => (
-          <span
+          <span 
             key={i}
             className="px-2 py-1 bg-sky-100 text-sky-800 text-xs rounded-full"
           >
@@ -189,53 +288,90 @@ const FindAllJobs = () => {
           <FiDollarSign className="mr-1 text-sky-600" />
           <span className="text-sm">{job.salary_range}</span>
         </div>
+        {job.experience && (
+          <div className="flex items-center">
+            <FiBriefcase className="mr-1 text-sky-600" />
+            <span className="text-sm">Exp: {job.experience}</span>
+          </div>
+        )}
       </div>
 
       <div className="mt-2 ml-1 justify-between items-center">
-        <span className="text-sky-600  text-sm">Post Date:</span>
-        <span className="text-gray-500 text-sm">
-          {" "}
-          {new Date(job.created_at).toLocaleDateString()}
+        <span className="text-sky-600  text-sm">
+          Post Date: 
         </span>
+        <span className='text-gray-500 text-sm'> {" "}{new Date(job.created_at).toLocaleDateString()}</span>
       </div>
     </div>
   );
 
-  if (loading)
-    return (
-      <div className="flex justify-center items-center h-screen text-sky-600 animate-pulse">
-        Loading...
-      </div>
-    );
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen text-sky-600 animate-pulse">
+      Loading...
+    </div>
+  );
 
-  if (error)
-    return <div className="text-center p-8 text-sky-600">Error: {error}</div>;
+  if (error) return (
+    <div className="text-center p-8 text-sky-600">
+      Error: {error}
+    </div>
+  );
 
   return (
     <>
-      <RecruiterFull />
-      <div className="max-w-[85%] mx-auto py-8">
+      <div className="max-w-[85%] mx-auto py-4">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 items-center bg-white p-4 rounded-xl shadow border border-sky-100">
+          <input
+            type="text"
+            placeholder="Enter skills / designations / companies"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          />
+          
+          <select
+            value={experience}
+            onChange={(e) => setExperience(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            {experienceOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          
+          <input
+            type="text"
+            placeholder="Enter location"
+            value={locationQuery}
+            onChange={(e) => setLocationQuery(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          />
+          
+          <button
+            onClick={handleSearch}
+            className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+          >
+            <FiSearch className="mr-2" /> Search
+          </button>
+        </div>
+      </div>
+      
+      <div className="max-w-[80%] mx-auto py-8">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filters Column */}
-          <div
-            className={`md:w-1/4 ${showFilters ? "block" : "hidden"} md:block`}
-          >
+          <div className={`md:w-1/4 ${showFilters ? 'block' : 'hidden'} md:block`}>
             <div className="sticky top-25 bg-white p-2 rounded-xl shadow-lg border border-sky-100">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-sky-900 text-xl font-bold">All Filters</h2>
-                <button
+                <button 
                   onClick={() => setShowFilters(false)}
                   className="md:hidden text-sky-600"
                 >
                   <FiX size={24} />
                 </button>
               </div>
-
-              <FilterSection
-                title="Department"
-                category="department"
-                options={departments}
-              />
 
               <FilterSection
                 title="Work Mode"
@@ -265,44 +401,30 @@ const FindAllJobs = () => {
 
           {/* Job Listings */}
           <div className="flex-1">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3 sm:gap-0">
-  <div className="w-full sm:w-auto">
-    <span className="text-lg sm:text-xl text-sky-800 font-bold">
-      Explore Opportunities
-    </span>
-  </div>
-  <div className="w-full sm:w-auto flex flex-col xs:flex-row items-start xs:items-center justify-between xs:justify-end gap-3 xs:gap-4">
-    <div className="flex items-center">
-      <span className="text-sm sm:text-base text-sky-700 mr-2">Sort by:</span>
-      <select
-        value={sortBy}
-        onChange={(e) => setSortBy(e.target.value)}
-        className="text-sm sm:text-base border border-sky-300 rounded px-2 sm:px-3 py-1 text-sky-700"
-      >
-        <option value="relevance">Relevance</option>
-        <option value="date">Newest</option>
-      </select>
-    </div>
-    <button
-      onClick={() => setShowFilters(!showFilters)}
-      className="md:hidden flex items-center text-sm sm:text-base text-sky-600 border border-sky-300 px-2 sm:px-3 py-1 rounded"
-    >
-      <FiFilter className="mr-1" /> Filters
-    </button>
-  </div>
-</div>
+            <div className="bg-white p-4 rounded-xl shadow mb-4 ">
+              <div className="flex flex-col md:flex-row justify-between items-center">
+                <div>
+                  <span className='text-xl text-sky-800 font-bold'>Explore Opportunities</span>
+                </div>
+                <div className="text-sky-700 mb-2 md:mb-0">
+                  {filteredJobs.length > 0 ? (
+                    `Showing ${(currentPage - 1) * jobsPerPage + 1}-${Math.min(currentPage * jobsPerPage, totalJobs)} of ${totalJobs} jobs`
+                  ) : (
+                    "No jobs found"
+                  )}
+                </div>
+              </div>
+            </div>
 
             <div className="bg-white rounded-xl  ">
               {filteredJobs.length === 0 ? (
                 <div className="text-center flex items-center flex-col p-8 text-sky-600">
-                  <img src={NoData} />
-                  <h3 className="text-3xl">
-                    No jobs found matching your criteria
-                  </h3>
+                  <img src={NoData} alt="No data found" />
+                  <h3 className='text-3xl'>No jobs found matching your criteria</h3>
                 </div>
               ) : (
                 <div className="divide-y divide-sky-100">
-                  {filteredJobs.map((job) => (
+                  {jobs.map(job => (
                     <JobCard key={job.id} job={job} />
                   ))}
                 </div>
@@ -313,7 +435,7 @@ const FindAllJobs = () => {
               <div className="flex justify-center mt-6">
                 <nav className="inline-flex rounded-md shadow-sm">
                   <button
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                     disabled={currentPage === 1}
                     className="px-4 py-2 text-sky-600 bg-white border border-sky-200 rounded-l-lg hover:bg-sky-50 disabled:opacity-50"
                   >
@@ -338,11 +460,11 @@ const FindAllJobs = () => {
                         key={page}
                         onClick={() => setCurrentPage(page)}
                         className={`px-4 py-2 border-t border-b border-sky-200 ${
-                          isCurrent
-                            ? "bg-sky-600 text-white"
-                            : "bg-white text-sky-600 hover:bg-sky-50"
-                        } ${page === 1 ? "border-l" : ""} 
-                        ${page === totalPages ? "border-r" : ""}`}
+                          isCurrent 
+                            ? 'bg-sky-600 text-white' 
+                            : 'bg-white text-sky-600 hover:bg-sky-50'
+                        } ${page === 1 ? 'border-l' : ''} 
+                        ${page === totalPages ? 'border-r' : ''}`}
                       >
                         {page}
                       </button>
@@ -350,9 +472,7 @@ const FindAllJobs = () => {
                   })}
 
                   <button
-                    onClick={() =>
-                      setCurrentPage((p) => Math.min(totalPages, p + 1))
-                    }
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                     disabled={currentPage === totalPages}
                     className="px-4 py-2 text-sky-600 bg-white border border-sky-200 rounded-r-lg hover:bg-sky-50 disabled:opacity-50"
                   >
