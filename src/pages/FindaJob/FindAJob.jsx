@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FiMapPin, FiBriefcase, FiDollarSign, FiChevronRight, FiFilter, FiX } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
+import { FiMapPin, FiBriefcase, FiDollarSign, FiChevronRight, FiFilter, FiX, FiSearch } from 'react-icons/fi';
+import { useNavigate, useLocation } from 'react-router-dom';
 import RecruiterFull from '../../components/StatsBanner/StatsBannerFull';
 import { NoData } from '../../assets/Assets';
 
 const FindAllJobs = () => {
+  const [allJobs, setAllJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,7 +17,23 @@ const FindAllJobs = () => {
   const [sortBy, setSortBy] = useState('relevance');
   const [showFilters, setShowFilters] = useState(false);
   const [expandedFilters, setExpandedFilters] = useState({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [locationQuery, setLocationQuery] = useState('');
+  const [experience, setExperience] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
+
+
+  console.log(location.state,"21234567890-")
+
+  const experienceOptions = [
+    { value: '', label: 'Select experience' },
+    { value: '0-1', label: '0-1 years' },
+    { value: '1-3', label: '1-3 years' },
+    { value: '3-5', label: '3-5 years' },
+    { value: '5-10', label: '5-10 years' },
+    { value: '10+', label: '10+ years' }
+  ];
 
   const [filters, setFilters] = useState({
     department: new Set(),
@@ -26,20 +43,64 @@ const FindAllJobs = () => {
     industry: new Set(),
   });
 
+  // Initialize search from navigation state
+  useEffect(() => {
+    if (location.state) {
+      setSearchQuery(location.state.searchQuery || '');
+      setLocationQuery(location.state.locationQuery || '');
+      setExperience(location.state.experience || '');
+    }
+  }, [location.state]);
+
+  // serch API 
+
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await fetch(
-          `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=${currentPage}`
+          `https://demo.needrecruiter.com/need-recruiter/api/job-posts/search-by-location?location=${searchQuery}&query=${locationQuery}&experience=${experience}`
+          ,{ mode: 'no-cors' });
+        const data = await response.json();
+        console.log(data.data ,"search data")
+
+        setTotalJobs(data.data);
+        
+      } catch (error) {
+        console.error("Error fetching job posts:", error);
+      }
+    };
+
+    fetchJobs();
+  }, [searchQuery,locationQuery,experience]);
+
+  // Fetch all jobs initially
+  useEffect(() => {
+    const fetchAllJobs = async () => {
+      try {
+        setLoading(true);
+        // First fetch to get total pages
+        const initialResponse = await fetch(
+          `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=1`
         );
         
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        if (!initialResponse.ok) throw new Error(`HTTP error! status: ${initialResponse.status}`);
         
-        const data = await response.json();
-        setJobs(data.data);
-        setFilteredJobs(data.data);
-        setTotalPages(data.last_page);
-        setTotalJobs(data.total);
+        const initialData = await initialResponse.json();
+        setTotalPages(initialData.last_page);
+        setTotalJobs(initialData.total);
+        
+        // Fetch all pages
+        const allJobsData = [];
+        for (let page = 1; page <= initialData.last_page; page++) {
+          const response = await fetch(
+            `https://demo.needrecruiter.com/need-recruiter/api/job-posts?page=${page}`
+          );
+          const data = await response.json();
+          allJobsData.push(...data.data);
+        }
+        
+        setAllJobs(allJobsData);
+        setFilteredJobs(allJobsData);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -47,12 +108,111 @@ const FindAllJobs = () => {
       }
     };
 
-    fetchJobs();
-  }, [currentPage]);
+    fetchAllJobs();
+  }, []);
+
+  // Handle pagination with filtered jobs
+  useEffect(() => {
+    const startIndex = (currentPage - 1) * jobsPerPage;
+    const endIndex = startIndex + jobsPerPage;
+    setJobs(filteredJobs.slice(startIndex, endIndex));
+  }, [currentPage, filteredJobs, jobsPerPage]);
+
+  const handleSearch = () => {
+    let results = [...allJobs];
+    
+    // Apply search query filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      results = results.filter(job => 
+        job.job_title.toLowerCase().includes(query) ||
+        job.company_name.toLowerCase().includes(query) ||
+        (job.tags && job.tags.some(tag => tag.toLowerCase().includes(query)))
+      );
+    }
+    
+    // Apply location filter
+    if (locationQuery) {
+      const location = locationQuery.toLowerCase();
+      results = results.filter(job => 
+        job.location.toLowerCase().includes(location)
+      );
+    }
+    
+    // Apply experience filter
+    if (experience) {
+      results = results.filter(job => {
+        if (!job.experience) return false;
+        
+        const jobExp = parseExperience(job.experience);
+        if (!jobExp.min || !jobExp.max) return false;
+        
+        if (experience === '10+') {
+          return jobExp.min >= 10;
+        }
+        
+        const [min, max] = experience.split('-').map(Number);
+        return jobExp.min >= min && jobExp.max <= max;
+      });
+    }
+    
+    // Apply other filters
+    Object.entries(filters).forEach(([key, values]) => {
+      if (values.size > 0) {
+        results = results.filter(job => 
+          values.has(job[key === 'workMode' ? 'employment_type' : key])
+        );
+      }
+    });
+
+    // Apply sorting
+    results.sort((a, b) => sortBy === 'date' ? 
+      new Date(b.created_at) - new Date(a.created_at) :
+      a.id - b.id
+    );
+
+    setFilteredJobs(results);
+    setTotalJobs(results.length);
+    setTotalPages(Math.ceil(results.length / jobsPerPage));
+    setCurrentPage(1);
+  };
+
+  // Helper function to parse experience string
+  const parseExperience = (expString) => {
+    if (!expString) return { min: 0, max: 0 };
+    
+    // Handle different formats like "1-3 years", "3-5 Years", etc.
+    const matches = expString.match(/(\d+)\s*-\s*(\d+)/);
+    if (matches && matches.length >= 3) {
+      return {
+        min: parseInt(matches[1]),
+        max: parseInt(matches[2])
+      };
+    }
+    
+    // Handle "10+" case
+    const plusMatch = expString.match(/(\d+)\+/);
+    if (plusMatch) {
+      return {
+        min: parseInt(plusMatch[1]),
+        max: Infinity
+      };
+    }
+    
+    return { min: 0, max: 0 };
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [filters, sortBy, searchQuery, locationQuery, experience]);
+
+
+
+  
 
   const generateFilterOptions = (key) => {
-    const counts = jobs.reduce((acc, job) => {
-      const value = job[key.toLowerCase()] || 'Unknown';
+    const counts = allJobs.reduce((acc, job) => {
+      const value = job[key === 'workMode' ? 'employment_type' : key] || 'Unknown';
       acc[value] = (acc[value] || 0) + 1;
       return acc;
     }, {});
@@ -62,30 +222,10 @@ const FindAllJobs = () => {
       .map(([name, count]) => ({ name, count }));
   };
 
-  const departments = generateFilterOptions('department');
-  const workModes = generateFilterOptions('employment_type');
+  const workModes = generateFilterOptions('workMode');
   const locations = generateFilterOptions('location');
   const educations = generateFilterOptions('education');
-  const industries = generateFilterOptions('industry_type');
-
-  useEffect(() => {
-    let result = [...jobs];
-
-    Object.entries(filters).forEach(([key, values]) => {
-      if (values.size > 0) {
-        result = result.filter(job => 
-          values.has(job[key === 'workMode' ? 'employment_type' : key])
-        );
-      }
-    });
-
-    result.sort((a, b) => sortBy === 'date' ? 
-      new Date(b.created_at) - new Date(a.created_at) :
-      a.id - b.id
-    );
-
-    setFilteredJobs(result);
-  }, [filters, sortBy, jobs]);
+  const industries = generateFilterOptions('industry');
 
   const toggleFilter = (category, value) => {
     setFilters(prev => {
@@ -176,6 +316,12 @@ const FindAllJobs = () => {
           <FiDollarSign className="mr-1 text-sky-600" />
           <span className="text-sm">{job.salary_range}</span>
         </div>
+        {job.experience && (
+          <div className="flex items-center">
+            <FiBriefcase className="mr-1 text-sky-600" />
+            <span className="text-sm">Exp: {job.experience}</span>
+          </div>
+        )}
       </div>
 
       <div className="mt-2 ml-1 justify-between items-center">
@@ -201,7 +347,45 @@ const FindAllJobs = () => {
 
   return (
     <>
-      <RecruiterFull />
+      <div className="max-w-[85%] mx-auto py-4">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 items-center bg-white p-4 rounded-xl shadow border border-sky-100">
+          <input
+            type="text"
+            placeholder="Enter skills / designations / companies"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          />
+          
+          <select
+            value={experience}
+            onChange={(e) => setExperience(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            {experienceOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+          
+          <input
+            type="text"
+            placeholder="Enter location"
+            value={locationQuery}
+            onChange={(e) => setLocationQuery(e.target.value)}
+            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+          />
+          
+          <button
+            onClick={handleSearch}
+            className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
+          >
+            <FiSearch className="mr-2" /> Search
+          </button>
+        </div>
+      </div>
+      
       <div className="max-w-[80%] mx-auto py-8">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Filters Column */}
@@ -216,12 +400,6 @@ const FindAllJobs = () => {
                   <FiX size={24} />
                 </button>
               </div>
-
-              <FilterSection
-                title="Department"
-                category="department"
-                options={departments}
-              />
 
               <FilterSection
                 title="Work Mode"
@@ -269,12 +447,12 @@ const FindAllJobs = () => {
             <div className="bg-white rounded-xl  ">
               {filteredJobs.length === 0 ? (
                 <div className="text-center flex items-center flex-col p-8 text-sky-600">
-                  <img src={NoData} />
+                  <img src={NoData} alt="No data found" />
                   <h3 className='text-3xl'>No jobs found matching your criteria</h3>
                 </div>
               ) : (
                 <div className="divide-y divide-sky-100">
-                  {filteredJobs.map(job => (
+                  {jobs.map(job => (
                     <JobCard key={job.id} job={job} />
                   ))}
                 </div>

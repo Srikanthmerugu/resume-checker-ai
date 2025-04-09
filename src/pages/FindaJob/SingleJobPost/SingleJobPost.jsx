@@ -1,41 +1,42 @@
+// SingleJobPost.js
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FiShare2, FiLinkedin, FiMessageSquare, FiCopy, FiBriefcase, 
-  FiMapPin, FiDollarSign, FiClock, FiCalendar, FiUser, FiBook, FiUpload } from 'react-icons/fi';
+  FiMapPin, FiDollarSign, FiClock, FiCalendar, FiUser, FiBook } from 'react-icons/fi';
 import DOMPurify from 'dompurify';
-import { useAuth } from '../../../context/AuthContext'; // Adjust path as needed
+import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ApplyModal from './ApplyModal';
 
 const SingleJobPost = () => {
   const { id } = useParams();
-  const { token, guestLogin, userData } = useAuth();
+  const { token, guestLogin } = useAuth();
   const [job, setJob] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
   const [applyModalOpen, setApplyModalOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [applyLoading, setApplyLoading] = useState(false);
-  const [applicationError, setApplicationError] = useState(null);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
 
   useEffect(() => {
     const fetchJob = async () => {
-      console.log("userData",userData)
       try {
         const response = await fetch(
           `https://demo.needrecruiter.com/need-recruiter/api/job-posts/${id}`
         );
         
-        if (!response.ok) throw new Error(`HTTP error! ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch job: ${response.status}`);
+        }
         
         const data = await response.json();
         setJob(data.data);
-        setLoading(false);
       } catch (err) {
         setError(err.message);
+        toast.error(`Error loading job: ${err.message}`);
+      } finally {
         setLoading(false);
       }
     };
@@ -48,27 +49,20 @@ const SingleJobPost = () => {
       const result = await guestLogin();
       if (!result.success) return;
     }
-  
-    if (!selectedFile) {
-      setApplicationError('Please upload your resume');
-      return;
-    }
-  
-    setApplyLoading(true);
-    setApplicationError(null);
-  
-    const formData = new FormData();
-    formData.append('user_id', userData.id);
-    console.log('user_id', userData)
-    formData.append('resume', selectedFile);  // This is correct - use 'resume' as the key
-    formData.append('job_post_id', id);
     
+    setApplyModalOpen(true);
+  };
+
+  const submitApplication = async (resumeFile) => {
     try {
+      const formData = new FormData();
+      formData.append('resume', resumeFile);
+      formData.append('job_post_id', id);
+      
       const response = await fetch('https://demo.needrecruiter.com/need-recruiter/api/apply-job', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          // Don't set Content-Type header - let the browser set it with the correct boundary
         },
         body: formData,
       });
@@ -78,32 +72,28 @@ const SingleJobPost = () => {
       if (!response.ok) {
         if (data.message === 'You have already applied to this job.') {
           setAlreadyApplied(true);
-          toast.error(data.message);
-        } else {
-          const errorMsg = data.errors 
-            ? Object.values(data.errors).flat().join(' ') 
-            : data.message || 'Application failed';
-          setApplicationError(errorMsg);
-          toast.error(errorMsg);
+          throw new Error(data.message);
         }
-      } else {
-        setAlreadyApplied(true);
-        toast.success('Application submitted successfully!');
-        setApplyModalOpen(false);
+        throw new Error(data.errors 
+          ? Object.values(data.errors).flat().join(' ') 
+          : data.message || 'Application failed');
       }
+  
+      setAlreadyApplied(true);
+      toast.success('Application submitted successfully!');
     } catch (error) {
-      setApplicationError('Network error. Please try again.');
-      toast.error('Network error. Please try again.');
-    } finally {
-      setApplyLoading(false);
+      toast.error(error.message);
+      throw error;
     }
   };
-  
+
   const sanitizeHTML = (html) => {
     return { __html: DOMPurify.sanitize(html) };
   };
 
   const handleShare = (type) => {
+    if (!job) return;
+    
     const jobUrl = window.location.href;
     const message = `Check out this ${job.job_title} position at ${job.company_name}: ${jobUrl}`;
 
@@ -117,6 +107,7 @@ const SingleJobPost = () => {
       case 'copy':
         navigator.clipboard.writeText(jobUrl);
         setCopied(true);
+        toast.success('Link copied to clipboard!');
         setTimeout(() => setCopied(false), 2000);
         break;
     }
@@ -129,7 +120,7 @@ const SingleJobPost = () => {
     </div>
   );
 
-  if (error) return (
+  if (error || !job) return (
     <div className="text-center py-20 bg-sky-50">
       <div className="max-w-md mx-auto p-6 bg-white rounded-xl shadow-sm">
         <p className="text-sky-600 font-medium">⚠️ Error loading job: {error}</p>
@@ -139,138 +130,146 @@ const SingleJobPost = () => {
 
   return (
     <div className="min-h-screen bg-sky-50">
-      {/* Apply Modal */}
-      {applyModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl p-6 max-w-md w-full space-y-4">
-            <h3 className="text-xl font-bold text-sky-900">Apply for {job.job_title}</h3>
-            
-            <div className="border-2 border-dashed border-sky-200 rounded-xl p-6 text-center">
-              <label className="cursor-pointer">
-              <input
-  type="file"
-  onChange={(e) => setSelectedFile(e.target.files[0])}
-  accept=".pdf,.doc,.docx"
-  className="hidden"
-/>
-                <div className="space-y-2">
-                  <FiUpload className="w-8 h-8 text-sky-600 mx-auto" />
-                  <p className="text-sky-600 font-medium">
-                    {selectedFile ? selectedFile.name : 'Click to upload resume'}
-                  </p>
-                  <p className="text-sm text-sky-500">PDF or DOCX (Max 5MB)</p>
-                </div>
-              </label>
-            </div>
-
-            {applicationError && (
-              <p className="text-red-500 text-sm">{applicationError}</p>
-            )}
-
-            <div className="flex gap-3 justify-end">
-              <button
-                onClick={() => setApplyModalOpen(false)}
-                className="px-4 py-2 text-sky-600 hover:bg-sky-50 rounded-lg"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleApply}
-                disabled={applyLoading}
-                className="px-4 py-2 bg-sky-600 text-white rounded-lg disabled:opacity-50 hover:bg-sky-700 transition-colors"
-              >
-                {applyLoading ? (
-                  <span className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Applying...
-                  </span>
-                ) : 'Submit Application'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ApplyModal
+        isOpen={applyModalOpen}
+        onClose={() => setApplyModalOpen(false)}
+        jobTitle={job.job_title}
+        onApply={submitApplication}
+        alreadyApplied={alreadyApplied}
+      />
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8 md:py-12 sm:py-3">
         {/* Header Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 relative border border-sky-100">
-          <div className="flex flex-col md:flex-row justify-between items-start">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-sky-100 rounded-lg">
-                  <FiBook className="text-2xl text-sky-600" />
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-sky-900">{job.job_title}</h1>
-                  <p className="text-sm text-sky-600 mt-1">{job.company_name}</p>
-                </div>
-              </div>
+        <div className="bg-white rounded-2xl shadow-lg md:p-8 p-4 mb-8 relative border border-sky-100">
+        <div className="flex flex-col md:flex-row justify-between items-start">
+  {/* Main Content with relative positioning */}
+  <div className="flex-1 relative">
+    {/* Share Button - Mobile (top right) */}
+    <div className="md:hidden absolute top-0 right-0 z-10">
+      <button
+        onClick={() => setShowShare(prev => !prev)}
+        className="p-2 hover:bg-sky-50 cursor-pointer rounded-lg text-sky-600 transition-colors"
+      >
+        <FiShare2 className="w-5 h-5" />
+      </button>
+    </div>
 
-              <div className="flex flex-wrap gap-2 mb-6">
-                {job.tags.map((tag, index) => (
-                  <span 
-                    key={index}
-                    className="px-3 p-1 border-sky-800 border text-gray-500 text-sm font-medium rounded-full 
-                             hover:bg-sky-200 transition-colors"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 pr-8 md:pr-0">
+      <div className="p-2 sm:p-3 bg-sky-100 rounded-lg">
+        <FiBook className="text-xl sm:text-2xl text-sky-600" />
+      </div>
+      <div> 
+        <h1 className="text-xl sm:text-xl md:text-2xl font-bold text-sky-900">{job.job_title}</h1>
+        <p className="text-xs sm:text-sm text-sky-600 mt-0.5 sm:mt-1">{job.company_name}</p>
+      </div> 
+    </div>
 
-            {/* Share Button */}
-            <div className="relative md:self-start">
-              <button
-                onClick={() => setShowShare(!showShare)}
-                className="p-3 hover:bg-sky-50 cursor-pointer rounded-xl text-sky-600 transition-colors"
-              >
-                <FiShare2 className="w-6 h-6" />
-              </button>
+    <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+      {job.tags.map((tag, index) => (
+        <span 
+          key={index}
+          className="px-2 sm:px-3 py-0.5 sm:py-1 border-sky-800 border text-gray-500 text-xs sm:text-sm font-medium rounded-full 
+                   hover:bg-sky-200 transition-colors"
+        >
+          {tag}
+        </span>
+      ))}
+    </div>
+  </div>
 
-              {showShare && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-sky-100 
-                            animate-fade-in-up">
-                  <div className="p-2 space-y-2">
-                    <button
-                      onClick={() => handleShare('linkedin')}
-                      className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
-                    >
-                      <FiLinkedin className="text-sky-600 flex-shrink-0" />
-                      <span className="text-sky-700">LinkedIn</span>
-                    </button>
-                    <button
-                      onClick={() => handleShare('whatsapp')}
-                      className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
-                    >
-                      <FiMessageSquare className="text-sky-600  flex-shrink-0" />
-                      <span className="text-sky-700">WhatsApp</span>
-                    </button>
-                    <button
-                      onClick={() => handleShare('copy')}
-                      className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
-                    >
-                      <FiCopy className="text-sky-600 cursor-pointer flex-shrink-0" />
-                      <span className="text-sky-700">{copied ? 'Copied!' : 'Copy Link'}</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+  {/* Share Button - Desktop */}
+  <div className="hidden md:block relative self-start z-10">
+    <button
+      onClick={() => setShowShare(prev => !prev)}
+      className="p-2 sm:p-3 hover:bg-sky-50 cursor-pointer rounded-lg sm:rounded-xl text-sky-600 transition-colors"
+    >
+      <FiShare2 className="w-5 h-5 sm:w-6 sm:h-6" />
+    </button>
+
+    {/* Shared Dropdown Menu (works for both mobile and desktop) */}
+    {showShare && (
+      <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white rounded-lg sm:rounded-xl shadow-xl border border-sky-100 
+                  animate-fade-in-up z-20">
+        <div className="p-1 sm:p-2 space-y-1 sm:space-y-2">
+          <button
+            onClick={() => handleShare('linkedin')}
+            className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
+          >
+            <FiLinkedin className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-sm text-sky-700">LinkedIn</span>
+          </button>
+          <button
+            onClick={() => handleShare('whatsapp')}
+            className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
+          >
+            <FiMessageSquare className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-sm text-sky-700">WhatsApp</span>
+          </button>
+          <button
+            onClick={() => handleShare('copy')}
+            className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
+          >
+            <FiCopy className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-sm text-sky-700">{copied ? 'Copied!' : 'Copy Link'}</span>
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Mobile Dropdown Menu - positioned differently */}
+  {showShare && (
+    <div className="md:hidden fixed inset-0 z-10" onClick={() => setShowShare(false)}>
+      <div className="absolute top-20 right-4 w-48 bg-white rounded-xl shadow-xl border border-sky-100 animate-fade-in-up z-20">
+        <div className="p-2 space-y-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShare('linkedin');
+            }}
+            className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
+          >
+            <FiLinkedin className="text-sky-600 flex-shrink-0 w-5 h-5" />
+            <span className="text-sky-700">LinkedIn</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShare('whatsapp');
+            }}
+            className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
+          >
+            <FiMessageSquare className="text-sky-600 flex-shrink-0 w-5 h-5" />
+            <span className="text-sky-700">WhatsApp</span>
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleShare('copy');
+            }}
+            className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
+          >
+            <FiCopy className="text-sky-600 flex-shrink-0 w-5 h-5" />
+            <span className="text-sky-700">{copied ? 'Copied!' : 'Copy Link'}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
 
           {/* Key Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="group flex items-center gap-3 p-4 bg-sky-50 rounded-xl hover:bg-sky-100 transition-colors">
-  <div className="p-2 bg-white rounded-lg shadow-sm border border-sky-100">
-    <FiMapPin className="text-sky-600 transition-transform duration-300 delay-100 group-hover:scale-175" />
-  </div>
-  <div>
-    <p className="text-sm text-sky-500">Location</p>
-    <p className="text-sky-700 text-sm font-medium">{job.location}</p>
-  </div>
-</div>
+            <div className="group flex items-center gap-3 p-4 bg-sky-50 rounded-xl hover:bg-sky-100 transition-colors">
+              <div className="p-2 bg-white rounded-lg shadow-sm border border-sky-100">
+                <FiMapPin className="text-sky-600 transition-transform duration-300 delay-100 group-hover:scale-175" />
+              </div>
+              <div>
+                <p className="text-sm text-sky-500">Location</p>
+                <p className="text-sky-700 text-sm font-medium">{job.location}</p>
+              </div>
+            </div>
 
             <div className="flex group items-center gap-3 p-4 bg-sky-50 rounded-xl">
               <div className="p-2 bg-white rounded-lg shadow-sm border border-sky-100">
@@ -317,7 +316,7 @@ const SingleJobPost = () => {
             <div className="bg-white rounded-2xl shadow-lg p-8 border border-sky-100">
               <h2 className="text-2xl font-bold text-sky-900 mb-2">Job Description</h2>
               <article 
-                className="prose text-justify prose-sky max-w-none text-sky-700
+                className="prose text-justify prose-sky max-w-none  text-sm
                          prose-headings:text-sky-900 prose-strong:text-sky-900
                          prose-a:text-sky-600 hover:prose-a:text-sky-700"
                 dangerouslySetInnerHTML={sanitizeHTML(job.job_description)}
@@ -357,25 +356,16 @@ const SingleJobPost = () => {
             </div>
 
             <button 
-            onClick={() => !alreadyApplied && setApplyModalOpen(true)}
-            disabled={alreadyApplied || applyLoading}
-            className={`w-full py-4 px-6 rounded-xl font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              alreadyApplied 
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-sky-600 hover:bg-sky-700 hover:shadow-md focus:ring-sky-600 text-white'
-            }`}
-          >
-            {applyLoading ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                Applying...
-              </span>
-            ) : alreadyApplied ? (
-              'Already Applied'
-            ) : (
-              'Apply Now'
-            )}
-          </button>
+              onClick={handleApply}
+              disabled={alreadyApplied}
+              className={`w-full py-4 px-6 rounded-xl font-medium transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                alreadyApplied 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-sky-600 hover:bg-sky-700 hover:shadow-md focus:ring-sky-600 text-white'
+              }`}
+            >
+              {alreadyApplied ? 'Already Applied' : 'Apply Now'}
+            </button>
           </div>
         </div>
       </div>

@@ -3,6 +3,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AllRoutes } from './pages/AllRoutes/AllRoutes';
 import { AuthProvider } from './context/AuthContext';
+import ScrollToTop from './ScrollToTop';
+import './App.css'
 
 function App() {
   const [visitorCount, setVisitorCount] = useState(0);
@@ -32,7 +34,7 @@ function App() {
         const { ip } = await ipResponse.json();
         trackingData.ip_address = ip;
       } catch (error) {
-        console.log("IP detection failed");
+        // console.log("IP detection failed");
       }
 
       try {
@@ -50,7 +52,7 @@ function App() {
           setVisitorCount(result.total_visitors);
         }
       } catch (error) {
-        console.log("Tracking failed", error);
+        // console.log("Tracking failed", error);
       }
     };
 
@@ -63,9 +65,9 @@ function App() {
         const { count } = await response.json();
         setVisitorCount(count);
       } catch (error) {
-        console.log("Couldn't fetch visitor count");
+        // console.log("Couldn't fetch visitor count");
       }
-    };
+    }; 
     
     fetchVisitorCount();
   }, []);
@@ -88,6 +90,8 @@ function App() {
         pauseOnHover
         newestOnTop
       />
+
+      <ScrollToTop />
       
       <AuthProvider>
         <AllRoutes />

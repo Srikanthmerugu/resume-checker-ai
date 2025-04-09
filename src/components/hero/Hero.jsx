@@ -7,6 +7,7 @@ import { demoVideo } from "../../assets/Assets";
 import StatsBanner from "../StatsBanner/StatsBannerFull";
 import StatsBanners from "../StatsBanner/StatsBanners";
 
+
 const Hero = () => {
   const [isOpen, setIsOpen] = useState(false);
     const [isCentered, setIsCentered] = useState(false);
@@ -56,7 +57,7 @@ const Hero = () => {
         <span className="text-transparent bg-clip-text bg-gradient-to-r to-sky-900 from-sky-900">
           ORER
         </span>
-      </h1>
+      </h1> 
 
       {/* Animated h1 for "Advanced Candidate Search" */}
       <h1 className="animated-h1 text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-950 text- to-sky-950 bg-clip-text text-transparent md:mb-10 md:mt-10">
