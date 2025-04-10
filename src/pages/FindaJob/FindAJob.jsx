@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiMapPin, FiBriefcase, FiDollarSign, FiChevronRight, FiFilter, FiX, FiSearch } from 'react-icons/fi';
 import { useNavigate, useLocation } from 'react-router-dom';
 import RecruiterFull from '../../components/StatsBanner/StatsBannerFull';
@@ -20,7 +20,7 @@ const FindAllJobs = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-
+  const tempRef = useRef(true); // change from GTR
   const experienceOptions = [
     { value: '', label: 'Select experience' },
     { value: '0-1', label: '0-1 years' },
@@ -69,7 +69,18 @@ const FindAllJobs = () => {
       // Trigger fetch if inputs exist but no results
       fetchJobs();
     }
-  }, [location.state]);
+
+    return () => {
+      // This cleanup runs when this component is unmounted (i.e., route changes)
+      if(tempRef.current){
+        localStorage.removeItem('jobSearchState');
+      }
+     
+
+    };
+
+
+  }, []);
 
   const fetchJobs = async () => {
     try {
@@ -130,7 +141,7 @@ const FindAllJobs = () => {
       currentPage
     };
     localStorage.setItem('jobSearchState', JSON.stringify(searchState));
-
+    tempRef.current = false
     // Navigate to job detail with state
     navigate(`/jobs/${jobId}`, {
       state: {
