@@ -243,3 +243,56 @@ box-shadow:  7px -7px 14px #c1c1c1,
    100% { transform: translateY(-100%); opacity: 0; }
  }
  .animate-rise { animation: rise 1.5s ease-out; }
+
+
+
+ /* animation for all jobs post  */
+
+ @keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bg-gradient-animate {
+  /* background: linear-gradient(45deg, #e0f2fe, #bae6fd, #7dd3fc, #38bdf8);
+  background-size: 200% 200%; */
+  animation: gradientShift 10s ease infinite;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown 1s ease-out forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 1s ease-out forwards;
+  animation-delay: 0.3s;
+}

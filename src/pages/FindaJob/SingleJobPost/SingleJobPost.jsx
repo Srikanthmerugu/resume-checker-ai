@@ -1,8 +1,7 @@
-// SingleJobPost.js
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { FiShare2, FiLinkedin, FiMessageSquare, FiCopy, FiBriefcase, 
-  FiMapPin, FiDollarSign, FiClock, FiCalendar, FiUser, FiBook } from 'react-icons/fi';
+  FiMapPin, FiDollarSign, FiClock, FiCalendar, FiUser, FiBook, FiArrowLeft } from 'react-icons/fi';
 import DOMPurify from 'dompurify';
 import { useAuth } from '../../../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -19,6 +18,8 @@ const SingleJobPost = () => {
   const [copied, setCopied] = useState(false);
   const [applyModalOpen, setApplyModalOpen] = useState(false);
   const [alreadyApplied, setAlreadyApplied] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -81,9 +82,29 @@ const SingleJobPost = () => {
   
       setAlreadyApplied(true);
       toast.success('Application submitted successfully!');
+      
+      // Navigate back to FindAllJobs with preserved state after success
+      setTimeout(() => {
+        navigate('/find-a-Jobs', {
+          state: {
+            prevSearch: location.state?.prevSearch || {}
+          }
+        });
+      }, 2000); // Delay to allow toast to be visible
     } catch (error) {
       toast.error(error.message);
+      
+      // Navigate back even if already applied or error occurs
+      setTimeout(() => {
+        navigate('/find-a-Jobs', {
+          state: {
+            prevSearch: location.state?.prevSearch || {}
+          }
+        });
+      }, 2000); // Delay to allow toast to be visible
       throw error;
+    } finally {
+      setApplyModalOpen(false); // Close modal after submission
     }
   };
 
@@ -114,6 +135,15 @@ const SingleJobPost = () => {
     setShowShare(false);
   };
 
+  const handleBack = () => {
+    // Navigate back while preserving the previous state
+    navigate('/find-a-Jobs', {
+      state: {
+        prevSearch: location.state?.prevSearch || {}
+      }
+    });
+  };
+
   if (loading) return (
     <div className="flex justify-center items-center min-h-screen bg-sky-50">
       <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-sky-600"></div>
@@ -140,124 +170,135 @@ const SingleJobPost = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8 md:py-12 sm:py-3">
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={handleBack}
+            className="flex items-center text-sky-600 hover:text-sky-700 transition-colors"
+          >
+            <FiArrowLeft className="mr-2" />
+            Back to Job Listings
+          </button>
+        </div>
+
         {/* Header Section */}
         <div className="bg-white rounded-2xl shadow-lg md:p-8 p-4 mb-8 relative border border-sky-100">
-        <div className="flex flex-col md:flex-row justify-between items-start">
-  {/* Main Content with relative positioning */}
-  <div className="flex-1 relative">
-    {/* Share Button - Mobile (top right) */}
-    <div className="md:hidden absolute top-0 right-0 z-10">
-      <button
-        onClick={() => setShowShare(prev => !prev)}
-        className="p-2 hover:bg-sky-50 cursor-pointer rounded-lg text-sky-600 transition-colors"
-      >
-        <FiShare2 className="w-5 h-5" />
-      </button>
-    </div>
+          <div className="flex flex-col md:flex-row justify-between items-start">
+            {/* Main Content with relative positioning */}
+            <div className="flex-1 relative">
+              {/* Share Button - Mobile (top right) */}
+              <div className="md:hidden absolute top-0 right-0 z-10">
+                <button
+                  onClick={() => setShowShare(prev => !prev)}
+                  className="p-2 hover:bg-sky-50 cursor-pointer rounded-lg text-sky-600 transition-colors"
+                >
+                  <FiShare2 className="w-5 h-5" />
+                </button>
+              </div>
 
-    <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 pr-8 md:pr-0">
-      <div className="p-2 sm:p-3 bg-sky-100 rounded-lg">
-        <FiBook className="text-xl sm:text-2xl text-sky-600" />
-      </div>
-      <div> 
-        <h1 className="text-xl sm:text-xl md:text-2xl font-bold text-sky-900">{job.job_title}</h1>
-        <p className="text-xs sm:text-sm text-sky-600 mt-0.5 sm:mt-1">{job.company_name}</p>
-      </div> 
-    </div>
+              <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 pr-8 md:pr-0">
+                <div className="p-2 sm:p-3 bg-sky-100 rounded-lg">
+                  <FiBook className="text-xl sm:text-2xl text-sky-600" />
+                </div>
+                <div> 
+                  <h1 className="text-xl sm:text-xl md:text-2xl font-bold text-sky-900">{job.job_title}</h1>
+                  <p className="text-xs sm:text-sm text-sky-600 mt-0.5 sm:mt-1">{job.company_name}</p>
+                </div> 
+              </div>
 
-    <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
-      {job.tags.map((tag, index) => (
-        <span 
-          key={index}
-          className="px-2 sm:px-3 py-0.5 sm:py-1 border-sky-800 border text-gray-500 text-xs sm:text-sm font-medium rounded-full 
-                   hover:bg-sky-200 transition-colors"
-        >
-          {tag}
-        </span>
-      ))}
-    </div>
-  </div>
+              <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6">
+                {job.tags && job.tags.map((tag, index) => (
+                  <span 
+                    key={index}
+                    className="px-2 sm:px-3 py-0.5 sm:py-1 border-sky-800 border text-gray-500 text-xs sm:text-sm font-medium rounded-full 
+                             hover:bg-sky-200 transition-colors"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
 
-  {/* Share Button - Desktop */}
-  <div className="hidden md:block relative self-start z-10">
-    <button
-      onClick={() => setShowShare(prev => !prev)}
-      className="p-2 sm:p-3 hover:bg-sky-50 cursor-pointer rounded-lg sm:rounded-xl text-sky-600 transition-colors"
-    >
-      <FiShare2 className="w-5 h-5 sm:w-6 sm:h-6" />
-    </button>
+            {/* Share Button - Desktop */}
+            <div className="hidden md:block relative self-start z-10">
+              <button
+                onClick={() => setShowShare(prev => !prev)}
+                className="p-2 sm:p-3 hover:bg-sky-50 cursor-pointer rounded-lg sm:rounded-xl text-sky-600 transition-colors"
+              >
+                <FiShare2 className="w-5 h-5 sm:w-6 sm:h-6" />
+              </button>
 
-    {/* Shared Dropdown Menu (works for both mobile and desktop) */}
-    {showShare && (
-      <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white rounded-lg sm:rounded-xl shadow-xl border border-sky-100 
-                  animate-fade-in-up z-20">
-        <div className="p-1 sm:p-2 space-y-1 sm:space-y-2">
-          <button
-            onClick={() => handleShare('linkedin')}
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
-          >
-            <FiLinkedin className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm text-sky-700">LinkedIn</span>
-          </button>
-          <button
-            onClick={() => handleShare('whatsapp')}
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
-          >
-            <FiMessageSquare className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm text-sky-700">WhatsApp</span>
-          </button>
-          <button
-            onClick={() => handleShare('copy')}
-            className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
-          >
-            <FiCopy className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="text-sm text-sky-700">{copied ? 'Copied!' : 'Copy Link'}</span>
-          </button>
-        </div>
-      </div>
-    )}
-  </div>
+              {/* Shared Dropdown Menu */}
+              {showShare && (
+                <div className="absolute right-0 mt-2 w-40 sm:w-48 bg-white rounded-lg sm:rounded-xl shadow-xl border border-sky-100 
+                              animate-fade-in-up z-20">
+                  <div className="p-1 sm:p-2 space-y-1 sm:space-y-2">
+                    <button
+                      onClick={() => handleShare('linkedin')}
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
+                    >
+                      <FiLinkedin className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="text-sm text-sky-700">LinkedIn</span>
+                    </button>
+                    <button
+                      onClick={() => handleShare('whatsapp')}
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
+                    >
+                      <FiMessageSquare className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="text-sm text-sky-700">WhatsApp</span>
+                    </button>
+                    <button
+                      onClick={() => handleShare('copy')}
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 cursor-pointer flex items-center gap-2 sm:gap-3 hover:bg-sky-50 rounded-lg"
+                    >
+                      <FiCopy className="text-sky-600 flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
+                      <span className="text-sm text-sky-700">{copied ? 'Copied!' : 'Copy Link'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
-  {/* Mobile Dropdown Menu - positioned differently */}
-  {showShare && (
-    <div className="md:hidden fixed inset-0 z-10" onClick={() => setShowShare(false)}>
-      <div className="absolute top-20 right-4 w-48 bg-white rounded-xl shadow-xl border border-sky-100 animate-fade-in-up z-20">
-        <div className="p-2 space-y-2">
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleShare('linkedin');
-            }}
-            className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
-          >
-            <FiLinkedin className="text-sky-600 flex-shrink-0 w-5 h-5" />
-            <span className="text-sky-700">LinkedIn</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleShare('whatsapp');
-            }}
-            className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
-          >
-            <FiMessageSquare className="text-sky-600 flex-shrink-0 w-5 h-5" />
-            <span className="text-sky-700">WhatsApp</span>
-          </button>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleShare('copy');
-            }}
-            className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
-          >
-            <FiCopy className="text-sky-600 flex-shrink-0 w-5 h-5" />
-            <span className="text-sky-700">{copied ? 'Copied!' : 'Copy Link'}</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  )}
-</div>
+            {/* Mobile Dropdown Menu */}
+            {showShare && (
+              <div className="md:hidden fixed inset-0 z-10" onClick={() => setShowShare(false)}>
+                <div className="absolute top-20 right-4 w-48 bg-white rounded-xl shadow-xl border border-sky-100 animate-fade-in-up z-20">
+                  <div className="p-2 space-y-2">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShare('linkedin');
+                      }}
+                      className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
+                    >
+                      <FiLinkedin className="text-sky-600 flex-shrink-0 w-5 h-5" />
+                      <span className="text-sky-700">LinkedIn</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShare('whatsapp');
+                      }}
+                      className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
+                    >
+                      <FiMessageSquare className="text-sky-600 flex-shrink-0 w-5 h-5" />
+                      <span className="text-sky-700">WhatsApp</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShare('copy');
+                      }}
+                      className="w-full px-4 py-3 cursor-pointer flex items-center gap-3 hover:bg-sky-50 rounded-lg"
+                    >
+                      <FiCopy className="text-sky-600 flex-shrink-0 w-5 h-5" />
+                      <span className="text-sky-700">{copied ? 'Copied!' : 'Copy Link'}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Key Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -292,8 +333,8 @@ const SingleJobPost = () => {
             </div>
 
             <div className="flex group items-center gap-3 p-4 bg-sky-50 rounded-xl">
-              <div className="p-2  bg-white rounded-lg shadow-sm border border-sky-100">
-                <FiCalendar className=" transition-transform duration-300 delay-100 group-hover:scale-175  text-sky-600" />
+              <div className="p-2 bg-white rounded-lg shadow-sm border border-sky-100">
+                <FiCalendar className="transition-transform duration-300 delay-100 group-hover:scale-175 text-sky-600" />
               </div>
               <div>
                 <p className="text-sm text-sky-500">Posted</p>
@@ -316,7 +357,7 @@ const SingleJobPost = () => {
             <div className="bg-white rounded-2xl shadow-lg p-8 border border-sky-100">
               <h2 className="text-2xl font-bold text-sky-900 mb-2">Job Description</h2>
               <article 
-                className="prose text-justify prose-sky max-w-none  text-sm
+                className="prose text-justify prose-sky max-w-none text-sm
                          prose-headings:text-sky-900 prose-strong:text-sky-900
                          prose-a:text-sky-600 hover:prose-a:text-sky-700"
                 dangerouslySetInnerHTML={sanitizeHTML(job.job_description)}

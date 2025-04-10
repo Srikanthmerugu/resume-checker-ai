@@ -35,7 +35,7 @@ const SearchForFindJob = () => {
     <div className='h-screen'>
       <div className="mt-30 mb-10 flex flex-col items-center gap-[20px] search-for-find-job">
         <h1 className='text-5xl text-sky-700'>Find your dream job now</h1>
-        <p className='text-2xl'>5 lakh+ jobs for you to explore</p>
+        <p className='text-2xl text-sky-600'>5 lakh+ jobs for you to explore</p>
       </div>
       
       <div className="mb-30 max-w-[85%] mx-auto py-4">
@@ -51,7 +51,7 @@ const SearchForFindJob = () => {
           <select
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
-            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            className="flex-1 w-full sm:w-auto px-4 py-2 border font-normal border-sky-300 rounded-lg text-blue-300 focus:outline-none focus:ring-2 focus:ring-sky-500"
           >
             {experienceOptions.map((option) => (
               <option key={option.value} value={option.value}>
