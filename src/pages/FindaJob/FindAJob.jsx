@@ -465,7 +465,7 @@ const FindAllJobs = () => {
               <h3 className='text-2xl'>No jobs found matching your criteria</h3>
             </div>
           )}
-        </div>
+        </div> 
       )}
 
 <div className='mt-20'>
