@@ -295,49 +295,53 @@ const FindAllJobs = () => {
 
   return (
     <>
-     <div className="mt-25 mb-10 flex flex-col items-center gap-[20px] search-for-find-job bg-gradient-animate py-12 ">
-  <h1 className="text-5xl text-sky-700 font-bold animate-fade-in-down">Find your dream job now</h1>
-  <p className="text-2xl text-sky-600 animate-fade-in-up">5 lakh+ jobs for you to explore</p>
+  <div className="mt-8 md:mt-12 lg:mt-25 mb-6 md:mb-8 lg:mb-10 flex flex-col items-center gap-4 md:gap-[20px] search-for-find-job bg-gradient-animate py-8 md:py-12">
+  <h1 className="text-3xl md:text-4xl lg:text-5xl text-sky-700 font-bold animate-fade-in-down text-center px-4">
+    Find your dream job now
+  </h1>
+  <p className="text-xl md:text-2xl text-sky-600 animate-fade-in-up text-center px-4">
+    5 lakh+ jobs for you to explore
+  </p>
 </div>
 
-      <div className="max-w-[85%] mx-auto py-4">
-        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 items-center bg-white p-4 rounded-xl shadow border border-sky-100">
-          <input
-            type="text"
-            placeholder="Enter skills / designations / companies"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
-          />
-          
-          <select
-            value={experience}
-            onChange={(e) => setExperience(e.target.value)}
-            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
-          >
-            {experienceOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-          
-          <input
-            type="text"
-            placeholder="Enter location"
-            value={locationQuery}
-            onChange={(e) => setLocationQuery(e.target.value)}
-            className="flex-1 w-full sm:w-auto px-4 py-2 border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
-          />
-          
-          <button
-            onClick={handleSearch}
-            className="w-full sm:w-auto flex items-center justify-center px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
-          >  
-            <FiSearch className="mr-2" /> Search
-          </button>
-        </div>
-      </div>
+<div className="w-full px-4 md:max-w-[90%] lg:max-w-[85%] mx-auto py-2 md:py-4">
+  <div className="flex md:flex-row flex-col gap-3 sm:gap-2 items-center bg-white p-3 md:p-4 rounded-xl shadow border border-sky-100">
+    <input
+      type="text"
+      placeholder="Enter skills / designations / companies"
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+    />
+    
+    <select
+      value={experience}
+      onChange={(e) => setExperience(e.target.value)}
+      className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+    >
+      {experienceOptions.map((option) => (
+        <option key={option.value} value={option.value}>
+          {option.label}
+        </option>
+      ))}
+    </select>
+    
+    <input
+      type="text"
+      placeholder="Enter location"
+      value={locationQuery}
+      onChange={(e) => setLocationQuery(e.target.value)}
+      className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+    />
+    
+    <button
+      onClick={handleSearch}
+      className="w-full md:w-auto flex items-center justify-center px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors text-sm md:text-base"
+    >  
+      <FiSearch className="mr-2" /> Search
+    </button>
+  </div>
+</div>
       
       {hasSearched && (
         <div id='alljobs-data' className="max-w-[80%] mx-auto py-8">

@@ -20,12 +20,16 @@ const JobPostComponent = () => {
     employment_type: "",
     industry_type: "",
     department: "",
-    education: ""
+    education: "",
+    experience: "",
+    
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [editorKey, setEditorKey] = useState(0); // Add key state for editor reset
 
-  // Check authentication on component mount
+
+  
   useEffect(() => {
     if (!token) {
       toast.error("Please login to post a job");
@@ -45,6 +49,7 @@ const JobPostComponent = () => {
     if (!formData.industry_type) newErrors.industry_type = "Industry type is required";
     if (!formData.department.trim()) newErrors.department = "Department is required";
     if (!formData.education.trim()) newErrors.education = "Education is required";
+    if (!formData.experience) newErrors.experience = "Experience is required";
     if (!jobDescription || jobDescription === '<p><br></p>') newErrors.job_description = "Job description is required";
     
     setErrors(newErrors);
@@ -80,7 +85,6 @@ const JobPostComponent = () => {
     setIsSubmitting(true);
 
     try {
-      // Convert comma-separated tags to array and trim each tag
       const tagsArray = formData.tags.split(',')
                             .map(tag => tag.trim())
                             .filter(tag => tag !== '');
@@ -113,8 +117,11 @@ const JobPostComponent = () => {
           employment_type: "",
           industry_type: "",
           department: "",
-          education: ""
+          education: "",
+          experience: "",
         });
+        // Reset rich text editor
+        setEditorKey(prev => prev + 1);
       } else {
         throw new Error(data.message || "Failed to create job post");
       }
@@ -131,7 +138,7 @@ const JobPostComponent = () => {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
       <ToastContainer 
         position="top-right"
         autoClose={5000}
@@ -148,8 +155,8 @@ const JobPostComponent = () => {
         <div className="bg-white shadow-xl rounded-lg overflow-hidden">
           <div className="md:flex">
             {/* Left Side - Form */}
-            <div className="md:w-1/2 p-8 sm:p-10 lg:p-12">
-              <h1 className="text-3xl font-bold text-sky-800 mb-6">
+            <div className="md:w-1/2 p-6 sm:p-8 lg:p-10">
+              <h1 className="text-2xl sm:text-3xl font-bold text-sky-800 mb-6">
                 Post a Job
               </h1>
 
@@ -170,36 +177,37 @@ const JobPostComponent = () => {
                   {errors.job_title && <p className="mt-1 text-sm text-red-600">{errors.job_title}</p>}
                 </div>
 
-                {/* Location */}
-                <div>
-                  <label className="block text-sm font-medium text-sky-700">
-                    Location*
-                  </label>
-                  <input
-                    type="text"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full border ${errors.location ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
-                    placeholder="e.g. New York, NY"
-                  />
-                  {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
-                </div>
+                {/* Grid for Location and Company */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-sky-700">
+                      Location*
+                    </label>
+                    <input
+                      type="text"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      className={`mt-1 block w-full border ${errors.location ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
+                      placeholder="e.g. New York, NY"
+                    />
+                    {errors.location && <p className="mt-1 text-sm text-red-600">{errors.location}</p>}
+                  </div>
 
-                {/* Company Name */}
-                <div>
-                  <label className="block text-sm font-medium text-sky-700">
-                    Company Name*
-                  </label>
-                  <input
-                    type="text"
-                    name="company_name"
-                    value={formData.company_name}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full border ${errors.company_name ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
-                    placeholder="e.g. Tech Innovators Inc."
-                  />
-                  {errors.company_name && <p className="mt-1 text-sm text-red-600">{errors.company_name}</p>}
+                  <div>
+                    <label className="block text-sm font-medium text-sky-700">
+                      Company Name*
+                    </label>
+                    <input
+                      type="text"
+                      name="company_name"
+                      value={formData.company_name}
+                      onChange={handleChange}
+                      className={`mt-1 block w-full border ${errors.company_name ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
+                      placeholder="e.g. Tech Innovators Inc."
+                    />
+                    {errors.company_name && <p className="mt-1 text-sm text-red-600">{errors.company_name}</p>}
+                  </div>
                 </div>
 
                 {/* Tags */}
@@ -218,96 +226,124 @@ const JobPostComponent = () => {
                   {errors.tags && <p className="mt-1 text-sm text-red-600">{errors.tags}</p>}
                 </div>
 
-                {/* Salary Range */}
-                <div>
-                  <label className="block text-sm font-medium text-sky-700">
-                    Salary Range*
-                  </label>
-                  <input
-                    type="text"
-                    name="salary_range"
-                    value={formData.salary_range}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full border ${errors.salary_range ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
-                    placeholder="e.g. 80,000 - 100,000 USD"
-                  />
-                  {errors.salary_range && <p className="mt-1 text-sm text-red-600">{errors.salary_range}</p>}
-                </div>
+                {/* Grid for Salary and Department */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-sky-700">
+                      Salary Range*
+                    </label>
+                    <input
+                      type="text"
+                      name="salary_range"
+                      value={formData.salary_range}
+                      onChange={handleChange}
+                      className={`mt-1 block w-full border ${errors.salary_range ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
+                      placeholder="e.g. 80,000 - 100,000 USD"
+                    />
+                    {errors.salary_range && <p className="mt-1 text-sm text-red-600">{errors.salary_range}</p>}
+                  </div>
 
-                {/* Employment Type */}
-                <div>
-                  <label className="block text-sm font-medium text-sky-700">
-                    Employment Type*
-                  </label>
-                  {errors.employment_type && <p className="mt-1 text-sm text-red-600">{errors.employment_type}</p>}
-                  <div className="mt-1 grid grid-cols-2 gap-3 sm:grid-cols-3">
-                    {["Full-time", "Part-time", "Contract", "Temporary", "Internship"].map((type) => (
-                      <label key={type} className="flex items-center">
-                        <input
-                          type="radio"
-                          name="employment_type"
-                          value={type}
-                          checked={formData.employment_type === type}
-                          onChange={handleChange}
-                          className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-sky-300"
-                        />
-                        <span className="ml-2 text-sm text-sky-700">{type}</span>
-                      </label>
-                    ))}
+                  <div>
+                    <label className="block text-sm font-medium text-sky-700">
+                      Department*
+                    </label>
+                    <input
+                      type="text"
+                      name="department"
+                      value={formData.department}
+                      onChange={handleChange}
+                      className={`mt-1 block w-full border ${errors.department ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
+                      placeholder="e.g. Engineering"
+                    />
+                    {errors.department && <p className="mt-1 text-sm text-red-600">{errors.department}</p>}
                   </div>
                 </div>
 
-                {/* Industry Type */}
-                <div>
-                  <label className="block text-sm font-medium text-sky-700">
-                    Industry Type*
-                  </label>
-                  <select
-                    name="industry_type"
-                    value={formData.industry_type}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border ${errors.industry_type ? 'border-red-300' : 'border-sky-300'} focus:outline-none focus:ring-sky-500 focus:border-sky-500 rounded-md`}
-                  >
-                    <option value="" disabled>Select industry</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Finance">Finance</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Education">Education</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                  </select>
-                  {errors.industry_type && <p className="mt-1 text-sm text-red-600">{errors.industry_type}</p>}
+                {/* Grid for Employment and Experience */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Employment Type */}
+                  <div className="border-r border-sky-300">
+                    <label className="block text-sm font-medium text-sky-700 ">
+                      Employment Type*
+                    </label>
+                    {errors.employment_type && <p className="mt-1 text-sm text-red-600">{errors.employment_type}</p>}
+                    <div className="mt-1 grid grid-cols-2 gap-3 ">
+                      {["Full-time", "Part-time", "Contract", "Temporary", "Internship"].map((type) => (
+                        <label key={type} className="flex items-center">
+                          <input
+                            type="radio"
+                            name="employment_type"
+                            value={type}
+                            checked={formData.employment_type === type}
+                            onChange={handleChange}
+                            className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-sky-300"
+                          />
+                          <span className="ml-2 text-sm text-sky-700">{type}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Experience */}
+                  <div>
+                    <label className="block text-sm font-medium text-sky-700">
+                      Experience*
+                    </label>
+                    {errors.experience && <p className="mt-1 text-sm text-red-600">{errors.experience}</p>}
+                    <div className="mt-1 grid grid-cols-2 gap-3">
+                      {["0-1", "1-3", "3-5", "5-10", "10+"].map((exp) => (
+                        <label key={exp} className="flex items-center">
+                          <input
+                            type="radio"
+                            name="experience"
+                            value={exp}
+                            checked={formData.experience === exp}
+                            onChange={handleChange}
+                            className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-sky-300"
+                          />
+                          <span className="ml-2 text-sm text-sky-700">{exp} years</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
-                {/* Department */}
-                <div>
-                  <label className="block text-sm font-medium text-sky-700">
-                    Department*
-                  </label>
-                  <input
-                    type="text"
-                    name="department"
-                    value={formData.department}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full border ${errors.department ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
-                    placeholder="e.g. Engineering"
-                  />
-                  {errors.department && <p className="mt-1 text-sm text-red-600">{errors.department}</p>}
-                </div>
+                {/* Grid for Education and Industry */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-sky-700">
+                      Education*
+                    </label>
+                    <input
+                      type="text"
+                      name="education"
+                      value={formData.education}
+                      onChange={handleChange}
+                      className={`mt-1 block w-full border ${errors.education ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
+                      placeholder="e.g. Bachelor's Degree in Computer Science"
+                    />
+                    {errors.education && <p className="mt-1 text-sm text-red-600">{errors.education}</p>}
+                  </div>
 
-                {/* Education */}
-                <div>
-                  <label className="block text-sm font-medium text-sky-700">
-                    Education*
-                  </label>
-                  <input
-                    type="text"
-                    name="education"
-                    value={formData.education}
-                    onChange={handleChange}
-                    className={`mt-1 block w-full border ${errors.education ? 'border-red-300' : 'border-sky-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500`}
-                    placeholder="e.g. Bachelor's Degree in Computer Science"
-                  />
-                  {errors.education && <p className="mt-1 text-sm text-red-600">{errors.education}</p>}
+                  <div>
+                    <label className="block text-sm font-medium text-sky-700">
+                      Industry Type*
+                    </label>
+                    <select
+                      name="industry_type"
+                      value={formData.industry_type}
+                      onChange={handleChange}
+                      className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border ${errors.industry_type ? 'border-red-300' : 'border-sky-300'} focus:outline-none focus:ring-sky-500 focus:border-sky-500 rounded-md`}
+                    >
+                      <option value="" disabled>Select industry</option>
+                      <option value="Information Technology">Information Technology</option>
+                      <option value="Finance">Finance</option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="Education">Education</option>
+                      <option value="Manufacturing">Manufacturing</option>
+                    </select>
+                    {errors.industry_type && <p className="mt-1 text-sm text-red-600">{errors.industry_type}</p>}
+                  </div>
                 </div>
 
                 {/* Job Description */}
@@ -316,8 +352,8 @@ const JobPostComponent = () => {
                     Job Description*
                   </label>
                   <RichTextEditor
-                    className="rte-container mt-10"
-                    toolbarOptions={[
+                          key={editorKey} 
+ className="rte-container mt-1 min-h-[150px]"                    toolbarOptions={[
                       "word_count", "clear_format", "undo", "redo", "font", 
                       "header", "bold", "italic", "underline", "strikethrough",
                       "text_color", "highlight_color", "numbered_list", "bulleted_list",
@@ -326,10 +362,15 @@ const JobPostComponent = () => {
                     ]}
                     customizeUI={{
                       backgroundColor: "#fff",
-                      primaryColor: "#20464b",
+                      primaryColor: "#075985", // Sky-800 color
                       stickyToolbarOnScroll: true,
                       toolbarBackgroundColor: "#e8f0fe",
                       toolbarBorderColor: "#20464b",
+                      contentStyles: {
+                        'h1, h2, h3, h4, h5, h6': {
+                          color: '#075985 !important' // Force heading colors
+                        }
+                      }
                     }}
                     fetchOutput={fetchOutput}
                   />
@@ -339,7 +380,7 @@ const JobPostComponent = () => {
                 </div>
                 
                 {/* Submit Button */}
-                <div className="pt-2">
+                <div className="pt-4">
                   <button
                     type="submit"
                     disabled={isSubmitting}
@@ -361,14 +402,14 @@ const JobPostComponent = () => {
 
             {/* Right Side - Image */}
             <div className="md:block md:w-1/2 bg-sky-100">
-              <div className="h-full flex items-center justify-center p-8">
+              <div className="h-full flex items-center justify-center p-6">
                 <div className="text-center">
                   <img
                     src={jobpost}
                     alt="Hiring illustration"
                     className="mx-auto h-full w-auto rounded-lg object-cover"
                   />
-                  <h2 className="mt-6 text-2xl font-bold text-sky-800">
+                  <h2 className="mt-6 text-xl sm:text-2xl font-bold text-sky-800">
                     Find the Perfect Candidate
                   </h2>
                   <p className="mt-2 text-sm text-sky-600">
@@ -382,7 +423,18 @@ const JobPostComponent = () => {
         </div>
       </div>
     </div>
+
+    
   );
 };
-
+<style>{`
+  .rte-container h1,
+  .rte-container h2,
+  .rte-container h3,
+  .rte-container h4,
+  .rte-container h5,
+  .rte-container h6 {
+    color: #075985 !important;
+  }
+`}</style>
 export default JobPostComponent;

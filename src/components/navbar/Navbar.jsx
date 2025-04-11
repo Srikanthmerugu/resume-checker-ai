@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { FiMenu, FiX, FiUser } from "react-icons/fi";
-import { logo } from "../../assets/Assets";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
@@ -30,11 +29,27 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
+  // Define nav items to avoid repetition
+  const navItems = [
+    { to: "/find-a-jobs", label: "Find a Job", authRequired: false },
+    { to: "/job-post", label: "Post a Job", authRequired: false },
+    {
+      to: token ? "/findCandidate" : "/login",
+      label: "Find a Candidate",
+      authRequired: true,
+    },
+    {
+      to: token ? "/upload-resume" : "/login",
+      label: "AI Resume Checker",
+      authRequired: true,
+    },
+  ];
+
   return (
-    <nav className="p-4 bg-white shadow-md sm:shadow-none sticky top-0 z-50 w-full">
+    <nav className="p-4 bg-white shadow-md lg:shadow-none sticky top-0 z-50 w-full">
       <div className="container mx-auto flex px-4 sm:px-6 lg:px-10 justify-between items-center max-w-7xl">
         <a href="/" className="flex items-center space-x-2 hover:scale-105 transition-transform">
-          <h1 className="text-sky-900 text-   xl font-bold text-xl sm:text-2xl lg:text-2xl">
+          <h1 className="text-sky-900 text-xl font-bold sm:text-2xl lg:text-2xl">
             <span className="bg-gradient-to-r from-sky-900 to-sky-600 bg-clip-text text-transparent hover:from-blue-600 hover:to-sky-900 transition-all">
               Ɲ𝚎𝚎𝚍
             </span>
@@ -48,93 +63,30 @@ const Navbar = () => {
           </h1>
         </a>
 
-        {/* Mobile Menu Button */}
+        {/* Toggle Button (visible below 1024px) */}
         <button
-          className="md:hidden p-2 focus:outline-none"
+          className="lg:hidden p-2 focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
         >
           {isOpen ? <FiX size={28} /> : <FiMenu size={28} />}
         </button>
 
-        {/* Desktop Menu */}
-        <ul className="hidden md:flex space-x-2 lg:space-x-4 items-center">
-          {token ? (
-            <li>
-              <Link to="/find-a-jobs">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  Find a Job
+        {/* Desktop Menu (visible at 1024px and above) */}
+        <ul className="hidden lg:flex space-x-2 xl:space-x-4 items-center">
+          {navItems.map((item) => (
+            <li key={item.label}>
+              <Link to={item.to}>
+                <button className="hover:text-blue-600 px-4 py-1.5 xl:px-6 xl:py-2 text-sm xl:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
+                  {item.label}
                 </button>
               </Link>
             </li>
-          ) : (
-            <li>
-              <Link to="/find-a-jobs">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  Find a Job
-                </button>
-              </Link>
-            </li>
-          )}
-          
-          {token ? (
-            <li>
-              <Link to="/job-post">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  Post a Job
-                </button>
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <Link to="/job-post">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  Post a Job
-                </button>
-              </Link>
-            </li>
-          )}
-          
-          {token ? (
-            <li>
-              <Link to="/findCandidate">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  Find a Candidate
-                </button>
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <Link to="/login">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  Find a Candidate
-                </button>
-              </Link>
-            </li>
-          )}
-
-          {token ? (
-            <li>
-              <Link to="/upload-resume">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  AI Resume Checker
-                </button>
-              </Link>
-            </li>
-          ) : (
-            <li>
-              <Link to="/login">
-                <button className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200">
-                  AI Resume Checker
-                </button>
-              </Link>
-            </li>
-          )}
-
+          ))}
           {token ? (
             <li>
               <button
                 onClick={handleLogout}
-                className="hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200"
+                className="hover:text-blue-600 px-4 py-1.5 xl:px-6 xl:py-2 text-sm xl:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200"
               >
                 Logout
               </button>
@@ -144,13 +96,13 @@ const Navbar = () => {
               <button
                 onClick={handleGuestLogin}
                 disabled={loading}
-                className="flex items-center hover:text-blue-600 px-4 py-1.5 lg:px-6 lg:py-2 text-sm lg:text-base cursor-pointer border-sky-900 text-sky-900 border-2 rounded-full transition-colors duration-200"
+                className="flex items-center bg-sky-800 hover:bg-sky-50 hover:border-sky-800 hover:text-sky-800 px-4 py-1.5 xl:px-6 xl:py-2 text-sm xl:text-base cursor-pointer border-sky-100 text-sky-50 border-2 rounded-full transition-colors duration-200"
               >
                 <FiUser className="mr-2" />
                 {loading ? (
                   <span className="flex items-center justify-center">
                     <svg
-                      className="animate-spin h-4 w-4 lg:h-5 lg:w-5 mr-2 text-sky-900"
+                      className="animate-spin h-4 w-4 xl:h-5 xl:w-5 mr-2 text-sky-900"
                       viewBox="0 0 24 24"
                     >
                       <circle
@@ -178,82 +130,19 @@ const Navbar = () => {
         </ul>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu (visible below 1024px when toggled) */}
       {isOpen && (
-        <div className="md:hidden mt-4 px-4">
+        <div className="lg:hidden mt-4 px-4">
           <ul className="space-y-3 text-center bg-white shadow-lg p-4 rounded-lg">
-            {token ? (
-              <li>
-                <Link to="/find-a-jobs" onClick={handleNavClick}>
+            {navItems.map((item) => (
+              <li key={item.label}>
+                <Link to={item.to} onClick={handleNavClick}>
                   <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    Find a Job
+                    {item.label}
                   </button>
                 </Link>
               </li>
-            ) : (
-              <li>
-                <Link to="/find-a-jobs" onClick={handleNavClick}>
-                  <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    Find a Job
-                  </button>
-                </Link>
-              </li>
-            )}
-            
-            {token ? (
-              <li>
-                <Link to="/job-post" onClick={handleNavClick}>
-                  <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    Post a Job
-                  </button>
-                </Link>
-              </li>
-            ) : (
-              <li>
-                <Link to="/job-post" onClick={handleNavClick}>
-                  <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    Post a Job
-                  </button>
-                </Link>
-              </li>
-            )}
-            
-            {token ? (
-              <li>
-                <Link to="/findCandidate" onClick={handleNavClick}>
-                  <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    Find a Candidate
-                  </button>
-                </Link>
-              </li>
-            ) : (
-              <li>
-                <Link to="/login" onClick={handleNavClick}>
-                  <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    Find a Candidate
-                  </button>
-                </Link>
-              </li>
-            )}
-
-            {token ? (
-              <li>
-                <Link to="/upload-resume" onClick={handleNavClick}>
-                  <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    AI Resume Checker
-                  </button>
-                </Link>
-              </li>
-            ) : (
-              <li>
-                <Link to="/login" onClick={handleNavClick}>
-                  <button className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200">
-                    AI Resume Checker
-                  </button>
-                </Link>
-              </li>
-            )}
-
+            ))}
             {!token && (
               <li>
                 <button
@@ -290,12 +179,11 @@ const Navbar = () => {
                 </button>
               </li>
             )}
-
             {token && (
               <li>
                 <button
                   onClick={handleLogout}
-                  className="w-full text-left hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200"
+                  className="w-full text-left  hover:bg-sky-300 hover:text-sky-900 px-4 py-2 text-sm cursor-pointer border-l-4 border-sky-900 bg-sky-200 text-sky-900 rounded-lg transition-colors duration-200"
                 >
                   Logout
                 </button>

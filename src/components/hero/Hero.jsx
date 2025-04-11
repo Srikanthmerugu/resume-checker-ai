@@ -19,7 +19,7 @@ const Hero = () => {
     }, []);
 
   return (
-    <div className="flex flex-col items-center gap-10 justify-center md:mt-30 mt-20 px-4 sm:px-6 lg:px-8">
+    <div className="flex flex-col items-center gap-10 justify-center md:mt-30 mt-10 px-4 sm:px-6 lg:px-8">
       <StatsBanners />
       <div className="relative flex flex-col items-center justify-center text-center">
         {/* Outer Glow */}
