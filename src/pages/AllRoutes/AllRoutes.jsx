@@ -19,7 +19,7 @@ import SearchForFindJob from '../FindaJob/SearchForFindJob';
 export const AllRoutes = () => {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/videoModal" element={<VideoModal />} />

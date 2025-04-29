@@ -296,3 +296,14 @@ box-shadow:  7px -7px 14px #c1c1c1,
   animation: fadeInUp 1s ease-out forwards;
   animation-delay: 0.3s;
 }
+
+
+a, button{
+  cursor: pointer !important;
+}
+
+
+@keyframes floatLR {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+}

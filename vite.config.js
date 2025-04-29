@@ -19,7 +19,7 @@ export default defineConfig({
   ],
   server: {
     host: '0.0.0.0', // allow access from your local network
-    port: 5173,      // or any port you prefer
+    port: 5175,      // or any port you prefer
   },
   base: ' /',
 
