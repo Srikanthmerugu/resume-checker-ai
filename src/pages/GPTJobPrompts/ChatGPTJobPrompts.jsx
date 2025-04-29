@@ -48,7 +48,7 @@ const GPTJobPrompts = () => {
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                   padding: '24px',
                   width: '300px',
-                  transition: 'all 0.3s ease-in-out',
+                  transition: 'all 0.3s ease-in-out',  
                 }}
                 contentArrowStyle={{ borderRight: '10px solid rgba(149, 85, 245, 0.1)' }}
                 iconStyle={{ background: 'rgba(149, 85, 245, 0.8)', color: '#fff', fontSize: '20px' }}
