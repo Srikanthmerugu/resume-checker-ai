@@ -307,3 +307,40 @@ a, button{
   0%, 100% { transform: translateX(0); }
   50% { transform: translateX(10px); }
 }
+
+
+.resume-images{
+ 
+  position: relative;
+  width: 90%;
+
+  transition: all 1.3s ease-in-out;
+}
+.secoundnd-img{
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 250px;
+
+}
+.first-img{
+  transform: scaleX(-1);
+  width: 400px;
+
+}
+.resume-images:hover .group-img{
+  width: 170px;
+}
+
+
+.group-img{
+  width: 150px;
+  transition: all .3s ease-in-out;
+  position: absolute;
+  left: 0;
+  top: 0;
+
+}
+
+
+

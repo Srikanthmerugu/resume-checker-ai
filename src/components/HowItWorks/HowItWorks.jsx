@@ -4,7 +4,7 @@ import WidgeLine from "../WidgeLine/WidgeLine";
 
 const HowItWorks = () => {
   return (
-    <div className="px-4  md:px-10 lg:px-20">
+    <div id="Howitswork" className="px-4  md:px-10 lg:px-20">
       <h1 className="text-center text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-20 ">
         HOW IT WORKS
       </h1>

@@ -1,89 +1,229 @@
 import React from 'react';
-import { VerticalTimeline, VerticalTimelineElement } from 'react-vertical-timeline-component';
-import 'react-vertical-timeline-component/style.min.css';
-import { FaLightbulb, FaMagic, FaEdit, FaShareAlt } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { useInView } from 'react-intersection-observer';
+import { 
+  FaFileAlt, FaPen, FaQuestionCircle, FaMoneyBillWave, 
+  FaLinkedin, FaEnvelope, FaUserTie, FaMicrophone, FaRoute, FaBullhorn 
+} from 'react-icons/fa';
 
-const GPTJobPrompts = () => {
+const ChatGPTJobPrompts = () => {
   const steps = [
     {
-      title: 'Choose Your Writing Project',
-      description: "Don't settle for uninspired content! Good posts help your brand effectively",
-      icon: <FaLightbulb />,
+      title: 'Resume Optimization',
+      description: 'Analyze my resume and provide tailored improvements to align it with a [job title] role at [company]. Highlight skills, achievements, and keywords from the job description. Ensure it passes ATS screening and appeals to hiring managers.',
+      icon: FaFileAlt,
+      id:"Optimization"
     },
     {
-      title: 'Give MuAI a bit of context',
-      description: "It's a powerful tool designed to help you craft unique posts",
-      icon: <FaMagic />,
+      title: 'Cover Letter Creation',
+      description: 'Craft a compelling, personalized cover letter for a [job title] position at [company]. Emphasize my experience in [industry/skill] and how it aligns with the company\'s values and mission. Make it concise, engaging, and unique.',
+      icon: FaPen,
     },
     {
-      title: 'Edit and polish to perfection',
-      description: "It could be any topic that resonates with your audience",
-      icon: <FaEdit />,
+      title: 'Interview Questions',
+      description: 'Generate a list of the top 20 interview questions for a [job title] role at [company]. Include behavioral, technical, and industry-specific questions. Provide model answers tailored to my experience in [industry/skill].',
+      icon: FaQuestionCircle,
     },
     {
-      title: 'Publish your Social Post',
-      description: "Generate social media content with the click of a button",
-      icon: <FaShareAlt />,
+      title: 'Salary Negotiation Strategy',
+      description: 'Help me craft a strong salary negotiation strategy for a [job title] role at [company]. Consider industry benchmarks, my experience level in [industry], and how to confidently communicate my value without kindizing the offer.',
+      icon: FaMoneyBillWave,
+    },
+    {
+      title: 'LinkedIn Profile Enhancement',
+      description: 'Revise my LinkedIn profile summary and experience sections to optimize for [job title] positions at [company]. Focus on SEO keywords, achievements, and storytelling to attract recruiters in [industry].',
+      icon: FaLinkedin,
+    },
+    {
+      title: 'Networking Outreach Messages',
+      description: 'Write a professional yet friendly LinkedIn message to connect with [job title] professionals at [company]. My goal is to build rapport and learn about potential opportunities without seeming too transactional.',
+      icon: FaEnvelope,
+    },
+    {
+      title: 'Personal Branding Strategy',
+      description: 'Develop a personal branding strategy for me as a [job title] in [industry]. Include content ideas for LinkedIn, networking tactics, and ways to position myself as an expert to attract top recruiters.',
+      icon: FaUserTie,
+    },
+    {
+      title: 'Mock Interview',
+      description: 'Act as a hiring manager for a [job title] role at [company] and conduct a mock interview. Ask 5 behavioral and 5 technical questions. After my responses, provide feedback on clarity, impact, and areas for improvement.',
+      icon: FaMicrophone,
+    },
+    {
+      title: 'Career Change Guidance',
+      description: 'I\'m transitioning from [current industry] to [new industry]. Develop a roadmap to position my experience effectively for a [job title] role at [company], including skill gaps, networking tips, and resume adjustments.',
+      icon: FaRoute,
+    },
+    {
+      title: 'Elevator Pitch Creation',
+      description: 'Help me craft a compelling 30-second elevator pitch for a [job title] role at [company]. Ensure it highlights my unique value, key achievements, and why I\'m the perfect fit in a confident yet natural tone.',
+      icon: FaBullhorn,
     },
   ];
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3,
+        delayChildren: 0.2,
+      },
+    },
+  };
+
+  const getCardVariants = (isEven) => ({
+    hidden: { 
+      opacity: 0, 
+      x: isEven ? -100 : 100, // Left cards from left, right cards from right
+      scale: 0.95 
+    },
+    visible: {
+      opacity: 1,
+      x: 0,
+      scale: 1,
+      transition: {
+        type: 'spring',
+        stiffness: 120,
+        damping: 15,
+        mass: 0.5,
+      },
+    },
+  });
+
+  const lineVariants = {
+    hidden: { height: 0 },
+    visible: {
+      height: '100%',
+      transition: {
+        duration: 1.5,
+        ease: [0.6, 0.01, -0.05, 0.9],
+      },
+    },
+  };
+
+  const floatingVariants = {
+    float: {
+      y: [-10, 10],
+      transition: {
+        y: {
+          duration: 2,
+          repeat: Infinity,
+          repeatType: 'reverse',
+          ease: 'easeInOut',
+        },
+      },
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-white py-20">
-      <div className="text-center mb-16">
-        <h2 className="text-4xl font-bold text-gray-900 mb-2">Working Process</h2>
-        <h3 className="text-2xl font-semibold text-purple-600">
-          Create Engaging Social Media Content in 4 Steps
-        </h3>
+    <div className='bg-background'>
+  <div className="min-h-screen   py-24 font-sans">
+      <div className="text-center mb-12 space-y-4">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: 'backOut' }}
+          className="text-5xl font-bold bg-gradient-to-r from-sky-400 to-sky-800 bg-clip-text text-transparent tracking-tight"
+        >
+          AI-Powered Career Mastery
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-xl text-slate-500 max-w-2xl mx-auto"
+        >
+          Transform your job search with our 10-step optimization framework powered by ChatGPT intelligence
+        </motion.p>
       </div>
 
-      <div className="relative max-w-4xl mx-auto">
-        <VerticalTimeline layout="1-column" lineColor="rgba(149, 85, 245, 0.5)">
-          {steps.map((step, index) => (
-            <React.Fragment key={index}>
-              <VerticalTimelineElement
-                className="vertical-timeline-element--work"
-                contentStyle={{
-                  background: 'linear-gradient(to right, rgba(149, 85, 245, 0.1), rgba(149, 85, 245, 0.2))',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  padding: '24px',
-                  width: '300px',
-                  transition: 'all 0.3s ease-in-out',  
-                }}
-                contentArrowStyle={{ borderRight: '10px solid rgba(149, 85, 245, 0.1)' }}
-                iconStyle={{ background: 'rgba(149, 85, 245, 0.8)', color: '#fff', fontSize: '20px' }}
-                icon={step.icon}
-                date={<span className="text-purple-600 font-bold">{index + 1}</span>}
+      <div className="relative max-w-7xl mx-auto px-4">
+        <motion.div 
+          className="absolute left-1/2 top-0 h-full w-1 bg-gradient-to-b from-cyan-500/30 to-blue-600/30 rounded-full -translate-x-1/2"
+          variants={lineVariants}
+          initial="hidden"
+          animate="visible"
+        />
+
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="relative space-y-12"
+        >
+          {steps.map((step, index) => {
+            const isEven = index % 2 === 0;
+            const { ref, inView } = useInView({ threshold: 0.25 });
+            const Icon = step.icon;
+
+            return (
+              <motion.div
+                key={index}
+                ref={ref}
+                id='Optimization'
+                variants={getCardVariants(isEven)}
+                initial="hidden"
+                animate={inView ? 'visible' : 'hidden'}
+                className={`group relative flex ${isEven ? 'justify-start' : 'justify-end'}`}
               >
-                <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
-                <p className="text-gray-600 mt-2 text-sm">{step.description}</p>
-              </VerticalTimelineElement>
-              {index < steps.length - 1 && (
-                <div className="absolute right-[-40px] top-[50%] translate-y-[-50%] w-20 h-0.5 bg-gray-300">
-                  <svg
-                    className="absolute -left-2 top-[-5px]"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M5 10H15M15 10L12 7M15 10L12 13"
-                      stroke="rgba(149, 85, 245, 0.5)"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                {/* Glowing dot */}
+                <div className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2">
+                  <div className="absolute -inset-2 bg-cyan-400/30 rounded-full blur-lg group-hover:bg-blue-400/40 transition-all" />
+                  <div className="relative w-5 h-5 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 shadow-xl" />
                 </div>
-              )}
-            </React.Fragment>
-          ))}
-        </VerticalTimeline>
+
+                {/* Content card */}
+                <div className={`w-full md:w-[45%] p-6 rounded-3xl bg-sky-800 backdrop-blur-xl border border-slate-700/50 shadow-2xl hover:border-cyan-400/30 transition-all ${isEven ? 'mr-2' : 'ml-2'}`}>
+                  <div className="flex gap-6 items-start mb-6">
+                    <motion.div
+                      variants={floatingVariants}
+                      animate={inView ? 'float' : 'hidden'}
+                      className="p-4 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-lg"
+                    >
+                      <Icon className="w-8 h-8 text-white" />
+                    </motion.div>
+                    <div>
+                      <div className="text-sm text-cyan-400 font-mono mb-1">Step {index + 1}</div>
+                      <h3 className="text-2xl font-bold text-white">{step.title}</h3>
+                    </div>
+                  </div>
+                  <p className="text-sky-50 leading-relaxed">
+                    {step.description}
+                  </p>
+                  <a href='#' className='text-blue-400'>Read more...</a>
+                </div>
+
+                {/* Connector arrow */}
+                {index < steps.length - 1 && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: inView ? 1 : 0 }}
+                    className={`absolute ${isEven ? 'right-[50%] top-[50%]' : 'left-[50%] top-[50%]'} top-ful -translate-y-4`}
+                  >
+                    <svg
+                      width="60"
+                      height="30"
+                      viewBox="0 0 24 24"
+                      className={`text-cyan-500 transform ${isEven ? 'rotate-180' : '-rotate-0'}`}
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"
+                      />
+                    </svg>
+                  </motion.div>
+                )}
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
     </div>
+    </div>
+  
   );
 };
 
-export default GPTJobPrompts;
+export default ChatGPTJobPrompts;

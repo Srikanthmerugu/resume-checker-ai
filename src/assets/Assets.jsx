@@ -35,6 +35,9 @@ export {default as company12} from "./company12.png"
 export {default as company13} from "./company13.png"
 export {default as company14} from "./company14.png"
 export {default as company15} from "./company15.png"
+export {default as resumeFind} from "./resumefinder.png"
+export {default as resumegirl} from "./resumegirl.avif"
+export {default as groupmen} from "./groupmens.jpg"
 
 
  

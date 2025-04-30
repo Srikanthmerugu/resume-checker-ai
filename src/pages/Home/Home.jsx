@@ -5,20 +5,26 @@ import HowItWorks from '../../components/HowItWorks/HowItWorks'
 import CompanyCarousel from '../../components/CompanyCarousel/CompanyCarousel'
 import NewHero2 from '../../components/hero/NewHero2'
 import NewNavbar from '../../components/hero/NewNavbar'
-import GPTJobPrompts from '../GPTJobPrompts/ChatGPTJobPrompts'
+import ChatGPTJobPrompts from '../GPTJobPrompts/ChatGPTJobPrompts'
+import SocialMediaFeatures from '../SocialMediaFeatures/SocialMediaFeatures'
+import CreativeToolsPlatform from '../SocialMediaFeatures/CreativeToolsPlatform'
+
 
 const Home = () => {
   return (
     <div>
       {/* <NewNavbar /> */}
       <NewHero2 />
-      <GPTJobPrompts />
-      
-      {/* <Hero />
+      <SocialMediaFeatures />
+      <ChatGPTJobPrompts />   
+
+      <CreativeToolsPlatform />
+
+      {/* <Hero />*/}
       <HowItWorks />
  
       <CardsAnalyser />
-      <CompanyCarousel /> */}
+      <CompanyCarousel /> 
    </div>
   )
 }
