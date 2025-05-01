@@ -136,7 +136,7 @@ const PopularServices = () => {
           <motion.div
             variants={cardVariants}
             className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
-          >
+          > 
             <div className="text-[#ff007f] text-2xl">📦</div>
             <div>
               <h3 className="text-lg font-semibold text-gray-800">Repurpose Your Content</h3>
