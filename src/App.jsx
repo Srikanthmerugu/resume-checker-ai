@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { AllRoutes } from './pages/AllRoutes/AllRoutes';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './ScrollToTop';
+import './Animations.css'
 import './App.css'
 
 function App() {

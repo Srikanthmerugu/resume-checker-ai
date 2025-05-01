@@ -19,7 +19,17 @@ export {default as userlogo2 }from  './logo-2.svg'
 export {default as FileUploadImage }from  './FileUploadImage.gif'
 export {default as  jobpost}from  './Jobpost.gif';
 export {default as NoData} from "./No-data.gif"
+export {default as NewLogo2} from "./NewLogo2.png"
+export {default as aiImg} from "./ai-img.jpg"
+export {default as aiImg2} from "./ai-img-2.jpg"
+export {default as content12} from "./Content-12.webp"
+export {default as imgaeGirl} from "./Image-girl.webp"
+export {default as resumeGirl} from "./resumegirl.avif"
+export {default as groupmen} from "./groupmens.jpg"
+export {default as resumeFind} from "./resumefinder.png"
+export {default as LoacationIcon} from "./loaction-icon.webp"
+export {default as iploadImg} from "./upload-img.png"
 
-
+// groupmen, resumeFind,
  
 

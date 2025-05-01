@@ -3,16 +3,24 @@ import Hero from '../../components/hero/Hero'
 import CardsAnalyser from '../../components/CardsAnalyser/CardsAnalyser'
 import HowItWorks from '../../components/HowItWorks/HowItWorks'
 import CompanyCarousel from '../../components/CompanyCarousel/CompanyCarousel'
+import HeroNew from '../../components/hero/HeroNew'
+import CreativeToolsPlatform from '../SocialMediaFeatures/CreativeToolsPlatform'
+import SocialMediaFeatures from '../SocialMediaFeatures/SocialMediaFeatures'
+import PopularServices from '../PopularServices/PopularServices'
 
 const Home = () => {
   return (
     <div>
       
-      <Hero />
+      <HeroNew />
+      <CreativeToolsPlatform />
+      <PopularServices />
+      <SocialMediaFeatures />
+      {/* <Hero />
       <HowItWorks />
  
       <CardsAnalyser />
-      <CompanyCarousel />
+      <CompanyCarousel /> */}
    </div>
   )
 }

@@ -14,11 +14,13 @@ import JobPostComponent from '../JobPostComponent/JobPostComponent';
 import FindAJob from '../FindaJob/FindAJob';
 import FindAllJobs from '../FindaJob/FindAllJobs';
 import SingleJobPost from '../FindaJob/SingleJobPost/SingleJobPost';
+import NewNavbar from '../../components/navbar/NewNavbar';
 
 export const AllRoutes = () => {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
+      {/* <NewNavbar /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/videoModal" element={<VideoModal />} />
