@@ -58,7 +58,7 @@ const CreativeToolsPlatform = () => {
           >
                <div className="relative w-full max-w-4xl">
         {/* Purple Card (Background with Text and Image) */}
-        <div className="card relative w-[450px] h-[400px]  border-1 rounded-4xl border-gray-700 p-6 z-10 ml-[-50px]">
+        <div className="card relative w-[450px] h-[400px]  border-1 moving-border rounded-4xl border-gray-700 p-6 z-10 ml-[-50px]">
           <div className="card-overlay absolute inset-0"></div>
           <div className="relative z-20 flex items-center gap-4">
             {/* Background Text Pattern */}

@@ -7,6 +7,7 @@ import HeroNew from '../../components/hero/HeroNew'
 import CreativeToolsPlatform from '../SocialMediaFeatures/CreativeToolsPlatform'
 import SocialMediaFeatures from '../SocialMediaFeatures/SocialMediaFeatures'
 import PopularServices from '../PopularServices/PopularServices'
+import WhatWeProvide from '../WhatWeProvide/WhatWeProvide'
 
 const Home = () => {
   return (
@@ -15,7 +16,9 @@ const Home = () => {
       <HeroNew />
       <CreativeToolsPlatform />
       <PopularServices />
+      <WhatWeProvide />
       <SocialMediaFeatures />
+
       {/* <Hero />
       <HowItWorks />
  

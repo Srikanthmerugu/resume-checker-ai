@@ -29,6 +29,9 @@ export {default as groupmen} from "./groupmens.jpg"
 export {default as resumeFind} from "./resumefinder.png"
 export {default as LoacationIcon} from "./loaction-icon.webp"
 export {default as iploadImg} from "./upload-img.png"
+export {default as candidateVideo} from "./candiatesVideo.mp4"
+
+
 
 // groupmen, resumeFind,
  

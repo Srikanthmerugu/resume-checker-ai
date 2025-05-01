@@ -69,9 +69,9 @@ const PopularServices = () => {
           >
             <div className="text-[#ff007f] text-2xl">⏰</div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">Save Time and Effort</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Rapid Recruitment</h3>
               <p className="text-sm text-gray-600">
-                Generate content in seconds by using AI to generate unique captions and images.
+                Deliver contract recruiters within 48 hours and a pipeline of candidates in 7 days or less.
               </p>
             </div>
           </motion.div>
@@ -81,11 +81,11 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
           >
-            <div className="text-[#ff007f] text-2xl">✍️</div>
+            <div className="text-[#ff007f] text-2xl">👥</div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">Eliminate Writer's Block</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Scale Your Hiring</h3>
               <p className="text-sm text-gray-600">
-                Enhance strong AI proofread clean and turn them into engaging posts instantly.
+                Flexibly scale your hiring team up or down with month-to-month commitments.
               </p>
             </div>
           </motion.div>
@@ -95,11 +95,11 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
           >
-            <div className="text-[#ff007f] text-2xl">📅</div>
+            <div className="text-[#ff007f] text-2xl">🎯</div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">Post Consistently</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Source Quality Candidates</h3>
               <p className="text-sm text-gray-600">
-                Schedule social media posts consistently and keep your accounts active without the hassle.
+                Access over 300 qualified candidates monthly through expert sourcing solutions.
               </p>
             </div>
           </motion.div>
@@ -109,11 +109,11 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
           >
-            <div className="text-[#ff007f] text-2xl">✂️</div>
+            <div className="text-[#ff007f] text-2xl">💰</div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">Eliminate Your Posts</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Cost-Effective Solutions</h3>
               <p className="text-sm text-gray-600">
-                Create custom posts for each social media platform and consistency for your social media.
+                Save significant costs compared to traditional recruiting options with agile solutions.
               </p>
             </div>
           </motion.div>
@@ -123,11 +123,11 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
           >
-            <div className="text-[#ff007f] text-2xl">⚙️</div>
+            <div className="text-[#ff007f] text-2xl">🤝</div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">Summarize & Simplify</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Expert Recruiter Network</h3>
               <p className="text-sm text-gray-600">
-                Summarize and amplify your posts to enhance content readability.
+                Leverage a vetted network of recruiters to augment your internal hiring team.
               </p>
             </div>
           </motion.div>
@@ -136,12 +136,54 @@ const PopularServices = () => {
           <motion.div
             variants={cardVariants}
             className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
-          > 
-            <div className="text-[#ff007f] text-2xl">📦</div>
+          >
+            <div className="text-[#ff007f] text-2xl">📈</div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-800">Repurpose Your Content</h3>
+              <h3 className="text-lg font-semibold text-gray-800">Predictable Hiring Engine</h3>
               <p className="text-sm text-gray-600">
-                Turn past content into compelling posts that boost conversions.
+                Build a predictable and scalable recruiting process tailored to your needs.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Card 7 */}
+          <motion.div
+            variants={cardVariants}
+            className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
+          >
+            <div className="text-[#ff007f] text-2xl">🔍</div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Targeted Candidate Outreach</h3>
+              <p className="text-sm text-gray-600">
+                Engage warm candidates through proven sourcing strategies for better results.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Card 8 */}
+          <motion.div
+            variants={cardVariants}
+            className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
+          >
+            <div className="text-[#ff007f] text-2xl">📅</div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Flexible Scheduling</h3>
+              <p className="text-sm text-gray-600">
+                Schedule recruiting support when you need it, with no long-term commitments.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Card 9 */}
+          <motion.div
+            variants={cardVariants}
+            className="bg-white rounded-lg p-6 shadow-md border border-gray-200 flex items-center gap-4"
+          >
+            <div className="text-[#ff007f] text-2xl">📊</div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800">Data-Driven Insights</h3>
+              <p className="text-sm text-gray-600">
+                Use data-driven strategies to optimize your hiring process and improve outcomes.
               </p>
             </div>
           </motion.div>

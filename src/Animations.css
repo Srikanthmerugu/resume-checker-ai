@@ -103,3 +103,59 @@
     animation: moveRighttoLeft 4s ease-in-out infinite;
   }
 
+
+
+
+  /* border moving animations start here  */
+  @keyframes borderColorChange {
+    0% {
+      border-color: #e5e7eb; /* Light gray */
+    }
+    25% {
+      border-color: #3b82f6; /* Blue */
+    }
+    50% {
+      border-color: #8b5cf6; /* Purple */
+    }
+    75% {
+      border-color: #f43f5e; /* Pink */
+    }
+    100% {
+      border-color: #e5e7eb; /* Back to light gray */
+    }
+  }
+  
+  .moving-border {
+    animation: borderColorChange 4s linear infinite;
+  }
+  
+  .button-content {
+    border-radius: 1.75rem;
+  }
+  
+  .dark .moving-border {
+    animation: borderColorChangeDark 4s linear infinite;
+  }
+  
+  .dark .button-content {
+    background: #0f172a;
+    color: white;
+  }
+  
+  @keyframes borderColorChangeDark {
+    0% {
+      border-color: #1e293b; /* Dark slate */
+    }
+    25% {
+      border-color: #1d4ed8; /* Darker blue */
+    }
+    50% {
+      border-color: #6d28d9; /* Darker purple */
+    }
+    75% {
+      border-color: #be123c; /* Darker pink */
+    }
+    100% {
+      border-color: #1e293b; /* Back to dark slate */
+    }
+  }

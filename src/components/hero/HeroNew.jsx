@@ -111,14 +111,14 @@ const NewHero = () => {
                 <img
                   src={imgaeGirl}
                   alt="Profile"
-                  className="w-44 h-44 border-2 border-amber-50 rounded-full mb-4"
+                  className="w-40 h-40 border-2 border-amber-50 rounded-full mb-4"
                 />
                 <div className="flex gap-2 mt-2">
                   <span className="text-2xl absolute left-10 bg-amber-50 rounded-full top-20">
                     📸
                   </span>
                   <span className="text-2xl absolute right-10 bg-amber-50 rounded-full top-50">
-                    📸
+                  🪪
                   </span>
                 </div>
               </div>
@@ -143,10 +143,10 @@ const NewHero = () => {
                 />
                 <div className="flex gap-2 mt-2">
                   <span className="text-2xl absolute left-10 bg-amber-50 rounded-full top-20">
-                    📸
+                    🗃️
                   </span>
                   <span className="text-2xl absolute right-10 bg-amber-50 rounded-full top-50">
-                    📸
+                    🪪
                   </span>
                 </div>
               </div>
