@@ -8,6 +8,8 @@ import CreativeToolsPlatform from '../SocialMediaFeatures/CreativeToolsPlatform'
 import SocialMediaFeatures from '../SocialMediaFeatures/SocialMediaFeatures'
 import PopularServices from '../PopularServices/PopularServices'
 import WhatWeProvide from '../WhatWeProvide/WhatWeProvide'
+import FAQSection from '../FAQSection/FAQSection'
+import ChatGPTJobPrompts from '../GPTJobPrompts/ChatGPTJobPrompts'
 
 const Home = () => {
   return (
@@ -17,13 +19,16 @@ const Home = () => {
       <CreativeToolsPlatform />
       <PopularServices />
       <WhatWeProvide />
-      <SocialMediaFeatures />
+      {/* <SocialMediaFeatures /> */}
+      <FAQSection />
 
       {/* <Hero />
       <HowItWorks />
  
-      <CardsAnalyser />
-      <CompanyCarousel /> */}
+      <CardsAnalyser />*/}
+      <ChatGPTJobPrompts />
+      {/* <CompanyCarousel />  */}
+
    </div>
   )
 }

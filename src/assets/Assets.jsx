@@ -30,6 +30,8 @@ export {default as resumeFind} from "./resumefinder.png"
 export {default as LoacationIcon} from "./loaction-icon.webp"
 export {default as iploadImg} from "./upload-img.png"
 export {default as candidateVideo} from "./candiatesVideo.mp4"
+export {default as FAQ} from "./FAQ.mp4"
+export {default as AIHand} from "./HandAI.png"
 
 
 
