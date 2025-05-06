@@ -159,3 +159,29 @@
       border-color: #1e293b; /* Back to dark slate */
     }
   }
+
+
+
+
+
+
+
+
+
+  /* Animation for upload jobs ui start here  */
+  @keyframes wave {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+.animate-wave {
+  animation: wave 8s linear infinite;
+
+}
+
+
+/* Upload resume animtion are closed here  */

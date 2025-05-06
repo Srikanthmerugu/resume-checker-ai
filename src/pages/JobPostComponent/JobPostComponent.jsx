@@ -6,8 +6,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import NewNavbar from "../../components/navbar/NewNavbar";
 
 const JobPostComponent = () => {
+
   const { token } = useAuth();
   const navigate = useNavigate();
   const { output: jobDescription, fetchOutput } = useRichTextEditor();
@@ -25,7 +27,6 @@ const JobPostComponent = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Check authentication on component mount
   useEffect(() => {
     if (!token) {
       toast.error("Please login to post a job");
@@ -80,7 +81,6 @@ const JobPostComponent = () => {
     setIsSubmitting(true);
 
     try {
-      // Convert comma-separated tags to array and trim each tag
       const tagsArray = formData.tags.split(',')
                             .map(tag => tag.trim())
                             .filter(tag => tag !== '');
@@ -131,7 +131,7 @@ const JobPostComponent = () => {
   }
 
   return (
-    <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-black relative">
       <ToastContainer 
         position="top-right"
         autoClose={5000}
@@ -142,10 +142,30 @@ const JobPostComponent = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
+        className="z-[1000]" // High z-index for toasts
       />
+
+      {/* Background Container */}
+      <div
+          className="absolute inset-0"
+          style={{
+            backgroundSize: "40px 40px",
+            backgroundImage:
+              "linear-gradient(to right, #262626 1px, transparent 1px), linear-gradient(to bottom, #262626 1px, transparent 1px)",
+          }}
+        />
+        {/* Radial Gradient Overlay */}
+        <div
+          className="absolute inset-0 bg-black"
+          style={{
+            maskImage: "radial-gradient(ellipse at center, transparent 20%, black)",
+          }}
+        />
       
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+      <NewNavbar className="relative" /> 
+      
+      <div className="relative z-[50] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-[#0d1f33d3] shadow-xl rounded-lg">
           <div className="md:flex">
             {/* Left Side - Form */}
             <div className="md:w-1/2 p-8 sm:p-10 lg:p-12">
@@ -153,7 +173,7 @@ const JobPostComponent = () => {
                 Post a Job
               </h1>
 
-              <form className="space-y-4" onSubmit={handleSubmit}>
+              <form className="space-y-4 text-white" onSubmit={handleSubmit}>
                 {/* Job Title */}
                 <div>
                   <label className="block text-sm font-medium text-sky-700">
@@ -360,24 +380,31 @@ const JobPostComponent = () => {
             </div>
 
             {/* Right Side - Image */}
-            <div className="md:block md:w-1/2 bg-sky-100">
-              <div className="h-full flex items-center justify-center p-8">
-                <div className="text-center">
-                  <img
-                    src={jobpost}
-                    alt="Hiring illustration"
-                    className="mx-auto h-full w-auto rounded-lg object-cover"
-                  />
-                  <h2 className="mt-6 text-2xl font-bold text-sky-800">
-                    Find the Perfect Candidate
-                  </h2>
-                  <p className="mt-2 text-sm text-sky-600">
-                    Reach thousands of qualified professionals actively looking
-                    for their next opportunity.
-                  </p>
-                </div>
-              </div>
-            </div>
+            
+<div className="hidden md:block md:w-1/2 bg-sky-100 relative overflow-hidden">
+  <div className="absolute inset-0 z-0 animate-wave" style={{
+    background: 'linear-gradient(45deg, rgba(224, 242, 254, 0.8), rgba(186, 230, 253, 0.6), rgba(125, 211, 252, 0.4), rgba(224, 242, 254, 0.8))',
+    backgroundSize: '200% 200%',
+  }}></div>
+  <div className="h-full flex items-center justify-center p-8 relative z-10">
+    <div className="text-center">
+      <img
+        src={jobpost}
+        alt="Hiring illustration"
+        className="mx-auto max-h-[400px] w-auto rounded-lg object-contain"
+      />
+      <h2 className="mt-6 text-2xl font-bold text-sky-800">
+       Post a Job & Find the Perfect Candidate
+      </h2>
+      <p className="mt-2 text-sm text-sky-600">
+        Reach thousands of qualified professionals actively looking
+        for their next opportunity.
+      </p>
+    </div>
+  </div>
+</div>
+
+
           </div>
         </div>
       </div>

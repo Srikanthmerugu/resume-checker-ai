@@ -82,7 +82,7 @@ const FAQSection = () => {
 </div>
 
         {/* FAQ Section */}
-        <div className="relative p-8 rounded-3xl bg-gradient-to-br from-pink-50/20 to-blue-50/20 backdrop-blur-xl border border-white/20 shadow-l">
+        <div className="relative lg:p-8 rounded-3xl bg-gradient-to-br from-pink-50/20 to-blue-50/20 backdrop-blur-xl border border-white/20 shadow-l">
          
 
           <div className="space-y-4">

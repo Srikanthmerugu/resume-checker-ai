@@ -19,14 +19,15 @@ const Home = () => {
       <CreativeToolsPlatform />
       <PopularServices />
       <WhatWeProvide />
-      {/* <SocialMediaFeatures /> */}
+      <SocialMediaFeatures />
+      <ChatGPTJobPrompts />
+
       <FAQSection />
 
       {/* <Hero />
       <HowItWorks />
  
       <CardsAnalyser />*/}
-      <ChatGPTJobPrompts />
       {/* <CompanyCarousel />  */}
 
    </div>

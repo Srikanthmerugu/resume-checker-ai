@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-toastify";
 import { FileUploadImage } from "../../assets/Assets";
+import NewNavbar from "../navbar/NewNavbar";
 
 const ResumeUpload = () => {
   const { token } = useAuth();
@@ -31,19 +32,21 @@ const ResumeUpload = () => {
       return;
     }
 
-    // Check file type (only PDF, DOC, DOCX allowed)
+    // Check file type (only PDF, DOC, DOCX, JPG, JPEG allowed)
     const validTypes = [
       "application/pdf",
       "application/msword",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "image/jpeg",
+      "image/jpg",
     ];
     if (!validTypes.includes(selectedFile.type)) {
-      toast.error("Please upload a PDF or DOC/DOCX file only", {
+      toast.error("Please upload a PDF, DOC/DOCX, or JPG file only", {
         position: "top-right",
         autoClose: 3000,
         style: { marginTop: "20px" },
       });
-      setError("Please upload a PDF or DOC/DOCX file only");
+      setError("Please upload a PDF, DOC/DOCX, or JPG file only");
       setFile(null);
       return;
     }
@@ -104,7 +107,7 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white flex flex-col items-center p-4 md:p-8">
+    <div className="  md:block min-h-screen relative bg-black flex flex-col items-center p-4 md:p-8">
       <style>
         {`
           @keyframes fadeIn {
@@ -130,38 +133,60 @@ const ResumeUpload = () => {
           }
           .animate-pulse {
             animation: pulse 2s infinite;
+            border-radius: 50%
           }
           .animate-spin {
             animation: spin 1s linear infinite;
           }
         `}
       </style>
+      {/* Grid Background */}
+      <div
+        className="absolute -inset-20"
+        style={{
+          backgroundSize: "40px 40px",
+          backgroundImage:
+            "linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)",
+        }}
+      />
+      {/* Radial Gradient Overlay */}
+      <div
+        className="absolute inset-0 bg-black"
+        style={{
+          maskImage: "radial-gradient(ellipse at center, transparent 10%, black)",
+        }}
+        
+      />
+              <NewNavbar />
 
       {/* Header Section */}
-      <div className="text-center mb-12">
-        <h1 className="text-center text-2xl md:text-5xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-20 ">
+      <div className="text-center  mb-12">
+        {/* <h1 className="text-center z-10 text-2xl md:text-5xl font-extrabold bg-gradient-to-r from-sky-600 to-pink-500 bg-clip-text text-transparent mt-20">
           AI Resume Analyzer
-        </h1>
-        <p className="text-gray-600 text-lg md:text-xl mt-4 animate-fade-in [animation-delay:0.2s]">
+        </h1> */}
+        <p className="text-gray-300 text-lg md:text-5xl font-extrabold mt-4 animate-fade-in mt-20 bg-gradient-to-r from-sky-600 to-pink-500 bg-clip-text text-transparent [animation-delay:0.2s]">
+        AI Resume Analyzer
+        </p>
+        <p className="text-gray-300 text-lg md:text-xl mt-4 animate-fade-in [animation-delay:0.2s]">
           Elevate your job search with intelligent resume insights.
         </p>
       </div>
 
       {/* Steps Section */}
-      <div className="w-full  max-w-5xl flex flex-col md:flex-row justify-between gap-6 mb-16">
+      <div className="w-full max-w-5xl mx-auto flex flex-col md:flex-row justify-between gap-6 mb-16">
         {[
           {
-            icon: <FaUpload className="text-indigo-600 text-3xl" />,
+            icon: <FaUpload className="text-sky-500 text-3xl" />,
             title: "Upload Resume",
             desc: "Quick and easy upload",
           },
           {
-            icon: <FaChartLine className="text-orange-500 text-3xl" />,
+            icon: <FaChartLine className="text-pink-500 text-3xl" />,
             title: "AI Scoring",
             desc: "Smart analysis",
           },
           {
-            icon: <FaClipboardCheck className="text-teal-600 text-3xl" />,
+            icon: <FaClipboardCheck className="text-sky-500 text-3xl" />,
             title: "Detailed Report",
             desc: "Actionable feedback",
           },
@@ -169,24 +194,24 @@ const ResumeUpload = () => {
           <div className="flex flex-wrap justify-center gap-6 mx-auto w-[90%] md:w-full">
             <div
               key={index}
-              className="w-[90%] md:w-[90%] lg:w-[90%] flex flex-col items-center text-center p-6 bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 animate-slide-up"
+              className="w-[90%] md:w-[90%] lg:w-[90%] flex flex-col items-center text-center p-6 bg-gray-900 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 animate-slide-up"
               style={{ animationDelay: `${0.3 + index * 0.2}s` }}
             >
-              <div className="p-3 bg-white rounded-full shadow-sm">
+              <div className="p-3 bg-gray-800 rounded-full shadow-sm">
                 {step.icon}
               </div>
-              <h3 className="font-semibold text-lg mt-4 text-gray-800">
+              <h3 className="font-semibold text-lg mt-4 text-gray-100">
                 {step.title}
               </h3>
-              <p className="text-sm text-gray-500 mt-2">{step.desc}</p>
+              <p className="text-sm text-gray-400 mt-2">{step.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Upload Section */}
-      <div className="w-full max-w-4xl bg-gray-50 rounded-xl shadow-lg p-8 animate-slide-up [animation-delay:0.9s]">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-8">
+      <div className="w-full mx-auto max-w-4xl bg-gray-900 rounded-xl shadow-lg p-8 animate-slide-up [animation-delay:0.9s]">
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-100 text-center mb-8">
           Check Your Resume Fit
         </h2>
 
@@ -205,20 +230,16 @@ const ResumeUpload = () => {
               ].map((step, index) => (
                 <li
                   key={index}
-                  className="flex items-center text-gray-700 animate-fade-in"
+                  className="flex items-center text-gray-300 animate-fade-in"
                   style={{ animationDelay: `${0.2 * index}s` }}
                 >
-                  <span className="flex items-center justify-center w-6 h-6 bg-indigo-100 rounded-full mr-3">
-                    <span className="w-2 h-2 bg-indigo-600 rounded-full"></span>
+                  <span className="flex items-center justify-center w-6 h-6 bg-sky-900 rounded-full mr-3">
+                    <span className="w-2 h-2 bg-sky-500 rounded-full"></span>
                   </span>
                   <span className="font-medium">{step}</span>
                 </li>
               ))}
             </ol>
-
-            {/* <div className="flex justify-center items-center">
-              <img src={FileUploadImage} alt="File Upload" className="max-w-full h-auto" />
-            </div> */}
           </div>
 
           {/* Upload Inputs */}
@@ -226,11 +247,11 @@ const ResumeUpload = () => {
             <div className="group">
               <label
                 htmlFor="dropzone-file"
-                className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-indigo-300 rounded-lg cursor-pointer bg-white hover:bg-indigo-50 transition-all duration-300 group-hover:shadow-md"
+                className="flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-sky-500 rounded-lg cursor-pointer bg-gray-800 hover:bg-gray-700 transition-all duration-300 group-hover:shadow-md"
               >
                 <div className="flex flex-col items-center justify-center py-6">
                   <svg
-                    className="w-8 h-8 mb-3 text-indigo-500 animate-pulse"
+                    className="w-8 h-8 mb-3 text-sky-500 animate-pulse"
                     fill="none"
                     viewBox="0 0 20 16"
                   >
@@ -242,15 +263,15 @@ const ResumeUpload = () => {
                       d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                     />
                   </svg>
-                  <p className="mb-2 text-sm text-gray-600">
+                  <p className="mb-2 text-sm text-gray-300">
                     <span className="font-semibold">Click to upload</span> or
                     drag and drop
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-gray-400">
                     PDF, JPG, DOCX (Max 5MB)
                   </p>
                   {file && (
-                    <p className="mt-2 text-sm text-teal-600 animate-fade-in">
+                    <p className="mt-2 text-sm text-pink-500 animate-fade-in">
                       {file.name}
                     </p>
                   )}
@@ -268,14 +289,14 @@ const ResumeUpload = () => {
             <div>
               <label
                 htmlFor="description"
-                className="block mb-2 text-sm font-medium text-gray-800"
+                className="block mb-2 text-sm font-medium text-gray-100"
               >
                 Job Description
               </label>
               <textarea
                 id="description"
                 rows="4"
-                className="block p-3 w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-300 hover:shadow-sm"
+                className="block outline-0 p-3 w-full text-sm text-gray-100 bg-gray-800 rounded-lg border border-gray-600 focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-300 hover:shadow-sm"
                 placeholder="Paste the job description here..."
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -283,13 +304,13 @@ const ResumeUpload = () => {
             </div>
 
             {error && (
-              <p className="text-red-500 text-sm animate-fade-in">{error}</p>
+              <p className="text-pink-600 text-sm animate-fade-in">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full cursor-pointer bg-indigo-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-lg active:scale-95"
+              className="w-full cursor-pointer bg-sky-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-sky-700 disabled:bg-gray-500 disabled:cursor-not-allowed transition-all duration-300 hover:shadow-lg active:scale-95"
             >
               {loading ? (
                 <span className="flex items-center justify-center">

@@ -5,6 +5,7 @@ import SearchForm from "./SearchForm";
 import SavedQueries from "./SavedQueries";
 import SearchModal from "./SearchModal";
 import WidgeLine from "../../components/WidgeLine/WidgeLine";
+import NewNavbar from "../../components/navbar/NewNavbar";
 
 const FindCandidate = () => {
   const [formData, setFormData] = useState({
@@ -35,13 +36,14 @@ const FindCandidate = () => {
   };
 
   return (
-    <div className="min-h-screen p-8">
+    <div className="min-h-screen pb-15 bg-[#131111e8] ">
+      <NewNavbar  className="bg-black"/>
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="md:w-[50%] w-[100%] md:mx-auto md:mb-15 mb-2">
         <h1 className="text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text text-transparent md:mb-10 md:mt-10">
           Advanced Candidate Search
         </h1>
-        <p className="text-center text-justify">
+        <p className="text-center text-white text-justify">
           Effortlessly source the best talent using Google's precision search.
           Choose platforms like LinkedIn, Naukri, and Facebook, set advanced
           filters, and generate optimized search queries in seconds. Save and

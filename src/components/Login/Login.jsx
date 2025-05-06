@@ -120,7 +120,7 @@ const Login = () => {
             )}
           </button>
         </form>
-            <button className="w-full mt-2 flex items-center justify-center"> OR </button>
+            {/* <button className="w-full mt-2 flex items-center justify-center"> OR </button>
         <button
           onClick={handleGuestLogin}
           className="w-full p-3 mt-3 cursor-pointer bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-200 disabled:bg-green-300 flex items-center justify-center"
@@ -153,7 +153,7 @@ const Login = () => {
           ) : (
             "Guest Login"
           )}
-        </button>
+        </button> */}
 
         <p className="mt-3 text-center">
           Don't have an account?{" "}

@@ -37,6 +37,7 @@ export const AllRoutes = () => {
         <Route path="/result-of-resume" element={<ProtectedRoute><ResultOfRsume /></ProtectedRoute>} />
         <Route path="/findCandidate" element={<ProtectedRoute><FindCandidate /></ProtectedRoute>} />
         <Route path='/find-a-Jobs' element={<ProtectedRoute><FindAJob /></ProtectedRoute>}/>
+        {/* <Route path='/find-a-Jobs' element={<ProtectedRoute><FindAllJobs /></ProtectedRoute>}/> */}
         <Route path="/jobs/:id" element={<ProtectedRoute><SingleJobPost /></ProtectedRoute>} />
 
       </Routes>

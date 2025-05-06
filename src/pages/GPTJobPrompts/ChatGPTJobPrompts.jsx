@@ -158,7 +158,7 @@ const ChatGPTJobPrompts = () => {
       </div>
 
       {/* Masonry Grid */}
-      <div className="max-w-6xl mx-auto px-4 columns-1 sm:columns-2 lg:columns-3 gap-6">
+      <div className="max-w-6xl mx-auto px-4  columns-1 sm:columns-2 lg:columns-3 gap-6">
         {steps.map((step, index) => {
           const { ref, inView } = useInView({ threshold: 0.2, triggerOnce: true });
           const Icon = step.icon;

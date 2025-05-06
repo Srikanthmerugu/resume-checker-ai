@@ -8,6 +8,7 @@ import './Animations.css'
 import './App.css'
 import { Link } from 'react-router-dom';
 import { FaArrowUp } from 'react-icons/fa6';
+import ScrollToTopButton from './ScrollToTopButton';
 
 function App() {
   const [visitorCount, setVisitorCount] = useState(0);
@@ -99,7 +100,8 @@ function App() {
       <AuthProvider>
         <AllRoutes />
       </AuthProvider>
-     <ScrollToTop />
+      <ScrollToTopButton />
+     {/* <ScrollToTop /> */}
     </>
   );
 }
