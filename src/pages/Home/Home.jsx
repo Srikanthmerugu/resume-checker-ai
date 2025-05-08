@@ -16,13 +16,13 @@ const Home = () => {
     <div>
       
       <HeroNew />
-      <CreativeToolsPlatform />
+    <CreativeToolsPlatform />
       <PopularServices />
-      <WhatWeProvide />
-      <SocialMediaFeatures />
-      <ChatGPTJobPrompts />
+     <WhatWeProvide />
+        <SocialMediaFeatures />
+    <ChatGPTJobPrompts />
 
-      <FAQSection />
+         <FAQSection /> 
 
       {/* <Hero />
       <HowItWorks />

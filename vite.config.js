@@ -18,9 +18,9 @@ export default defineConfig({
     // require('@tailwindcss/typography'),
   ],
   server: {
-    host: '0.0.0.0', // allow access from your local network
-    port: 5175,      // or any port you prefer
+    host: '0.0.0.0', // allows access from your phone
+    port: 5175,
   },
-  base: ' /',
+  base: '/',
 
 })

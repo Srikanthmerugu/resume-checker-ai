@@ -145,7 +145,7 @@ const SearchForm = ({ formData, setFormData, setShowModal, setSearchQuery, setSe
           {categoryOptions.map((option) => (
             <label
               key={option.value}
-              className="flex Select-Platforms p-2 px-5 rounded-2xl items-center space-x-2"
+              className="flex Select-Platforms bg-yellow-400 p-2 px-5 rounded-2xl items-center space-x-2"
             >
               <input
                 type="checkbox"

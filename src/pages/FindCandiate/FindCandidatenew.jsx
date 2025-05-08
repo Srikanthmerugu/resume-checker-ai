@@ -36,14 +36,29 @@ const FindCandidate = () => {
   };
 
   return (
-    <div className="min-h-screen pb-15 bg-[#131111e8] ">
-      <NewNavbar  className="bg-black"/>
+    <div className="relative min-h-screen pb-15 bg-black ">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundSize: "40px 40px",
+            backgroundImage:
+              "linear-gradient(to right, #262626 1px, transparent 1px), linear-gradient(to bottom, #262626 1px, transparent 1px)",
+          }}
+        />
+        {/* Radial Gradient Overlay */}
+        <div
+          className="absolute inset-0 bg-black"
+          style={{
+            maskImage: "radial-gradient(ellipse at center, transparent 20%, black)",
+          }}
+        />
+      <NewNavbar  className="bg-black relative"/>
       <ToastContainer position="top-right" autoClose={3000} />
-      <div className="md:w-[50%] w-[100%] md:mx-auto md:mb-15 mb-2">
-        <h1 className="text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text text-transparent md:mb-10 md:mt-10">
+      <div className=" animate-slide-up md:w-[50%] w-[100%] md:mx-auto md:mb-15 mb-2">
+        <h1 className="relative text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-yellow-500 to-yellow-200 bg-clip-text text-transparent md:mb-1 md:mt-10">
           Advanced Candidate Search
         </h1>
-        <p className="text-center text-white text-justify">
+        <p className="relative p-5 text-white text-justify">
           Effortlessly source the best talent using Google's precision search.
           Choose platforms like LinkedIn, Naukri, and Facebook, set advanced
           filters, and generate optimized search queries in seconds. Save and
@@ -51,7 +66,7 @@ const FindCandidate = () => {
         </p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 max-w-7xl mx-auto">
+      <div className="flex relative flex-col md:flex-row gap-8 max-w-7xl mx-auto">
         <SearchForm
           formData={formData}
           setFormData={setFormData}

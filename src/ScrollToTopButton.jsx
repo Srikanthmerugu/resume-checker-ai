@@ -71,7 +71,7 @@ const ScrollToTopButton = () => {
             whileHover="hover"
             whileTap="tap"
             onClick={scrollToTop}
-            className="fixed bottom-4 cursor-pointer sm:bottom-6 right-4 sm:right-6 bg-gradient-to-r from-pink-500 to-cyan-400 text-white p-3 sm:p-4 rounded-full shadow-lg pulse z-50 focus:outline-none"
+            className="fixed bottom-4 cursor-pointer sm:bottom-6 right-4 sm:right-6 bg-gradient-to-r from-[#ffc800] to-yellow-700 text-white p-3 sm:p-4 rounded-full shadow-lg pulse z-50 focus:outline-none"
             aria-label="Scroll to top"
           >
             <FaArrowUp className="text-lg sm:text-xl" />

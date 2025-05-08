@@ -24,7 +24,7 @@ const styles = `
     right: -2px;
     bottom: -2px;
     border-radius: 1rem;
-    background: linear-gradient(45deg, #ec4899, #3b82f6);
+    background: linear-gradient(45deg, #ffc800, #3b82f6);
     z-index: -1;
   }
   .glass-card {
@@ -42,7 +42,7 @@ const styles = `
     transform: perspective(1000px) rotateY(5deg) scale(1.03);
   }
   .slick-dots li button:before {
-    color: #ec4899;
+    color: #ffc800;
   }
   .slick-dots li.slick-active button:before {
     color: #3b82f6;
@@ -59,8 +59,9 @@ const sliderSettings = {
   arrows: false,
   centerMode: true,
   centerPadding: '20px',
+
   autoplay: true,
-  autoplaySpeed: 3000,
+autoplaySpeed: 3000,
 };
 
 const SocialMediaFeatures = () => {
@@ -121,7 +122,7 @@ const SocialMediaFeatures = () => {
         >
           <h2 className="text-3xl sm:text-4xl lg:text-4xl max-w-5xl mx-auto font-bold leading-tight">
             DISCOVER MORE HELPFUL RECRUITING{' '}
-            <span className="bg-gradient-to-r from-pink-500 to-sky-600 bg-clip-text text-transparent font-semibold">
+            <span className="bg-gradient-to-r from-yellow-500 to-sky-600 bg-clip-text text-transparent font-semibold">
               OnDemand Solutions
             </span>
           </h2>
@@ -139,7 +140,7 @@ const SocialMediaFeatures = () => {
                     className="flex flex-col items-center p-4 gradient-border carousel-card"
                   >
                     <div className="w-10 h-10 flex items-center justify-center bg-white rounded-full shadow-md mb-2">
-                      <Icon className="text-pink-500 text-lg" />
+                      <Icon className="text-yellow-500 text-lg" />
                     </div>
                     <p className="text-xs font-medium text-center text-sky-900">
                       {feature.title}
@@ -166,12 +167,12 @@ const SocialMediaFeatures = () => {
                 key={index}
                 variants={cardVariants}
                 whileHover="hover"
-                className={`flex flex-col items-center p-3 sm:p-4 ${
+                className={`flex flex-col border-amber-400 items-center p-3 sm:p-4 ${
                   index % 2 === 0 ? 'sm:mt-4' : 'sm:mb-4'
                 } glass-card`}
               >
                 <div className="w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center bg-white rounded-full shadow-md mb-2 sm:mb-3">
-                  <Icon className="text-pink-500 text-lg sm:text-xl lg:text-xl" />
+                  <Icon className="text-yellow-500 text-lg sm:text-xl lg:text-xl" />
                 </div>
                 <p className="text-xs sm:text-sm lg:text-sm font-medium text-center text-sky-900">
                   {feature.title}

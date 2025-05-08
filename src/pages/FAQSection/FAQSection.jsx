@@ -57,11 +57,11 @@ const FAQSection = () => {
             
           </h2> */}
           <h1 className="text-4xl mb-10 -mt-5 text-center font-bold text-gray-800">
-          Frequently Asked  <span className="text-[#ff007f] font-bold">Questions</span>
+          Frequently Asked  <span className="text-[#ffc800] font-bold">Questions</span>
           </h1>
       {/* Background Gradient with Spots */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-20 -left-20 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" />
+        <div className="absolute -top-20 -left-20 w-96 h-96 bg-yellow-500/20 rounded-full blur-3xl" />
         <div className="absolute -top-40 -right-20 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
       </div>
 
@@ -82,7 +82,7 @@ const FAQSection = () => {
 </div>
 
         {/* FAQ Section */}
-        <div className="relative lg:p-8 rounded-3xl bg-gradient-to-br from-pink-50/20 to-blue-50/20 backdrop-blur-xl border border-white/20 shadow-l">
+        <div className="relative lg:p-8 rounded-3xl bg-gradient-to-br from-yellow-50/20 to-blue-50/20 backdrop-blur-xl border border-white/20 shadow-l">
          
 
           <div className="space-y-4">

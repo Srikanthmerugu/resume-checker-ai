@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FaAngleDown, FaArrowRight, FaBars, FaTimes } from 'react-icons/fa';
 import DropdonwMenu from '../../pages/Dropdonw/DropdonwMenu';
 import { NewLogo2 } from '../../assets/Assets';
+import { FiSettings, FiBriefcase, FiPlusCircle, FiUsers, FiGrid, FiChevronDown, FiArrowRight as FiArrowRightIcon, FiLogOut } from 'react-icons/fi';
 
 const NewNavbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -11,7 +12,31 @@ const NewNavbar = () => {
   const buttonRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const location = useLocation();
+  const [token, setToken] = useState(localStorage.getItem('token')); // Simulate token check
 
+
+
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setToken(null);
+    toast.success('Logged out successfully!', {
+      position: 'top-right',
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: 'dark',
+      style: {
+        background: '#0a1120',
+        color: '#fff',
+        border: '1px solid #ffc800',
+        Zindex: "1000000000"
+      },
+    });
+  };
   // Toggle dropdown and close if clicking the button again
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
@@ -75,6 +100,23 @@ const NewNavbar = () => {
       {children}
     </a>
   );
+
+
+  
+
+  const MobileNavItem = ({ to, children, icon, onClick }) => (
+    <Link
+      to={to}
+      onClick={onClick}
+      className="flex items-center px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition-colors group relative"
+    >
+      <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ffc800] rounded-r-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+      {icon && <span className="mr-3">{icon}</span>}
+      <span>{children}</span>
+      <FiArrowRightIcon className="ml-auto text-gray-400 group-hover:text-[#ffc800] transition-colors" />
+    </Link>
+  );
+
 
   return (
     <nav className="mx-auto w-full text-white p-4 px-4 sm:px-6 lg:px-10 relative bg-transparent">
@@ -157,7 +199,7 @@ const NewNavbar = () => {
             <button
               ref={buttonRef}
               onClick={toggleDropdown}
-              className="flex items-center text-sky-50 hover:text-blue-500 font-medium text-sm uppercase tracking-wider focus:outline-none transition-colors duration-300"
+              className="flex items-center cursor-pointer text-sky-50 hover:text-blue-500 font-medium text-sm uppercase tracking-wider focus:outline-none transition-colors duration-300"
             >
               Features
               <FaAngleDown
@@ -173,75 +215,169 @@ const NewNavbar = () => {
         <div className="hidden lg:flex space-x-4">
           <Link
             to="/login"
+            style={{ backgroundColor: "#ffc800" }}
+
             className="border ganarate-button border-sky-50 text-sky-50 font-medium text-sm px-4 py-2 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors"
           >
             Job Seeker Login
           </Link>
-          <Link
-            to="/login"
-            className="flex ganarate-button items-center text-white font-medium text-sm px-4 py-2 rounded-md hover:bg-sky-800 transition-colors"
-            style={{ backgroundColor: '#182a66' }}
-          >
-            Login
-            <FaArrowRight className="ml-2" />
-          </Link>
+          {token ? (
+              <button
+                onClick={handleLogout}
+                className="px-6 py-2 text-sky-50 border border-sky-50 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
+              >
+                Login
+                <FaArrowRight className="ml-2" />
+              </Link>
+            )}
         </div>
       </div>
 
       {/* Mobile Menu */}
       {showMobileMenu && (
-        <div
-          ref={mobileMenuRef}
-          className="mobile-menu lg:hidden absolute top-full left-0 right-0 bg-[#030513f8] shadow-lg mt-2 z-50 transform translate-y-0"
-        >
-          <div className="flex flex-col items-center py-4 space-y-4">
-            <NavLink hash="Howitswork">How It Works</NavLink>
-            <Link to="/find-a-Jobs">Find Jobs</Link>
-            <NavLink to="/post-job">Post Job</NavLink>
-            <NavLink to="/find-candidate">Find Candidate</NavLink>
-            <div className="w-full text-center">
-              <button
-                onClick={toggleDropdown}
-                className="flex items-center justify-center w-full text-sky-50 hover:text-blue-500 font-medium text-lg uppercase tracking-wider focus:outline-none transition-colors duration-300"
+        <div className="fixed inset-0 z-5000000 ">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setShowMobileMenu(false)}
+          />
+          <div
+            ref={mobileMenuRef}
+            className="relative h-full w-4/5 max-w-sm bg-gradient-to-b from-[#030513] to-[#0a1120] shadow-2xl"
+          >
+            <button
+              onClick={() => setShowMobileMenu(false)}
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
               >
-                Features
-                <FaAngleDown
-                  className={`ml-2 text-sky-50 transition-transform ${
-                    showDropdown ? 'transform rotate-180' : ''
-                  } group-hover:text-blue-500`}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
                 />
-              </button>
-              {showDropdown && (
-                <div className="mt-2">
-                  <DropdonwMenu closeMenu={() => setShowMobileMenu(false)} />
+              </svg>
+            </button>
+
+            <div className="px-6 pt-8 pb-6 border-b border-gray-800">
+              <img
+                src={NewLogo2}
+                width="100px"
+                height="40px"
+                alt="Logo"
+                className="w-24"
+              />
+            </div>
+
+            <nav className="flex flex-col space-y-1 p-4 overflow-scroll min-h-screen">
+              {/* <MobileNavItem
+                to="#Howitswork"
+                icon={<FiSettings className="text-[#ffc800]" />}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                How It Works
+              </MobileNavItem> */}
+              <MobileNavItem
+                to="/find-all-jobs"
+                icon={<FiBriefcase className="text-blue-400" />}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Find Jobs
+              </MobileNavItem>
+              <MobileNavItem
+                to="/job-post"
+                icon={<FiPlusCircle className="text-[#ffc800]" />}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Post Job
+              </MobileNavItem>
+              <MobileNavItem
+                to="/findCandidate"
+                icon={<FiUsers className="text-blue-400" />}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Find Candidate
+              </MobileNavItem>
+              <MobileNavItem
+                to="/upload-resume"
+                icon={<FiUsers className="text-blue-400" />}
+                onClick={() => setShowMobileMenu(false)}
+              >
+                AI Resume Checker
+              </MobileNavItem>
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className="flex items-center w-full px-4 py-3 text-left text-gray-200 hover:bg-gray-800 rounded-lg transition-colors group"
+                >
+                  <FiGrid className="text-[#ffc800] mr-3" />
+                  <span className="flex-1">Features</span>
+                  <FiChevronDown
+                    className={`transition-transform ${
+                      showDropdown ? 'transform rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {showDropdown && (
+                  <div className="ml-8 mt-1 space-y-1 animate-fade-in">
+                    <DropdonwMenu
+                      closeMenu={() => setShowMobileMenu(false)}
+                      mobileVersion
+                    />
+                  </div>
+                )}
+              </div>
+            </nav>
+
+            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800 bg-[#0a1120]/50">
+              {token ? (
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center justify-center px-4 py-2 bg-gradient-to-r from-[#ffc800] to-yellow-500 text-gray-900 font-medium rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  <FiLogOut className="mr-2" />
+                  Logout
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <Link
+                    to="/login"
+                    className="block w-full px-4 py-2 text-center border-2 border-[#ffc800] text-[#ffc800] font-medium rounded-lg hover:bg-[#ffc800]/10 transition-colors"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Job Seeker Login
+                  </Link>
+                  <Link
+                    to="/login"
+                    className="block w-full px-4 py-2 text-center bg-gradient-to-r from-blue-500 to-blue-600 text-white font-medium rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"
+                    onClick={() => setShowMobileMenu(false)}
+                  >
+                    Login
+                    <FiArrowRightIcon className="ml-2" />
+                  </Link>
                 </div>
               )}
             </div>
-            <Link
-              to="/login"
-              className="border border-sky-50 text-sky-50 font-medium text-lg px-6 py-2 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors"
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Job Seeker Login
-            </Link>
-            <Link
-              to="/login"
-              className="flex items-center justify-center text-white font-medium text-lg px-6 py-2 rounded-md hover:bg-sky-800 transition-colors"
-              style={{ backgroundColor: '#182a66' }}
-              onClick={() => setShowMobileMenu(false)}
-            >
-              Login
-              <FaArrowRight className="ml-2" />
-            </Link>
           </div>
         </div>
       )}
 
-      {/* Dropdown Menu (Desktop) */}
       {showDropdown && !showMobileMenu && (
         <div
           ref={dropdownRef}
-          className="absolute left-0 right-0 mt-2 z-11150"
+          className="absolute  left-0 right-0 mt-2 z-50000"
         >
           <DropdonwMenu closeMenu={() => setShowDropdown(false)} />
         </div>

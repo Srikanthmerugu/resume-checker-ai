@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { FaHeart, FaShareAlt } from 'react-icons/fa';
 import { groupmen, LoacationIcon, resumeFind, resumeGirl } from '../../assets/Assets';
+import { useNavigate } from 'react-router-dom';
 
 // Placeholder image (replace with actual asset if available)
 const personImage = 'https://via.placeholder.com/300x400?text=Recruiter+at+Work';
@@ -27,9 +28,15 @@ const CreativeToolsPlatform = () => {
       transition: { duration: 0.6 },
     },
   };
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/job-post");
+  };
+
 
   return (
-    <div className="min-h-screen relative  bg-[#222831] mx-auto mb-0">
+    <div className="min-h-screen relative overflow-hidden  bg-[#222831] mx-auto mb-0">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-10 sm:py-16 md:py-20">
           {/* Left Side */}
@@ -63,7 +70,7 @@ const CreativeToolsPlatform = () => {
               </div>
 
               {/* Orange Circle Image (Person with Laptop) */}
-              <div className="absolute top-40 sm:top-44 md:top-50 left-40 sm:left-48 md:left-60 w-48 sm:w-56 md:w-64 h-48 sm:h-56 md:h-64 circle-image z-30">
+              <div className="absolute top-40 sm:top-44 md:top-50 left-40 sm:left-48 md:left-40 lg:w-48 md:30 sm:w-56 md:w-64 h-48 sm:h-56 md:h-64 circle-image z-30">
                 <div className="relative w-full h-full">
                   <img
                     src="https://wpmunai.themesflat.co/wp-content/uploads/2023/09/Image-9-13.webp"
@@ -83,10 +90,10 @@ const CreativeToolsPlatform = () => {
             animate={inView ? 'visible' : 'hidden'}
             className="space-y-4 sm:space-y-6 text-center md:text-left"
           >
-            <p className="text-[#ff007f] mt-7 md:mt-0 lg:mt-0 text-sm sm:text-base font-semibold">Welcome To OnDemand Recruiting</p>
+            <p className="text-[#ffc800] mt-7 md:mt-0 lg:mt-0 text-sm sm:text-base font-semibold">Welcome To OnDemand Recruiting</p>
             <h2 className="text-3xl sm:text-4xl md:text-4xl font-bold text-white leading-tight">
               ALL THE{' '}
-              <span className="text-[#ff007f] font-semibold">Recruiting Tools</span>{' '}
+              <span className="text-[#ffc800] font-semibold">Recruiting Tools</span>{' '}
               YOU NEED IN ONE Platform
             </h2>
             <p className="text-white text-sm sm:text-base">
@@ -94,20 +101,22 @@ const CreativeToolsPlatform = () => {
             </p>
             <ul className="space-y-2">
               <li className="flex items-center justify-center md:justify-start space-x-2">
-                <span className="w-3 h-3 bg-[#ff007f] rounded-full"></span>
+                <span className="w-3 h-3 bg-[#ffc800] rounded-full"></span>
                 <span className="text-white text-sm sm:text-base">Source warm candidates quickly.</span>
               </li>
               <li className="flex items-center justify-center md:justify-start space-x-2">
-                <span className="w-3 h-3 bg-[#ff007f] rounded-full"></span>
+                <span className="w-3 h-3 bg-[#ffc800] rounded-full"></span>
                 <span className="text-white text-sm sm:text-base">Scale your hiring team as needed.</span>
               </li>
               <li className="flex items-center justify-center md:justify-start space-x-2">
-                <span className="w-3 h-3 bg-[#ff007f] rounded-full"></span>
+                <span className="w-3 h-3 bg-[#ffc800] rounded-full"></span>
                 <span className="text-white text-sm sm:text-base">Save costs with flexible solutions.</span>
               </li>
             </ul>
             <button
-              style={{ backgroundColor: "#ff007f", border: "2px solid #ff007f" }}
+            onClick={handleClick}
+
+style={{ backgroundColor: "#ffc800", border: "2px solid #ffc800" }}
               className="w-full sm:w-auto ganarate-button text-white px-6 py-2 sm:py-3 rounded-full font-medium hover:bg-[#e60074] transition"
             >
               Generate Job Post →

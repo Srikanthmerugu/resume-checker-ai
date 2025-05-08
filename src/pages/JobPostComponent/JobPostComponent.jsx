@@ -9,7 +9,6 @@ import { useNavigate } from 'react-router-dom';
 import NewNavbar from "../../components/navbar/NewNavbar";
 
 const JobPostComponent = () => {
-
   const { token } = useAuth();
   const navigate = useNavigate();
   const { output: jobDescription, fetchOutput } = useRichTextEditor();
@@ -22,7 +21,8 @@ const JobPostComponent = () => {
     employment_type: "",
     industry_type: "",
     department: "",
-    education: ""
+    education: "",
+    experience: ""
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -46,6 +46,7 @@ const JobPostComponent = () => {
     if (!formData.industry_type) newErrors.industry_type = "Industry type is required";
     if (!formData.department.trim()) newErrors.department = "Department is required";
     if (!formData.education.trim()) newErrors.education = "Education is required";
+    if (!formData.experience) newErrors.experience = "Experience is required";
     if (!jobDescription || jobDescription === '<p><br></p>') newErrors.job_description = "Job description is required";
     
     setErrors(newErrors);
@@ -81,6 +82,9 @@ const JobPostComponent = () => {
     setIsSubmitting(true);
 
     try {
+      // First fetch the editor output if needed
+      const editorOutput = await fetchOutput();
+      
       const tagsArray = formData.tags.split(',')
                             .map(tag => tag.trim())
                             .filter(tag => tag !== '');
@@ -88,7 +92,8 @@ const JobPostComponent = () => {
       const payload = {
         ...formData,
         tags: tagsArray,
-        job_description: jobDescription
+        job_description: editorOutput || jobDescription,
+        experience: formData.experience
       };
 
       const response = await fetch("https://demo.needrecruiter.com/need-recruiter/api/job-posts", {
@@ -102,25 +107,28 @@ const JobPostComponent = () => {
 
       const data = await response.json();
       
-      if (response.ok) {
-        toast.success("Job post created successfully!");
-        setFormData({
-          job_title: "",
-          location: "",
-          company_name: "",
-          tags: "",
-          salary_range: "",
-          employment_type: "",
-          industry_type: "",
-          department: "",
-          education: ""
-        });
-      } else {
+      if (!response.ok) {
         throw new Error(data.message || "Failed to create job post");
       }
+
+      toast.success("Job post created successfully!");
+      // Reset form
+      setFormData({
+        job_title: "",
+        location: "",
+        company_name: "",
+        tags: "",
+        salary_range: "",
+        employment_type: "",
+        industry_type: "",
+        department: "",
+        education: "",
+        experience: ""
+      });
+      
     } catch (error) {
-      toast.error(error.message || "An error occurred while submitting the form");
       console.error("Submission error:", error);
+      toast.error(error.message || "An error occurred while submitting the form");
     } finally {
       setIsSubmitting(false);
     }
@@ -142,7 +150,7 @@ const JobPostComponent = () => {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        className="z-[1000]" // High z-index for toasts
+        className="z-[1000]"
       />
 
       {/* Background Container */}
@@ -165,18 +173,18 @@ const JobPostComponent = () => {
       <NewNavbar className="relative" /> 
       
       <div className="relative z-[50] max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-[#0d1f33d3] shadow-xl rounded-lg">
+        <div className="bg-black shadow-xl rounded-lg">
           <div className="md:flex">
             {/* Left Side - Form */}
-            <div className="md:w-1/2 p-8 sm:p-10 lg:p-12">
-              <h1 className="text-3xl font-bold text-sky-800 mb-6">
+            <div className="md:w-1/2 relative p-8 sm:p-10 lg:p-12">
+              <h1 className="text-3xl font-bold text-white mb-6">
                 Post a Job
               </h1>
 
               <form className="space-y-4 text-white" onSubmit={handleSubmit}>
                 {/* Job Title */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Job Title*
                   </label>
                   <input
@@ -192,7 +200,7 @@ const JobPostComponent = () => {
 
                 {/* Location */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Location*
                   </label>
                   <input
@@ -208,7 +216,7 @@ const JobPostComponent = () => {
 
                 {/* Company Name */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Company Name*
                   </label>
                   <input
@@ -224,7 +232,7 @@ const JobPostComponent = () => {
 
                 {/* Tags */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Skills/Tags (comma separated)*
                   </label>
                   <input
@@ -240,7 +248,7 @@ const JobPostComponent = () => {
 
                 {/* Salary Range */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Salary Range*
                   </label>
                   <input
@@ -256,7 +264,7 @@ const JobPostComponent = () => {
 
                 {/* Employment Type */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Employment Type*
                   </label>
                   {errors.employment_type && <p className="mt-1 text-sm text-red-600">{errors.employment_type}</p>}
@@ -269,9 +277,9 @@ const JobPostComponent = () => {
                           value={type}
                           checked={formData.employment_type === type}
                           onChange={handleChange}
-                          className="h-4 w-4 text-sky-600 focus:ring-sky-500 border-sky-300"
+                          className="h-4 w-4 text-white focus:ring-sky-500 border-sky-300"
                         />
-                        <span className="ml-2 text-sm text-sky-700">{type}</span>
+                        <span className="ml-2 text-sm text-white">{type}</span>
                       </label>
                     ))}
                   </div>
@@ -279,14 +287,14 @@ const JobPostComponent = () => {
 
                 {/* Industry Type */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Industry Type*
                   </label>
                   <select
                     name="industry_type"
                     value={formData.industry_type}
                     onChange={handleChange}
-                    className={`mt-1 block w-full pl-3 pr-10 py-2 text-base border ${errors.industry_type ? 'border-red-300' : 'border-sky-300'} focus:outline-none focus:ring-sky-500 focus:border-sky-500 rounded-md`}
+                    className={`mt-1 block w-full bg-black pl-3 pr-10 py-2 text-base border ${errors.industry_type ? 'border-red-300' : 'border-sky-300'} focus:outline-none focus:ring-sky-500 focus:border-sky-500 rounded-md`}
                   >
                     <option value="" disabled>Select industry</option>
                     <option value="Information Technology">Information Technology</option>
@@ -300,7 +308,7 @@ const JobPostComponent = () => {
 
                 {/* Department */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Department*
                   </label>
                   <input
@@ -316,7 +324,7 @@ const JobPostComponent = () => {
 
                 {/* Education */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Education*
                   </label>
                   <input
@@ -330,9 +338,29 @@ const JobPostComponent = () => {
                   {errors.education && <p className="mt-1 text-sm text-red-600">{errors.education}</p>}
                 </div>
 
+                {/* Experience */}
+                <div>
+                  <label className="block text-sm font-medium text-white">
+                    Experience*
+                  </label>
+                  <select
+                    name="experience"
+                    value={formData.experience}
+                    onChange={handleChange}
+                    className={`mt-1 block w-full bg-black pl-3 pr-10 py-2 text-base border ${errors.experience ? 'border-red-300' : 'border-sky-300'} focus:outline-none focus:ring-sky-500 focus:border-sky-500 rounded-md`}
+                  >
+                    <option value="" disabled>Select experience level</option>
+                    <option value="0-1">0-1 years</option>
+                    <option value="1-3">1-3 years</option>
+                    <option value="3-5">3-5 years</option>
+                    <option value="5+">5+ years</option>
+                  </select>
+                  {errors.experience && <p className="mt-1 text-sm text-red-600">{errors.experience}</p>}
+                </div>
+
                 {/* Job Description */}
                 <div>
-                  <label className="block text-sm font-medium text-sky-700">
+                  <label className="block text-sm font-medium text-white">
                     Job Description*
                   </label>
                   <RichTextEditor
@@ -380,31 +408,28 @@ const JobPostComponent = () => {
             </div>
 
             {/* Right Side - Image */}
-            
-<div className="hidden md:block md:w-1/2 bg-sky-100 relative overflow-hidden">
-  <div className="absolute inset-0 z-0 animate-wave" style={{
-    background: 'linear-gradient(45deg, rgba(224, 242, 254, 0.8), rgba(186, 230, 253, 0.6), rgba(125, 211, 252, 0.4), rgba(224, 242, 254, 0.8))',
-    backgroundSize: '200% 200%',
-  }}></div>
-  <div className="h-full flex items-center justify-center p-8 relative z-10">
-    <div className="text-center">
-      <img
-        src={jobpost}
-        alt="Hiring illustration"
-        className="mx-auto max-h-[400px] w-auto rounded-lg object-contain"
-      />
-      <h2 className="mt-6 text-2xl font-bold text-sky-800">
-       Post a Job & Find the Perfect Candidate
-      </h2>
-      <p className="mt-2 text-sm text-sky-600">
-        Reach thousands of qualified professionals actively looking
-        for their next opportunity.
-      </p>
-    </div>
-  </div>
-</div>
-
-
+            <div className="hidden md:block md:w-1/2 bg-sky-100 relative overflow-hidden">
+              <div className="absolute inset-0 z-0 animate-wave" style={{
+                background: 'linear-gradient(45deg, rgba(224, 242, 254, 0.8), rgba(186, 230, 253, 0.6), rgba(125, 211, 252, 0.4), rgba(224, 242, 254, 0.8))',
+                backgroundSize: '200% 200%',
+              }}></div>
+              <div className="h-full flex items-center justify-center p-8 relative z-10">
+                <div className="text-center">
+                  <img
+                    src={jobpost}
+                    alt="Hiring illustration"
+                    className="mx-auto max-h-[400px] w-auto rounded-lg object-contain"
+                  />
+                  <h2 className="mt-6 text-2xl font-bold text-white">
+                   Post a Job & Find the Perfect Candidate
+                  </h2>
+                  <p className="mt-2 text-sm text-white">
+                    Reach thousands of qualified professionals actively looking
+                    for their next opportunity.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

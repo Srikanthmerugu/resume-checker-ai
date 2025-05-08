@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { candidateVideo, imgaeGirl } from '../../assets/Assets';
 import { CiLogin } from 'react-icons/ci';
+import { useNavigate } from 'react-router-dom';
 
 const WhatWeProvide = () => {
   const videoRef = useRef(null);
@@ -16,6 +17,13 @@ const WhatWeProvide = () => {
       }
     }
   }, [inView]);
+
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/upload-resume");
+  };
+
 
   return (
     <div
@@ -51,19 +59,19 @@ const WhatWeProvide = () => {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row items-start justify- gap-4 sm:gap-6">
             <div className="flex md:flex-col sm:flex-row gap-3 sm:gap-5 w-full sm:w-auto">
-              <button className="bg-pink-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-pink-700 transition w-full sm:w-auto text-sm sm:text-base">
+              <button className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-yellow-700 transition w-full sm:w-auto text-sm sm:text-base">
                 AI Resume Score
               </button>
-              <button className="bg-pink-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-pink-700 transition w-full sm:w-auto text-sm sm:text-base">
+              <button className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-yellow-700 transition w-full sm:w-auto text-sm sm:text-base">
                 Job Fit Analysis
               </button>
             </div>
             <div className="flex md:flex-col sm:flex-row gap-3 sm:gap-5 w-full sm:w-auto">
-              <button className="bg-pink-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-pink-700 transition w-full sm:w-auto text-sm sm:text-base">
+              <button className="bg-yellow-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-yellow-700 transition w-full sm:w-auto text-sm sm:text-base">
                 Resume Analysis
               </button>
 
-              <button className="bg-pink-600 flex items-center justify-center text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-pink-700 transition w-full sm:w-auto text-sm sm:text-base">
+              <button onClick={handleClick} className="bg-yellow-400 cursor-pointer flex items-center justify-center text-white px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-yellow-600 transition w-full sm:w-auto text-sm sm:text-base">
                 Get Started <span className="font-bold text-lg sm:text-2xl ml-2"><CiLogin /></span>
               </button>
             </div>
@@ -95,12 +103,12 @@ const WhatWeProvide = () => {
                 <source src={candidateVideo} type="video/mp4" />
               </video>
               <p className="text-slate-500 text-xs sm:text-sm text-center mx-auto pl-3">
-                Upload your resume and receive an <span className="text-pink-600 font-semibold">instant AI-Powered</span> relevance score with expert feedback.
+                Upload your resume and receive an <span className="text-yellow-600 font-semibold">instant AI-Powered</span> relevance score with expert feedback.
               </p>
             </div>
           </div>
           {/* Person Image */}
-          <div className="absolute top-40 sm:top-48 md:top-65 -left-12 sm:-left-20 md:-left-25 w-[150px] sm:w-[200px] md:w-[250px] h-[150px] sm:h-[200px] md:h-[250px] bg-orange-300 rounded-full overflow-hidden">
+          <div className="absolute top-40 sm:top-48 md:top-57 -left-12 sm:-left-20 md:-left-10 w-[150px] sm:w-[200px] md:w-[200px] h-[150px] sm:h-[200px] md:h-[200px] bg-orange-300 rounded-full overflow-hidden">
             <img
               src={imgaeGirl}
               alt="Recruiter at Work"

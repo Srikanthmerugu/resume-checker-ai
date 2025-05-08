@@ -107,7 +107,7 @@ const ResumeUpload = () => {
   };
 
   return (
-    <div className="  md:block min-h-screen relative bg-black flex flex-col items-center p-4 md:p-8">
+    <div className="  md:block min-h-screen relative bg-black flex flex-col items-center pb-14 ">
       <style>
         {`
           @keyframes fadeIn {

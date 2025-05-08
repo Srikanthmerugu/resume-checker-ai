@@ -143,7 +143,7 @@ const ChatGPTJobPrompts = () => {
           variants={headingVariants}
           initial="hidden"
           animate="visible"
-          className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-sky-400 to-pink-500 bg-clip-text text-transparent tracking-tight"
+          className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-sky-400 to-yellow-500 bg-clip-text text-transparent tracking-tight"
         >
           AI-Powered Recruiting Mastery
         </motion.h2>

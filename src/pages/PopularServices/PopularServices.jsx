@@ -50,7 +50,7 @@ const PopularServices = () => {
         >
           <p className="text-xs sm:text-sm text-gray-500 mb-2">How It Works</p>
           <h1 className="text-3xl sm:text-4xl lg:text-4xl font-bold text-gray-800">
-            Why Choose <span className="text-[#ff007f] font-bold">Need Recruiter</span>
+            Why Choose <span className="text-[#ffc800] font-bold">Need Recruiter</span>
           </h1>
         </motion.div>
 
@@ -67,7 +67,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">⏰</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">⏰</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Rapid Recruitment</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -81,7 +81,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">👥</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">👥</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Scale Your Hiring</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -95,7 +95,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">🎯</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">🎯</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Source Quality Candidates</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -109,7 +109,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">💰</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">💰</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Cost-Effective Solutions</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -123,7 +123,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">🤝</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">🤝</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Expert Recruiter Network</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -137,7 +137,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">📈</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">📈</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Predictable Hiring Engine</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -151,7 +151,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">🔍</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">🔍</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Targeted Candidate Outreach</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -165,7 +165,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">📅</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">📅</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Flexible Scheduling</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
@@ -179,7 +179,7 @@ const PopularServices = () => {
             variants={cardVariants}
             className="bg-white rounded-lg p-4 sm:p-5 lg:p-6 shadow-md border border-gray-200 flex items-center gap-3 sm:gap-4"
           >
-            <div className="text-[#ff007f] text-xl sm:text-2xl">📊</div>
+            <div className="text-[#ffc800] text-xl sm:text-2xl">📊</div>
             <div>
               <h3 className="text-base sm:text-lg lg:text-lg font-semibold text-gray-800">Data-Driven Insights</h3>
               <p className="text-xs sm:text-sm lg:text-sm text-gray-600">
