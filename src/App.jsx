@@ -4,7 +4,11 @@ import "react-toastify/dist/ReactToastify.css";
 import { AllRoutes } from './pages/AllRoutes/AllRoutes';
 import { AuthProvider } from './context/AuthContext';
 import ScrollToTop from './ScrollToTop';
+import './Animations.css'
 import './App.css'
+import { Link } from 'react-router-dom';
+import { FaArrowUp } from 'react-icons/fa6';
+import ScrollToTopButton from './ScrollToTopButton';
 
 function App() {
   const [visitorCount, setVisitorCount] = useState(0);
@@ -96,6 +100,8 @@ function App() {
       <AuthProvider>
         <AllRoutes />
       </AuthProvider>
+      <ScrollToTopButton />
+     {/* <ScrollToTop /> */}
     </>
   );
 }

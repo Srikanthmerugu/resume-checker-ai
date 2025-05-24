@@ -8,7 +8,7 @@ const SavedQueries = ({ savedQueries }) => {
   };
 
   return (
-    <div className="md:w-2/5 bg-blue-50 p-6 rounded-xl shadow-lg">
+    <div className="md:w-2/5 bg-blue-50 p-6 rounded-xl shadow-2xl">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">
         Saved Queries
       </h2>

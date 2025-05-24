@@ -49,13 +49,15 @@ const CompanyCarousel = () => {
   };
 
   return (
-    <div className="bg-gray-100 py-3 px-4">
+    <div className="bg-slate-200 py-3 px-4">
       <div className="max-w-7xl mx-auto">
         {/* <h2 className="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8">
           <span className="text-sky-600">Companies Using Our Platform</span>
         </h2> */}
 
-        <h1 className="text-center text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-sky-900 text- to-blue-600 bg-clip-text  text-transparent mt-10 mb-8">
+        <h1
+          className="text-4xl text-center md:text-4xl mb-5 font-bold bg-gradient-to-r from-sky-600 to-pink-800 bg-clip-text text-transparent tracking-tight"
+          >
         Recruiters using from companies
       </h1>
 
@@ -71,7 +73,7 @@ const CompanyCarousel = () => {
                 <img 
                   src={company.logo} 
                   alt={company.name} 
-                  className="max-h-12 max-w-full object-contain opacity-80 hover:opacity-100 transition-opacity"
+                  className="max-h-5 max-w-full object-contain opacity-80 hover:opacity-100 transition-opacity"
                 />
               </div>
             </div>

@@ -25,6 +25,22 @@ box-shadow:  7px -7px 14px #c1c1c1,
   }
 
 
+  /* index.css */
+.scrollbar-1px::-webkit-scrollbar {
+  width: 1px;
+  height: 1px;
+}
+
+.scrollbar-1px::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.4);
+  border-radius: 10px;
+}
+
+.scrollbar-1px::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
 
   /* Hero page Animation */
 
