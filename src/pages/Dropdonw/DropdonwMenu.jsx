@@ -133,11 +133,11 @@ const DropdownMenu = ({ onFeatureClick }) => {
                 initial="hidden"
                 animate="visible"
                 whileHover="hover"
-                className="feature-card border border-gray-600/50 rounded-lg p-4 bg-gradient-to-br from-gray-800 to-gray-700 hover:border-cyan-400/30 transition-all group"
+                className="feature-card border  border-gray-600/50 rounded-lg p-4 bg-gradient-to-br from-gray-800 to-gray-700 hover:border-cyan-400/30 transition-all group"
               >
                 <div
                   onClick={() => onFeatureClick(feature.href)}
-                  className="flex items-start space-x-3 cursor-pointer"
+                  className="flex  items-start space-x-3 cursor-pointer"
                 >
                   <div className="w-10 h-10 rounded-full p-2 bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center">
                     <Icon className="text-white text-2xl group-hover:animate-bounce" />

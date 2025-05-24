@@ -178,7 +178,7 @@ const ResultOfResume = () => {
         <h1 className="text-center text-2xl md:text-4xl font-extrabold bg-gradient-to-r from-sky-900 to-blue-600 bg-clip-text mb-0 text-transparent md:mt-10">
           Resume Analysis Results
         </h1>
-        <WidgeLine />
+        {/* <WidgeLine /> */}
 
         {/* Must-Have Skills */}
         {result["must-have-skills"] && (

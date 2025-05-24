@@ -5,8 +5,19 @@ import {
   FaFileAlt, FaPen, FaQuestionCircle, FaMoneyBillWave, 
   FaLinkedin, FaEnvelope, FaUserTie, FaMicrophone, FaRoute, FaBullhorn 
 } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const ChatGPTJobPrompts = () => {
+
+ const navigate = useNavigate();
+ 
+   const handleClick = () => {
+     navigate("/login");
+   };
+ 
+
+
+
   const steps = [
     {
       id: 'ResumeOptimization',
@@ -191,7 +202,8 @@ const ChatGPTJobPrompts = () => {
                     <Icon className="w-6 h-6 text-white" />
                   </motion.div>
                   <h3 className="text-xl font-semibold text-white">{step.title}</h3>
-                  <p className="text-gray-200 text-base leading-relaxed">{step.description}</p>
+                  <p className="text-gray-200 text-base leading-relaxed">{step.description}                   <button onClick={handleClick} className='text-blue-500 cursor-pointer'>More...</button>
+                  </p>
                 </div>
               </div>
             </motion.div>

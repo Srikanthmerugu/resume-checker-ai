@@ -17,10 +17,10 @@ const StatsBanner = () => {
   }, [initialAnimationDone]);
 
   return (
-    <div className="px-4 py-6 bg-white rounded-lg shadow-sm">
+    <div className="px-4 py-6  rounded-lg ">
       <div className="text-center space-y-2">
-        <div className="flex items-center justify-center gap-1">
-          <p className="font-medium text-gray-500 tracking-wider uppercase">
+        <div className="flex flex-col items-center justify-center gap-1">
+          <p className="font-medium text-sm text-white tracking-wider uppercase">
             Active users - 
           </p>
           
@@ -30,15 +30,15 @@ const StatsBanner = () => {
               duration={2}
               separator=","
               onEnd={() => setInitialAnimationDone(true)}
-              className="text-3xl font-bold text-sky-900 font-[Roboto]"
+              className="text-3xl font-bold text-gray-50 font-[Roboto]"
             />
           ) : (
-            <span className="text-3xl font-bold text-sky-900 font-[Roboto]">
-              {count.toLocaleString()}
+            <span className="text-3xl font-bold text-gray-200 font-[Roboto]">
+              {count.toLocaleString()}          <span className="text-2xl text-emerald-500">+</span>
+
             </span>
           )}
           
-          <span className="text-2xl text-emerald-500">+</span>
         </div>
       </div>
     </div>

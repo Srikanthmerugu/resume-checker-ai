@@ -183,7 +183,7 @@ const FindAllJobs = () => {
   };
 
   const FilterSection = ({ title, category, options }) => (
-    <div className="border-b border-sky-200 relative pb-1 mb-0 animate-fadeIn">
+    <div className="border-b relative border-sky-200 pb-1 mb-0 animate-fadeIn">
       <h6 className="text-sky-800 font-semibold mt-2 mb-2">{title}</h6>
       {options.length === 0 ? (
         <div>  
@@ -191,7 +191,7 @@ const FindAllJobs = () => {
         </div>
       ) : (
         <>
-          <div className={`overflow-y-hidden ${expandedFilters[category] ? 'h-auto' : 'max-h-60'}`}>
+          <div className={`overflow-y-hidden relative ${expandedFilters[category] ? 'h-auto' : 'max-h-60'}`}>
             {options.map(({ name, count }) => (
               <label 
                 key={name}
@@ -224,10 +224,10 @@ const FindAllJobs = () => {
 
   const JobCard = ({ job }) => (
     <div 
-      className="p-4 hover:bg-sky-50 shadow border border-sky-100 mb-5 rounded-xl cursor-pointer transition-all duration-300 animate-slideIn"
+      className="p-4 hover:bg-sky-50 shadow relative border border-sky-100 mb-5 rounded-xl cursor-pointer transition-all duration-300 animate-slideIn"
       onClick={() => handleJobClick(job.id)}
     >
-      <div className="flex justify-between items-start">
+      <div className="flex relative justify-between items-start">
         <div>
           <h3 className="text-sky-900 font-medium text-lg">{job.job_title}</h3>
           <p className="text-sky-600 text-sm">{job.company_name}</p>
@@ -235,7 +235,7 @@ const FindAllJobs = () => {
         <FiChevronRight className="text-sky-400 hover:text-sky-600 transition-colors" />
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-2">
+      <div className="mt-3 relative flex flex-wrap gap-2">
         {job.skills && job.skills.split(',').slice(0, 4).map((skill, i) => (
           <span 
             key={i}
@@ -246,7 +246,7 @@ const FindAllJobs = () => {
         ))}
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center gap-4 text-sky-700">
+      <div className="mt-3 relative flex flex-wrap items-center gap-4 text-sky-700">
         <div className="flex items-center">
           <FiMapPin className="mr-1 text-sky-600" />
           <span className="text-sm">{job.location}</span>
@@ -269,18 +269,18 @@ const FindAllJobs = () => {
         )}
       </div>
 
-      <div className="mt-2 ml-1 justify-between items-center">
+      <div className="mt-2 ml-1 relative justify-between items-center">
         <span className="text-sky-600 text-sm">
           Post Date: 
         </span>
-      {formatJobDate(job.created_at)}
+        <span className='text-gray-500 text-sm'> {" "}{new Date(job.created_at).toLocaleDateString()}</span>
       </div>
     </div>
   );
 
   if (loading) {
     return (
-      <div className="flex relative justify-center items-center h-screen text-sky-600 animate-pulse">
+      <div className="flex justify-center relative items-center h-screen text-sky-600 animate-pulse">
         Loading...
       </div>
     );
@@ -295,9 +295,9 @@ const FindAllJobs = () => {
   }
 
   return (
-    <div className='bg-black relative'>
-    <div className='bg-black'> 
-    <div
+    <div className='relative bg-black'>
+        {/* Grid Background */}
+        <div
           className="absolute inset-0"
           style={{
             backgroundSize: "40px 40px",
@@ -307,16 +307,15 @@ const FindAllJobs = () => {
         />
         {/* Radial Gradient Overlay */}
         <div
-          className="absolute inset-0 bg-black "
+          className="absolute inset-0 bg-black"
           style={{
             maskImage: "radial-gradient(ellipse at center, transparent 20%, black)",
           }}
         />
-      
-            <NewNavbar />    </div>
-  <div className="mt-8 relative md:mt-12 lg:mt-0 bg- mb-6 md:mb-8 lg:mb-10 flex flex-col items-center gap-4 md:gap-[20px] search-for-find-job bg-gradient-animate py-8 md:py-12">
- 
-  <h1 className="text-3xl  md:text-4xl  lg:text-5xl lg:mt-19 text-sky-700 font-bold animate-fade-in-down text-center px-4">
+    <NewNavbar />
+
+  <div className="mt-8 relative md:mt-12 lg:mt-25 mb-6 md:mb-8 lg:mb-10 flex flex-col items-center gap-4 md:gap-[20px] search-for-find-job bg-gradient-animate py-8 md:py-12">
+  <h1 className="text-3xl md:text-4xl lg:text-5xl text-sky-700 font-bold animate-fade-in-down text-center px-4">
     Find your dream job now
   </h1>
   <p className="text-xl md:text-2xl text-sky-600 animate-fade-in-up text-center px-4">
@@ -324,20 +323,20 @@ const FindAllJobs = () => {
   </p>
 </div>
 
-<div className="w-full relative bg-black px-4 md:max-w-[90%]  lg:max-w-[85%] mx-auto py-2 md:py-4">
-  <div className="flex md:flex-row relative flex-col gap-3 sm:gap-2 items-center  p-3 md:p-4 rounded-xl shadow border border-sky-100">
+<div className="w-full relative px-4 md:max-w-[90%] lg:max-w-[85%] mx-auto py-2 md:py-4">
+  <div className="flex md:flex-row flex-col gap-3 sm:gap-2 items-center bg-white p-3 md:p-4 rounded-xl shadow border border-sky-100">
     <input
       type="text"
       placeholder="Enter skills / designations / companies"
       value={searchQuery}
       onChange={(e) => setSearchQuery(e.target.value)}
-      className="w-full px-3 md:px-4 py-2 bg-black text-sm md:text-base border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+      className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
     />
     
     <select
       value={experience}
       onChange={(e) => setExperience(e.target.value)}
-      className="w-full px-3 md:px-4 relative bg-black py-2 text-sm md:text-base border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
+      className="w-full px-3 md:px-4 py-2 text-sm md:text-base border border-sky-300 rounded-lg text-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
     >
       {experienceOptions.map((option) => (
         <option key={option.value} value={option.value}>
@@ -364,12 +363,12 @@ const FindAllJobs = () => {
 </div>
       
       {hasSearched && (
-        <div id='alljobs-data' className="max-w-[100% ] relative bg-black mx-5 py-8">
+        <div id='alljobs-data' className="max-w-[80%] mx-auto py-8">
           {jobs.length > 0 ? (
             <div className="flex flex-col md:flex-row gap-6">
               {/* Filters Column */}
-              <div className={`md:w-1/4 ${showFilters ? 'block' : 'hidden'}  md:block`}>
-                <div className="sticky top-15  p-2 bg-gray-900 rounded-xl shadow-lg border border-sky-100">
+              <div className={`md:w-1/4 ${showFilters ? 'block' : 'hidden'} md:block`}>
+                <div className="sticky top-25 bg-white p-2 rounded-xl shadow-lg border border-sky-100">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-sky-900 text-xl font-bold">All Filters</h2>
                     <button 
@@ -386,11 +385,11 @@ const FindAllJobs = () => {
                     options={workModes}
                   />
 
-                  <FilterSection
+                  {/* <FilterSection
                     title="Location"
                     category="location"
                     options={locations}
-                  />
+                  /> */}
 
                   <FilterSection
                     title="Education"
@@ -407,13 +406,13 @@ const FindAllJobs = () => {
               </div>
 
               {/* Job Listings */}
-              <div className="flex-1">
+              <div className="flex-1 relative">
                 <div className="bg-white p-4 rounded-xl shadow mb-4">
                   <div className="flex flex-col md:flex-row justify-between items-center">
                     <div className="flex items-center">
                       <button 
                         onClick={() => setShowFilters(!showFilters)}
-                        className="md:hidden mr-4 flex cursor-pointer items-center text-sky-600"
+                        className="md:hidden mr-4 flex items-center text-sky-600"
                       >
                         <FiFilter className="mr-1" /> Filters
                       </button>
@@ -442,7 +441,7 @@ const FindAllJobs = () => {
                           fetchJobs();
                         }}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 text-sky-600 cursor-pointer bg-white border border-sky-200 rounded-l-lg hover:bg-sky-50 disabled:opacity-50"
+                        className="px-4 py-2 text-sky-600 bg-white border border-sky-200 rounded-l-lg hover:bg-sky-50 disabled:opacity-50"
                       >
                         Previous
                       </button>
@@ -485,7 +484,7 @@ const FindAllJobs = () => {
                           fetchJobs();
                         }}
                         disabled={currentPage === totalPages}
-                        className="px-4 cursor-pointer py-2 text-sky-600 bg-white border border-sky-200 rounded-r-lg hover:bg-sky-50 disabled:opacity-50"
+                        className="px-4 py-2 text-sky-600 bg-white border border-sky-200 rounded-r-lg hover:bg-sky-50 disabled:opacity-50"
                       >
                         Next
                       </button>

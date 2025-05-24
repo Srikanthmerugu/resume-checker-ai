@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaAngleDown, FaArrowRight, FaBars, FaTimes } from 'react-icons/fa';
 import DropdonwMenu from '../../pages/Dropdonw/DropdonwMenu';
 import { NewLogo2 } from '../../assets/Assets';
 import { FiSettings, FiBriefcase, FiPlusCircle, FiUsers, FiGrid, FiChevronDown, FiArrowRight as FiArrowRightIcon, FiLogOut } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
 const NewNavbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
@@ -12,11 +13,19 @@ const NewNavbar = () => {
   const buttonRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const location = useLocation();
-  const [token, setToken] = useState(localStorage.getItem('token')); // Simulate token check
+  const navigate = useNavigate();
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
+  useEffect(() => {
+    // Update token state when localStorage changes
+    const handleStorageChange = () => {
+      setToken(localStorage.getItem('token'));
+    };
 
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
-  
   const handleLogout = () => {
     localStorage.removeItem('token');
     setToken(null);
@@ -36,19 +45,32 @@ const NewNavbar = () => {
         Zindex: "1000000000"
       },
     });
+    navigate('/');
   };
-  // Toggle dropdown and close if clicking the button again
+
+  const dashboardNav = () => {
+    navigate('/dashboard');
+  };
+
+  const handleProtectedNav = (path) => {
+    if (!token) {
+      navigate('/login');
+      setShowMobileMenu(false);
+    } else {
+      navigate(path);
+      setShowMobileMenu(false);
+    }
+  };
+
   const toggleDropdown = () => {
     setShowDropdown((prev) => !prev);
   };
 
-  // Toggle mobile menu
   const toggleMobileMenu = () => {
     setShowMobileMenu((prev) => !prev);
-    if (showDropdown) setShowDropdown(false); // Close dropdown when toggling menu
+    if (showDropdown) setShowDropdown(false);
   };
 
-  // Close dropdown and mobile menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -74,13 +96,11 @@ const NewNavbar = () => {
     };
   }, []);
 
-  // Close mobile menu and dropdown on route change
   useEffect(() => {
     setShowMobileMenu(false);
     setShowDropdown(false);
   }, [location]);
 
-  // Determine active link based on current path
   const getLinkClass = (path) => {
     const isActive = location.pathname === path;
     return `relative flex items-center text-sky-50 font-medium text-sm uppercase tracking-wider transition-colors duration-300 group ${
@@ -88,7 +108,6 @@ const NewNavbar = () => {
     }`;
   };
 
-  // Common link component for reuse
   const NavLink = ({ to, hash, children }) => (
     <a
       href={hash ? `#${hash}` : undefined}
@@ -101,28 +120,34 @@ const NewNavbar = () => {
     </a>
   );
 
+  const MobileNavItem = ({ to, children, icon, onClick, protectedRoute = false }) => {
+    const handleClick = () => {
+      if (protectedRoute && !token) {
+        navigate('/login');
+        setShowMobileMenu(false);
+      } else {
+        navigate(to);
+        if (onClick) onClick();
+      }
+    };
 
-  
-
-  const MobileNavItem = ({ to, children, icon, onClick }) => (
-    <Link
-      to={to}
-      onClick={onClick}
-      className="flex items-center px-4 py-3 text-gray-200 hover:bg-gray-800 rounded-lg transition-colors group relative"
-    >
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ffc800] rounded-r-lg opacity-0 group-hover:opacity-100 transition-opacity" />
-      {icon && <span className="mr-3">{icon}</span>}
-      <span>{children}</span>
-      <FiArrowRightIcon className="ml-auto text-gray-400 group-hover:text-[#ffc800] transition-colors" />
-    </Link>
-  );
-
+    return (
+      <button
+        onClick={handleClick}
+        className="flex items-center w-full px-4 py-3 text-left text-gray-200 hover:bg-gray-800 rounded-lg transition-colors group relative"
+      >
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#ffc800] rounded-r-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+        {icon && <span className="mr-3">{icon}</span>}
+        <span>{children}</span>
+        <FiArrowRightIcon className="ml-auto text-gray-400 group-hover:text-[#ffc800] transition-colors" />
+      </button>
+    );
+  };
 
   return (
     <nav className="mx-auto w-full text-white p-4 px-4 sm:px-6 lg:px-10 relative bg-transparent">
       <style>
         {`
-          /* Underline animation from center to both sides */
           .nav-link::after {
             content: '';
             position: absolute;
@@ -130,8 +155,8 @@ const NewNavbar = () => {
             left: 50%;
             width: 0;
             height: 2px;
-            background-color: #3b82f6; /* blue-500 */
-            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5); /* Shadow effect */
+            background-color: #3b82f6;
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.5);
             transition: width 0.3s ease, left 0.3s ease;
           }
 
@@ -141,13 +166,11 @@ const NewNavbar = () => {
             left: 0;
           }
 
-          /* Active link underline */
           .nav-link.active::after {
             width: 100%;
             left: 0;
           }
 
-          /* Mobile menu transition */
           .mobile-menu {
             transition: transform 0.3s ease-in-out;
           }
@@ -155,20 +178,18 @@ const NewNavbar = () => {
       </style>
 
       <div className="flex items-center justify-between">
-        {/* Logo */}
         <div className="text-xl font-bold text-sky-900">
           <Link to="/" onClick={() => setShowMobileMenu(false)}>
             <img
               src={NewLogo2}
-              width="100px"
+              width="150px"
               height="40px"
               alt="Logo"
-              className="sm:w-[180px] lg:w-[150px]"
+              className="sm:w-[180px] lg:w-[200px]"
             />
           </Link>
         </div>
 
-        {/* Hamburger Menu Button (visible on mobile) */}
         <button
           className="mobile-menu-button lg:hidden text-sky-50 hover:text-blue-500 focus:outline-none"
           onClick={toggleMobileMenu}
@@ -180,26 +201,16 @@ const NewNavbar = () => {
           )}
         </button>
 
-        {/* Navigation Links (Desktop) */}
         <div className="hidden lg:flex space-x-8 items-center">
-          {/* <NavLink hash="Howitswork">How It Works</NavLink> */}
-          <div className="relative group">
-            <Link to="/find-all-jobs">Find Jobs</Link>
-          </div>
-          <div className="relative group">
-            <Link to="/job-post">Post Job</Link>
-          </div>
-          <div className="relative group">
-            <Link to="/findCandidate">Find Candidate</Link>
-          </div>
-          <div className="relative group">
-            <Link to="/upload-resume">AI Resume Checker</Link>
-          </div>
+          {/* Navigation links can be added here */}
+        </div>
+
+        <div className="hidden items-center lg:flex space-x-4">
           <div className="relative group">
             <button
               ref={buttonRef}
               onClick={toggleDropdown}
-              className="flex items-center cursor-pointer text-sky-50 hover:text-blue-500 font-medium text-sm uppercase tracking-wider focus:outline-none transition-colors duration-300"
+              className="flex items-center cursor-pointer ganarate-button text-sky-50 hover:text-blue-500 font-medium text-sm uppercase tracking-wider focus:outline-none transition-colors duration-300"
             >
               Features
               <FaAngleDown
@@ -209,40 +220,50 @@ const NewNavbar = () => {
               />
             </button>
           </div>
-        </div>
+          
+          <div className="relative ganarate-button group">
+            <Link to="/find-all-jobs">Find Jobs</Link>
+          </div>
+          
+          {token && (
+            <button
+              onClick={dashboardNav}
+              className="px-6 py-2 text-sky-50 ganarate-button border cursor-pointer border-sky-50 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
+            >
+              Dashboard
+            </button>
+          )}
+          
+          {!token && (
+            <Link
+              to="/login"
+              className="border ganarate-button border-sky-50 text-sky-50 font-medium text-sm px-4 py-2 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors"
+            >
+              Job Seeker Login
+            </Link>
+          )}
 
-        {/* Buttons (Desktop) */}
-        <div className="hidden lg:flex space-x-4">
-          <Link
-            to="/login"
-            style={{ backgroundColor: "#ffc800" }}
-
-            className="border ganarate-button border-sky-50 text-sky-50 font-medium text-sm px-4 py-2 rounded-md hover:bg-gray-100 hover:text-gray-900 transition-colors"
-          >
-            Job Seeker Login
-          </Link>
           {token ? (
-              <button
-                onClick={handleLogout}
-                className="px-6 py-2 text-sky-50 border border-sky-50 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
-              >
-                Logout
-              </button>
-            ) : (
-              <Link
-                to="/login"
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 flex items-center"
-              >
-                Login
-                <FaArrowRight className="ml-2" />
-              </Link>
-            )}
+            <button
+              onClick={handleLogout}
+              className="px-6 py-2 ganarate-button cursor-pointer text-sky-50 border border-sky-50 rounded-md hover:bg-blue-600 hover:text-white transition-colors"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="px-6 py-2 ganarate-button bg-blue-600 cursor-pointer text-white rounded-md hover:bg-blue-700 flex items-center"
+            >
+              Login
+              <FaArrowRight className="ml-2" />
+            </Link>
+          )}
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {showMobileMenu && (
-        <div className="fixed inset-0 z-5000000 ">
+        <div className="fixed inset-0 z-5000000">
           <div
             className="absolute inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setShowMobileMenu(false)}
@@ -281,42 +302,25 @@ const NewNavbar = () => {
               />
             </div>
 
-            <nav className="flex flex-col space-y-1 p-4 overflow-scroll min-h-screen">
-              {/* <MobileNavItem
-                to="#Howitswork"
-                icon={<FiSettings className="text-[#ffc800]" />}
-                onClick={() => setShowMobileMenu(false)}
-              >
-                How It Works
-              </MobileNavItem> */}
+            <nav className="flex scrollbar-1px flex-col space-y-1 p-4 overflow-scroll min-h-screen">
               <MobileNavItem
                 to="/find-all-jobs"
                 icon={<FiBriefcase className="text-blue-400" />}
-                onClick={() => setShowMobileMenu(false)}
               >
                 Find Jobs
               </MobileNavItem>
-              <MobileNavItem
-                to="/job-post"
-                icon={<FiPlusCircle className="text-[#ffc800]" />}
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Post Job
-              </MobileNavItem>
-              <MobileNavItem
-                to="/findCandidate"
-                icon={<FiUsers className="text-blue-400" />}
-                onClick={() => setShowMobileMenu(false)}
-              >
-                Find Candidate
-              </MobileNavItem>
-              <MobileNavItem
-                to="/upload-resume"
-                icon={<FiUsers className="text-blue-400" />}
-                onClick={() => setShowMobileMenu(false)}
-              >
-                AI Resume Checker
-              </MobileNavItem>
+              
+              {token && (
+                <>
+                  <MobileNavItem
+                    to="/dashboard"
+                    icon={<FiSettings className="text-[#ffc800]" />}
+                  >
+                    Dashboard
+                  </MobileNavItem>
+                </>
+              )}
+
               <div className="relative">
                 <button
                   onClick={toggleDropdown}
@@ -377,7 +381,7 @@ const NewNavbar = () => {
       {showDropdown && !showMobileMenu && (
         <div
           ref={dropdownRef}
-          className="absolute  left-0 right-0 mt-2 z-50000"
+          className="absolute h-70 overflow-scroll left-0 right-0 mt-2 z-50000"
         >
           <DropdonwMenu closeMenu={() => setShowDropdown(false)} />
         </div>

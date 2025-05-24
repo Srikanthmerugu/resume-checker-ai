@@ -26,8 +26,8 @@ const Login = () => {
     try {
       const result = await login(email, password);
       if (result.success) {
-        toast.success("Login successful!", { position: "top-right", autoClose: 3000 });
-        navigate("/");
+        // toast.success("Login successful!", { position: "top-right", autoClose: 3000 });
+        navigate("/dashboard");
       } else {
         setError(result.message || "Login failed. Please try again.");
         toast.error(result.message || "Login Failed!", { position: "top-right", autoClose: 3000 });
@@ -47,7 +47,7 @@ const Login = () => {
       const result = await guestLogin();
       if (result.success) {
         toast.success("Guest login successful!", { position: "top-right", autoClose: 3000 });
-        navigate("/");
+        navigate("/dashboard");
       } else {
         setError(result.message || "Guest login failed. Please try again.");
         toast.error(result.message || "Guest Login Failed!", { position: "top-right", autoClose: 3000 });
